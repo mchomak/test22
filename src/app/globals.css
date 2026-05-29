@@ -1,26 +1,273 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050607;
+  --foreground: #f5f5f4;
+  --muted: #a1a1aa;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-jetbrains);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--background);
 }
 
 body {
-  background: var(--background);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    linear-gradient(180deg, rgba(5, 6, 7, 0.98), rgba(5, 6, 7, 1)),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  text-rendering: geometricPrecision;
+}
+
+body::before {
+  pointer-events: none;
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  mix-blend-mode: screen;
+}
+
+::selection {
+  background: rgba(110, 231, 183, 0.28);
+  color: #ffffff;
+}
+
+a {
+  text-decoration: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.section-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.section-shell::before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.034) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(180deg, transparent, black 14%, black 86%, transparent);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(110, 231, 183, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 212, 191, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, transparent 0%, rgba(110, 231, 183, 0.04) 45%, transparent 100%);
+  background-size: 72px 72px, 72px 72px, 100% 100%;
+}
+
+.case-card {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%),
+    linear-gradient(135deg, rgba(34, 211, 238, 0.065), transparent 36%);
+}
+
+.case-console,
+.system-map-grid {
+  background-image:
+    linear-gradient(90deg, rgba(110, 231, 183, 0.045) 1px, transparent 1px),
+    linear-gradient(rgba(34, 211, 238, 0.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+.case-scan {
+  background:
+    linear-gradient(180deg, transparent, rgba(34, 211, 238, 0.08), transparent),
+    linear-gradient(90deg, rgba(110, 231, 183, 0.035), transparent 38%, rgba(251, 191, 36, 0.035));
+  background-size: 100% 220px, 100% 100%;
+}
+
+.cta-grid {
+  background-image:
+    linear-gradient(rgba(110, 231, 183, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 231, 183, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.process-flow {
+  position: relative;
+  display: grid;
+  gap: 14px;
+}
+
+.process-flow::before {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 18px;
+  bottom: 18px;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(110, 231, 183, 0), rgba(110, 231, 183, 0.58), rgba(245, 158, 11, 0.32), rgba(34, 211, 238, 0));
+}
+
+.process-flow::after {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 18px;
+  width: 1px;
+  height: 92px;
+  background: linear-gradient(180deg, transparent, rgba(110, 231, 183, 0.85), transparent);
+  filter: drop-shadow(0 0 12px rgba(110, 231, 183, 0.55));
+}
+
+.process-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 16px;
+  padding: 18px 0;
+  transition: transform 240ms ease, opacity 240ms ease;
+}
+
+.process-step:hover {
+  transform: translateY(-2px);
+}
+
+.process-index {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  height: 40px;
+  width: 40px;
+  place-items: center;
+  border: 1px solid rgba(110, 231, 183, 0.35);
+  border-radius: 999px;
+  background: #0d1713;
+  color: #a7f3d0;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 11px;
+  box-shadow: 0 0 28px rgba(110, 231, 183, 0.12);
+}
+
+@media (min-width: 1024px) {
+  .process-flow {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .process-flow::before {
+    left: 6%;
+    right: 6%;
+    top: 22px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(110, 231, 183, 0), rgba(110, 231, 183, 0.58), rgba(245, 158, 11, 0.32), rgba(34, 211, 238, 0));
+  }
+
+  .process-flow::after {
+    left: 6%;
+    top: 22px;
+    width: 130px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(110, 231, 183, 0.85), transparent);
+  }
+
+  .process-step {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-grid {
+    animation: grid-drift 22s linear infinite;
+  }
+
+  .case-card:hover {
+    background-position: 0 0, 18px 18px;
+  }
+
+  .case-scan {
+    animation: scan-pass 5.8s linear infinite;
+  }
+
+  .stack-chip {
+    animation: chip-arrive 0.58s both;
+  }
+
+  .process-flow::after {
+    animation: pipeline-signal-y 4.8s linear infinite;
+  }
+}
+
+@keyframes grid-drift {
+  from {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  to {
+    background-position: 72px 72px, -72px 72px, 0 0;
+  }
+}
+
+@keyframes scan-pass {
+  from {
+    background-position: 0 -220px, 0 0;
+  }
+  to {
+    background-position: 0 calc(100% + 220px), 0 0;
+  }
+}
+
+@keyframes chip-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pipeline-signal-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(100% + 40px));
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .process-flow::after {
+    animation: pipeline-signal-x 5.6s linear infinite;
+  }
+}
+
+@keyframes pipeline-signal-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(760%));
+  }
 }
