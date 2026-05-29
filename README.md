@@ -22,7 +22,9 @@ npm run build
 
 - `src/app/page.tsx` - сборка всех секций главной страницы.
 - `src/data/site.ts` - тексты, кейсы, пакеты, FAQ, контакты и стек.
-- `src/components/sections/` - hero, специализация, кейсы, услуги, процесс, доверие, отзывы, FAQ и финальный CTA.
+- `src/components/sections/` - hero, интерактивная системная схема, специализация, кейсы, услуги, процесс, доверие, отзывы, FAQ и финальный CTA.
+- `src/components/effects/` - boot-интро, scroll progress, cursor crosshair и переходы между секциями.
+- `src/components/interactive/` - WebGL-сцена, live telemetry, hero headline и estimator бюджета.
 - `src/components/ui/` - базовые UI-компоненты.
 - `public/images/engineering-command-center.png` - hero visual asset.
 

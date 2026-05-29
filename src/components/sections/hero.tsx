@@ -11,6 +11,7 @@ import { contacts, heroMetrics, stack } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { ButtonLink } from "@/components/ui/button-link";
 import { EngineeringScene } from "@/components/interactive/engineering-scene";
+import { HeroHeadline } from "@/components/interactive/hero-headline";
 import { LiveTelemetry } from "@/components/interactive/live-telemetry";
 
 export function Hero() {
@@ -41,15 +42,12 @@ export function Hero() {
             Python backend / bots / AI systems
           </div>
 
-          <h1 className="max-w-5xl text-balance text-4xl font-semibold leading-[1.02] text-white sm:text-5xl md:text-6xl xl:text-7xl">
-            Python-разработчик, который собирает коммерческие backend-системы
-            до запуска
-          </h1>
+          <HeroHeadline />
 
           <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-zinc-300 sm:text-xl">
-            Telegram-боты с оплатой, AI/LLM-интеграции, crypto automation,
-            FastAPI-сервисы, очереди, базы данных, деплой и поддержка. 5 лет
-            опыта, 30+ проектов под ключ.
+            Архитектура, FastAPI, Telegram Bot API, платежи, базы данных,
+            очереди, AI/LLM, деплой и поддержка. 5 лет опыта, 30+ проектов
+            под ключ.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
