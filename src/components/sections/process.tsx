@@ -15,7 +15,7 @@ export function Process() {
         />
 
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#101311] p-5 sm:p-7">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#101311]/68 p-5 backdrop-blur-md sm:p-7">
             <div className="mb-8 grid gap-4 md:grid-cols-3">
               <PipelineMetric
                 icon={<GitBranch size={18} />}

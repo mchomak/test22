@@ -21,7 +21,7 @@ export function Specialization() {
 
             return (
               <Reveal key={item.title} delay={index * 0.08}>
-                <article className="group h-full rounded-3xl border border-white/10 bg-[#0d1110] p-6 transition duration-300 hover:-translate-y-1 hover:border-emerald-300/35 hover:bg-[#101715]">
+                <article className="group h-full rounded-3xl border border-white/10 bg-[#0d1110]/70 p-6 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-emerald-300/35 hover:bg-[#101715]/78">
                   <div className="mb-6 flex items-start justify-between gap-4">
                     <div className="grid h-12 w-12 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200 transition duration-300 group-hover:border-emerald-200/60">
                       <Icon size={24} />

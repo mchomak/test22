@@ -49,7 +49,7 @@ export function ProjectEstimator() {
   };
 
   return (
-    <div className="mt-5 grid gap-5 rounded-3xl border border-white/10 bg-[#101311] p-6 lg:grid-cols-[1fr_340px]">
+    <div className="mt-5 grid gap-5 rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md lg:grid-cols-[1fr_340px]">
       <div>
         <div className="mb-5 flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
@@ -118,7 +118,7 @@ export function ProjectEstimator() {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712] p-5">
+      <div className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md">
         <motion.div
           className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent"
           animate={{ x: ["-100%", "100%"] }}

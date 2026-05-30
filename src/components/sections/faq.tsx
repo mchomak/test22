@@ -15,7 +15,7 @@ export function FAQ() {
         />
 
         <Reveal>
-          <div className="divide-y divide-white/10 rounded-3xl border border-white/10 bg-[#101311]">
+          <div className="divide-y divide-white/10 rounded-3xl border border-white/10 bg-[#101311]/68 backdrop-blur-md">
             {faqs.map((item, index) => (
               <details
                 key={item.question}

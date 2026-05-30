@@ -24,7 +24,7 @@ const edges = [
   [4, 5],
 ];
 
-export function EngineeringScene() {
+export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -134,6 +134,8 @@ export function EngineeringScene() {
     });
 
     nodePositions.forEach((position, index) => {
+      if (index === 2 && !showCore) return;
+
       const mesh = new THREE.Mesh(
         index === 2 ? coreGeometry : nodeGeometry,
         index === 2
@@ -171,17 +173,18 @@ export function EngineeringScene() {
       return pulse;
     });
 
-    const orbit = new THREE.Mesh(
-      new THREE.TorusGeometry(1.12, 0.006, 10, 120),
-      new THREE.MeshBasicMaterial({
-        color: "#5eead4",
-        transparent: true,
-        opacity: 0.22,
-      }),
-    );
-    orbit.position.copy(nodePositions[2]);
-    orbit.rotation.x = 1.22;
-    group.add(orbit);
+    const orbitGeometry = new THREE.TorusGeometry(1.12, 0.006, 10, 120);
+    const orbitMaterial = new THREE.MeshBasicMaterial({
+      color: "#5eead4",
+      transparent: true,
+      opacity: 0.22,
+    });
+    const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
+    if (showCore) {
+      orbit.position.copy(nodePositions[2]);
+      orbit.rotation.x = 1.22;
+      group.add(orbit);
+    }
 
     const pointer = { x: 0, y: 0 };
     const onPointerMove = (event: PointerEvent) => {
@@ -212,8 +215,10 @@ export function EngineeringScene() {
       group.rotation.x += (pointer.y * 0.09 - group.rotation.x) * 0.035;
       group.position.y = Math.sin(motion * 0.35) * 0.05;
       particles.rotation.y = motion * 0.018;
-      orbit.rotation.z = motion * 0.22;
-      orbit.rotation.y = motion * 0.12;
+      if (showCore) {
+        orbit.rotation.z = motion * 0.22;
+        orbit.rotation.y = motion * 0.12;
+      }
 
       pulses.forEach((pulse) => {
         const { curve, offset, speed } = pulse.userData as {
@@ -241,9 +246,11 @@ export function EngineeringScene() {
       nodeGeometry.dispose();
       coreGeometry.dispose();
       pulseGeometry.dispose();
+      orbitGeometry.dispose();
+      orbitMaterial.dispose();
       mount.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [showCore]);
 
   return (
     <div

@@ -67,6 +67,7 @@ summary::-webkit-details-marker {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.034) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
@@ -79,12 +80,18 @@ summary::-webkit-details-marker {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   opacity: 0.45;
   background:
     linear-gradient(105deg, transparent 0%, rgba(110, 231, 183, 0.035) 38%, transparent 57%),
     radial-gradient(circle at 18% 12%, rgba(34, 211, 238, 0.055), transparent 28%);
   background-size: 240% 100%, 100% 100%;
   mix-blend-mode: screen;
+}
+
+.section-shell > .mx-auto {
+  position: relative;
+  z-index: 2;
 }
 
 .boot-grid {
@@ -123,6 +130,134 @@ summary::-webkit-details-marker {
     linear-gradient(180deg, transparent, rgba(34, 211, 238, 0.08), transparent),
     linear-gradient(90deg, rgba(110, 231, 183, 0.035), transparent 38%, rgba(251, 191, 36, 0.035));
   background-size: 100% 220px, 100% 100%;
+}
+
+.case-hanger-shell {
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(34, 211, 238, 0.11), transparent 34%),
+    radial-gradient(circle at 50% 105%, rgba(110, 231, 183, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 44%),
+    rgba(7, 16, 14, 0.68);
+  backdrop-filter: blur(14px);
+}
+
+.case-hanger-stage {
+  position: relative;
+  height: 430px;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.case-hanger-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  width: min(72vw, 640px);
+  height: 120px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(34, 211, 238, 0.2), transparent 68%);
+  filter: blur(14px);
+  opacity: 0.55;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.case-hanger-rail {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.52), rgba(110, 231, 183, 0.4), transparent);
+  box-shadow: 0 0 26px rgba(34, 211, 238, 0.18);
+  z-index: 1;
+}
+
+.case-hanger-card {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(70vw, 270px);
+  min-height: 270px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 18px;
+  background:
+    linear-gradient(145deg, rgba(110, 231, 183, 0.11), rgba(34, 211, 238, 0.035) 44%, rgba(255, 255, 255, 0.025)),
+    rgba(6, 12, 11, 0.68);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: inherit;
+  transform-style: preserve-3d;
+  transform-origin: 50% -42px;
+  backdrop-filter: blur(12px);
+  backface-visibility: hidden;
+}
+
+.case-hanger-card-active {
+  border-color: rgba(103, 232, 249, 0.38);
+  background:
+    linear-gradient(145deg, rgba(110, 231, 183, 0.16), rgba(34, 211, 238, 0.065) 44%, rgba(255, 255, 255, 0.045)),
+    rgba(6, 12, 11, 0.78);
+  box-shadow:
+    0 32px 92px rgba(0, 0, 0, 0.56),
+    0 0 56px rgba(34, 211, 238, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.case-hanger-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.45;
+}
+
+.case-hanger-string {
+  position: absolute;
+  left: 50%;
+  top: -68px;
+  height: 74px;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(103, 232, 249, 0.08), rgba(103, 232, 249, 0.7), rgba(110, 231, 183, 0.55));
+  box-shadow: 0 0 18px rgba(103, 232, 249, 0.2);
+}
+
+.case-hanger-pin {
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  height: 16px;
+  width: 16px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(110, 231, 183, 0.5);
+  border-radius: 999px;
+  background: #07100e;
+  box-shadow: 0 0 24px rgba(110, 231, 183, 0.25);
+}
+
+.case-hanger-pin::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  background: #6ee7b7;
+}
+
+.case-focus-panel {
+  position: relative;
+  z-index: 4;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 28px;
 }
 
 .cta-grid {
@@ -189,6 +324,16 @@ summary::-webkit-details-marker {
 }
 
 @media (min-width: 1024px) {
+  .case-hanger-stage {
+    height: 500px;
+  }
+
+  .case-hanger-card {
+    width: 292px;
+    min-height: 310px;
+    padding: 20px;
+  }
+
   .process-flow {
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 0;

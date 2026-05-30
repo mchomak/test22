@@ -8,7 +8,7 @@ export function FinalCTA() {
     <section id="contact" className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/25 bg-[#0d1713] p-6 sm:p-10 lg:p-12">
+          <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/25 bg-[#0d1713]/72 p-6 backdrop-blur-md sm:p-10 lg:p-12">
             <div className="cta-grid absolute inset-0 opacity-50" />
             <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>

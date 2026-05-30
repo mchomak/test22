@@ -106,7 +106,7 @@ export function SystemShowcase() {
         />
 
         <Reveal>
-          <div className="grid gap-5 rounded-[2rem] border border-white/10 bg-[#0d1110] p-4 shadow-2xl shadow-black/35 md:p-6 lg:grid-cols-[300px_1fr]">
+          <div className="grid gap-5 rounded-[2rem] border border-white/10 bg-[#0d1110]/70 p-4 shadow-2xl shadow-black/35 backdrop-blur-md md:p-6 lg:grid-cols-[300px_1fr]">
             <div className="grid gap-2 self-start">
               {modes.map((mode) => {
                 const Icon = mode.icon;
@@ -180,7 +180,7 @@ export function SystemShowcase() {
                         return (
                           <motion.div
                             key={lane.key}
-                            className="relative min-h-36 overflow-hidden rounded-2xl border border-white/10 bg-[#0d1110]/85 p-4"
+                            className="relative min-h-36 overflow-hidden rounded-2xl border border-white/10 bg-[#0d1110]/62 p-4 backdrop-blur"
                             initial={{ opacity: 0, y: 14 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.06 }}
@@ -207,7 +207,7 @@ export function SystemShowcase() {
                       })}
                     </div>
 
-                    <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-[#050607]/90">
+                    <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-[#050607]/70 backdrop-blur">
                       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
                         <span className="h-2.5 w-2.5 rounded-full bg-red-300/80" />
                         <span className="h-2.5 w-2.5 rounded-full bg-amber-300/80" />

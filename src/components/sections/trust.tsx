@@ -21,7 +21,7 @@ export function Trust() {
     <section className="section-shell bg-[#090a0a]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="grid gap-8 rounded-3xl border border-white/10 bg-[#101311] p-6 sm:p-8 lg:grid-cols-[0.86fr_1.14fr]">
+          <div className="grid gap-8 rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md sm:p-8 lg:grid-cols-[0.86fr_1.14fr]">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
                 Trust contour

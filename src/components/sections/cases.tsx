@@ -1,8 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Layers3, ScanLine, ServerCog } from "lucide-react";
-import { useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Layers3,
+  ServerCog,
+  Workflow,
+} from "lucide-react";
+import { useMemo, useState } from "react";
 import { cases } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -11,133 +17,141 @@ export function Cases() {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = cases[activeIndex];
 
+  const visibleCases = useMemo(() => {
+    return cases.map((item, index) => {
+      let offset = index - activeIndex;
+      if (offset > cases.length / 2) offset -= cases.length;
+      if (offset < -cases.length / 2) offset += cases.length;
+
+      return { item, index, offset };
+    });
+  }, [activeIndex]);
+
+  const go = (direction: -1 | 1) => {
+    setActiveIndex((current) =>
+      direction > 0
+        ? (current + 1) % cases.length
+        : (current - 1 + cases.length) % cases.length,
+    );
+  };
+
   return (
     <section id="cases" className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Кейсы"
-          title="Интерактивная витрина задач: от crypto UX до AI/RAG и backend-операций"
-          description="Кейсы обезличены, зато показывают реальный тип работы: где была проблема, как строилось решение и что остаётся после запуска."
+          title="Галерея production-кейсов без однотипной карточной сетки"
+          description="Кейсов может стать больше, поэтому витрина работает как подвесная лента: быстро переключаете задачу, а детали раскрываются в одном фокусном контуре."
         />
 
         <Reveal>
-          <div className="case-console grid gap-5 rounded-[2rem] border border-white/10 bg-[#101311] p-4 shadow-2xl shadow-black/35 md:p-6 lg:grid-cols-[360px_1fr]">
-            <div className="grid gap-2 self-start">
-              {cases.map((item, index) => {
+          <div className="case-hanger-shell overflow-hidden rounded-[2rem] border border-white/10 bg-[#07100e] p-4 shadow-2xl shadow-black/35 sm:p-6">
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
+                {String(activeIndex + 1).padStart(2, "0")} /{" "}
+                {String(cases.length).padStart(2, "0")}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => go(-1)}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-300 transition duration-300 hover:border-cyan-200/35 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                  aria-label="Предыдущий кейс"
+                >
+                  <ArrowLeft size={17} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => go(1)}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-300 transition duration-300 hover:border-cyan-200/35 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+                  aria-label="Следующий кейс"
+                >
+                  <ArrowRight size={17} />
+                </button>
+              </div>
+            </div>
+
+            <div className="case-hanger-stage">
+              <div className="case-hanger-rail" />
+              {visibleCases.map(({ item, index, offset }) => {
+                const distance = Math.abs(offset);
                 const isActive = index === activeIndex;
+                const hidden = distance > 3;
 
                 return (
-                  <button
+                  <motion.button
                     key={item.title}
                     type="button"
                     onClick={() => setActiveIndex(index)}
-                    className={`group relative overflow-hidden rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
-                      isActive
-                        ? "border-cyan-200/35 bg-cyan-200/10"
-                        : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                    className={`case-hanger-card ${
+                      isActive ? "case-hanger-card-active" : ""
                     }`}
+                    initial={false}
+                    animate={{
+                      x: `calc(-50% + ${offset * 132}px)`,
+                      y: isActive ? 54 : 36 + distance * 10,
+                      rotate: offset * 4,
+                      rotateY: offset * -18,
+                      scale: isActive ? 1.08 : Math.max(0.68, 0.92 - distance * 0.08),
+                      opacity: hidden ? 0 : isActive ? 1 : Math.max(0.24, 0.7 - distance * 0.13),
+                      zIndex: 20 - distance,
+                    }}
+                    transition={{ type: "spring", stiffness: 150, damping: 24 }}
+                    aria-label={item.title}
                   >
-                    {isActive ? (
-                      <motion.span
-                        layoutId="active-case"
-                        className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-cyan-200"
-                      />
-                    ) : null}
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-200/70">
-                          {String(index + 1).padStart(2, "0")} / {item.type}
-                        </p>
-                        <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-5 text-white">
-                          {item.title}
-                        </h3>
-                      </div>
-                      <ArrowUpRight
-                        size={17}
-                        className={`shrink-0 transition ${
-                          isActive
-                            ? "text-cyan-100"
-                            : "text-zinc-600 group-hover:text-zinc-300"
-                        }`}
-                      />
-                    </div>
-                  </button>
+                    <span className="case-hanger-string" />
+                    <span className="case-hanger-pin" />
+                    <span className="relative z-10 block">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-200/75">
+                        {String(index + 1).padStart(2, "0")} / {item.type}
+                      </span>
+                      <span className="mt-4 block text-left text-base font-semibold leading-6 text-white">
+                        {item.title}
+                      </span>
+                      <span className="mt-5 flex flex-wrap gap-1.5">
+                        {item.stack.slice(0, 3).map((tech) => (
+                          <span
+                            key={tech}
+                            className="rounded-full border border-white/10 bg-black/25 px-2 py-1 font-mono text-[10px] text-zinc-400"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </span>
+                    </span>
+                  </motion.button>
                 );
               })}
             </div>
 
-            <div className="relative min-h-[620px] overflow-hidden rounded-3xl border border-white/10 bg-[#050607]/70 p-5 sm:p-6">
-              <div className="case-scan absolute inset-0 opacity-50" />
-              <AnimatePresence mode="wait">
-                <motion.article
-                  key={active.title}
-                  initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -18, filter: "blur(10px)" }}
-                  transition={{ duration: 0.3 }}
-                  className="relative z-10 flex min-h-[570px] flex-col"
-                >
-                  <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={active.title}
+                initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -18, filter: "blur(10px)" }}
+                transition={{ duration: 0.28 }}
+                className="case-focus-panel"
+              >
+                <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-200/80">
+                      {active.type}
+                    </p>
+                    <h3 className="mt-3 max-w-4xl text-balance text-2xl font-semibold leading-tight text-white sm:text-4xl">
+                      {active.title}
+                    </h3>
+
+                    <div className="mt-7 grid gap-5 md:grid-cols-3">
+                      <CaseLine label="Проблема" text={active.problem} />
+                      <CaseLine label="Решение" text={active.solution} />
+                      <CaseLine label="Результат" text={active.result} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-5 border-t border-white/10 pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div>
-                      <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-200/80">
-                        {active.type}
-                      </p>
-                      <h3 className="mt-3 max-w-3xl text-balance text-2xl font-semibold leading-tight text-white sm:text-4xl">
-                        {active.title}
-                      </h3>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-                        delivery mode
-                      </p>
-                      <p className="mt-1 text-sm text-emerald-200">
-                        architecture → build → launch
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-7 grid gap-4 lg:grid-cols-3">
-                    <CaseBlock label="Проблема" text={active.problem} />
-                    <CaseBlock label="Решение" text={active.solution} />
-                    <CaseBlock label="Результат" text={active.result} />
-                  </div>
-
-                  <div className="mt-7 grid gap-5 lg:grid-cols-[1fr_260px]">
-                    <div className="rounded-2xl border border-white/10 bg-[#0d1110]/80 p-4">
-                      <div className="mb-4 flex items-center gap-2">
-                        <ScanLine size={18} className="text-cyan-200" />
-                        <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                          execution trace
-                        </p>
-                      </div>
-                      <div className="space-y-3">
-                        {[
-                          "scope.locked",
-                          "entities.mapped",
-                          "integration.checked",
-                          "deploy.ready",
-                        ].map((line, index) => (
-                          <motion.div
-                            key={line}
-                            initial={{ opacity: 0, x: -12 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.12 + index * 0.06 }}
-                            className="grid grid-cols-[72px_1fr_auto] items-center gap-3 border-b border-white/10 pb-3 last:border-b-0 last:pb-0"
-                          >
-                            <span className="font-mono text-[11px] text-zinc-600">
-                              T+0{index + 1}
-                            </span>
-                            <span className="font-mono text-xs text-zinc-300">
-                              {line}
-                            </span>
-                            <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_16px_rgba(110,231,183,0.8)]" />
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-[#0d1110]/80 p-4">
-                      <div className="mb-4 flex items-center gap-2">
+                      <div className="mb-3 flex items-center gap-2">
                         <ServerCog size={18} className="text-emerald-300" />
                         <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
                           stack
@@ -154,30 +168,35 @@ export function Cases() {
                         ))}
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-auto grid gap-3 pt-7 sm:grid-cols-3">
-                    {active.metrics.map((metric, index) => (
-                      <motion.div
-                        key={metric}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.22 + index * 0.05 }}
-                        className="group border-l border-cyan-200/25 bg-white/[0.03] px-4 py-3 transition duration-300 hover:border-emerald-300/45 hover:bg-white/[0.06]"
-                      >
-                        <Layers3
-                          size={15}
-                          className="mb-2 text-cyan-200 transition group-hover:text-emerald-200"
-                        />
-                        <p className="text-xs leading-5 text-zinc-300">
-                          {metric}
+                    <div>
+                      <div className="mb-3 flex items-center gap-2">
+                        <Workflow size={18} className="text-cyan-200" />
+                        <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
+                          metrics
                         </p>
-                      </motion.div>
-                    ))}
+                      </div>
+                      <div className="grid gap-3">
+                        {active.metrics.map((metric) => (
+                          <div
+                            key={metric}
+                            className="flex gap-3 border-l border-cyan-200/25 bg-white/[0.03] px-3 py-2"
+                          >
+                            <Layers3
+                              size={15}
+                              className="mt-1 shrink-0 text-cyan-200"
+                            />
+                            <p className="text-xs leading-5 text-zinc-300">
+                              {metric}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </motion.article>
-              </AnimatePresence>
-            </div>
+                </div>
+              </motion.article>
+            </AnimatePresence>
           </div>
         </Reveal>
       </div>
@@ -185,7 +204,7 @@ export function Cases() {
   );
 }
 
-function CaseBlock({ label, text }: { label: string; text: string }) {
+function CaseLine({ label, text }: { label: string; text: string }) {
   return (
     <div className="border-t border-white/10 pt-4">
       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">

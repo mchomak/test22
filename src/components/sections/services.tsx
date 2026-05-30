@@ -22,8 +22,8 @@ export function Services() {
               <article
                 className={`relative flex h-full flex-col rounded-3xl border p-6 transition duration-300 hover:-translate-y-1 ${
                   item.featured
-                    ? "border-emerald-300/45 bg-[#102018] shadow-[0_0_55px_rgba(110,231,183,0.12)]"
-                    : "border-white/10 bg-[#101311] hover:border-white/20"
+                    ? "border-emerald-300/45 bg-[#102018]/72 shadow-[0_0_55px_rgba(110,231,183,0.12)] backdrop-blur-md"
+                    : "border-white/10 bg-[#101311]/68 backdrop-blur-md hover:border-white/20"
                 }`}
               >
                 {item.featured ? (
@@ -87,7 +87,7 @@ export function Services() {
         </div>
 
         <Reveal delay={0.12}>
-          <div className="mt-5 grid gap-5 rounded-3xl border border-white/10 bg-[#101311] p-6 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="mt-5 grid gap-5 rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
                 Retainer

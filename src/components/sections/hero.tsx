@@ -4,8 +4,6 @@ import {
   Code2,
   Mail,
   MessageCircle,
-  MousePointer2,
-  Sparkles,
 } from "lucide-react";
 import { contacts, heroMetrics, stack } from "@/data/site";
 import { Reveal } from "@/components/reveal";
@@ -31,7 +29,7 @@ export function Hero() {
         className="absolute inset-0 -z-20 object-cover opacity-[0.18] mix-blend-screen"
       />
       <div className="hero-grid absolute inset-0 -z-10 opacity-70" />
-      <EngineeringScene />
+      <EngineeringScene showCore={false} />
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_67%_46%,transparent_0%,rgba(5,6,7,0.2)_30%,rgba(5,6,7,0.84)_78%),linear-gradient(90deg,rgba(5,6,7,0.98)_0%,rgba(5,6,7,0.78)_40%,rgba(5,6,7,0.2)_100%)]" />
       <div className="absolute inset-x-0 bottom-0 z-[1] h-36 bg-gradient-to-t from-[#090a0a] to-transparent" />
 
@@ -102,15 +100,8 @@ export function Hero() {
           delay={0.12}
           className="relative min-h-[560px] lg:min-h-[700px]"
         >
-          <div className="absolute right-2 top-8 hidden items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-400 backdrop-blur md:flex">
-            <MousePointer2 size={14} className="text-emerald-300" />
-            move cursor over system
-          </div>
           <div className="absolute inset-0 rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_52%_48%,rgba(16,185,129,0.12),transparent_35%)] shadow-[0_0_120px_rgba(16,185,129,0.08)]" />
           <LiveTelemetry />
-          <div className="absolute right-5 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/10 bg-black/50 p-3 text-emerald-200 shadow-xl backdrop-blur xl:grid">
-            <Sparkles size={24} />
-          </div>
         </Reveal>
       </div>
 

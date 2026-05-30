@@ -16,7 +16,7 @@ export function Testimonials() {
         <div className="grid gap-5 lg:grid-cols-3">
           {testimonials.map((item, index) => (
             <Reveal key={item.author} delay={index * 0.08}>
-              <figure className="flex h-full flex-col rounded-3xl border border-white/10 bg-[#101311] p-6 transition duration-300 hover:-translate-y-1 hover:border-amber-200/30">
+              <figure className="flex h-full flex-col rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-amber-200/30">
                 <Quote size={26} className="text-amber-200" />
                 <blockquote className="mt-5 flex-1 text-base leading-7 text-zinc-300">
                   “{item.quote}”
