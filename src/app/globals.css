@@ -132,132 +132,237 @@ summary::-webkit-details-marker {
   background-size: 100% 220px, 100% 100%;
 }
 
-.case-hanger-shell {
+.case-showcase-shell {
   position: relative;
+  padding-block: 8px;
   background:
-    radial-gradient(circle at 50% 18%, rgba(34, 211, 238, 0.11), transparent 34%),
-    radial-gradient(circle at 50% 105%, rgba(110, 231, 183, 0.12), transparent 40%),
+    radial-gradient(circle at 50% 10%, rgba(34, 211, 238, 0.1), transparent 30%),
+    radial-gradient(circle at 50% 36%, rgba(110, 231, 183, 0.09), transparent 34%),
+    radial-gradient(circle at 50% 105%, rgba(34, 211, 238, 0.11), transparent 42%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 44%),
     rgba(7, 16, 14, 0.68);
   backdrop-filter: blur(14px);
 }
 
-.case-hanger-stage {
+.case-showcase-toolbar {
   position: relative;
-  height: 430px;
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  z-index: 5;
 }
 
-.case-hanger-stage::after {
+.case-showcase-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  display: grid;
+  min-height: 1120px;
+  place-items: start center;
+  padding: 116px 0 140px;
+  perspective: 1500px;
+  --case-wheel-node-radius: min(34vw, 315px);
+}
+
+.case-showcase-stage::after {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 28px;
-  width: min(72vw, 640px);
-  height: 120px;
+  bottom: -42px;
+  width: min(78vw, 760px);
+  height: 170px;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(34, 211, 238, 0.2), transparent 68%);
-  filter: blur(14px);
-  opacity: 0.55;
+  background: radial-gradient(ellipse, rgba(34, 211, 238, 0.22), transparent 70%);
+  filter: blur(18px);
+  opacity: 0.5;
   z-index: 0;
   pointer-events: none;
 }
 
-.case-hanger-rail {
+.case-wheel-holder {
   position: absolute;
-  left: 4%;
-  right: 4%;
-  top: 36px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.52), rgba(110, 231, 183, 0.4), transparent);
-  box-shadow: 0 0 26px rgba(34, 211, 238, 0.18);
-  z-index: 1;
+  inset-inline: 0;
+  top: -8px;
+  z-index: 7;
+  width: min(78vw, 720px);
+  height: 210px;
+  margin-inline: auto;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
 }
 
-.case-hanger-card {
+.case-wheel-holder-plane {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: min(72vw, 650px);
+  height: 190px;
+  transform: translateX(-50%) rotateX(66deg);
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+.case-wheel-holder-ring,
+.case-wheel-holder-rotor {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+.case-wheel-holder-ring {
+  border: 1px solid rgba(103, 232, 249, 0.28);
+  border-radius: 50%;
+  box-shadow:
+    0 0 34px rgba(34, 211, 238, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.case-wheel-holder-ring::before {
+  content: "";
+  position: absolute;
+  inset: 14px 24px;
+  border: 1px solid rgba(110, 231, 183, 0.13);
+  border-radius: inherit;
+}
+
+.case-wheel-holder-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  transform-origin: 0 0;
+  border: 1px solid rgba(110, 231, 183, 0.64);
+  border-radius: 999px;
+  background: #07100e;
+  box-shadow: 0 0 18px rgba(110, 231, 183, 0.26);
+}
+
+.case-wheel-holder-node::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: rgba(110, 231, 183, 0.86);
+}
+
+.case-wheel-deck {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  min-height: 900px;
+  transform-style: preserve-3d;
+}
+
+.case-wheel-card {
   position: absolute;
   left: 50%;
   top: 0;
-  width: min(70vw, 270px);
-  min-height: 270px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
-  padding: 18px;
-  background:
-    linear-gradient(145deg, rgba(110, 231, 183, 0.11), rgba(34, 211, 238, 0.035) 44%, rgba(255, 255, 255, 0.025)),
-    rgba(6, 12, 11, 0.68);
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  color: inherit;
+  width: min(92vw, 610px);
+  min-height: 760px;
+  translate: -50% 0;
+  transform-origin: 50% -82px;
   transform-style: preserve-3d;
-  transform-origin: 50% -42px;
-  backdrop-filter: blur(12px);
-  backface-visibility: hidden;
-}
-
-.case-hanger-card-active {
-  border-color: rgba(103, 232, 249, 0.38);
+  overflow: visible;
+  border: 1px solid rgba(103, 232, 249, 0.24);
+  border-radius: 30px;
+  padding: clamp(24px, 4.4vw, 34px);
   background:
-    linear-gradient(145deg, rgba(110, 231, 183, 0.16), rgba(34, 211, 238, 0.065) 44%, rgba(255, 255, 255, 0.045)),
-    rgba(6, 12, 11, 0.78);
+    linear-gradient(155deg, rgba(110, 231, 183, 0.13), rgba(34, 211, 238, 0.055) 42%, rgba(255, 255, 255, 0.035)),
+    rgba(6, 14, 12, 0.94);
   box-shadow:
-    0 32px 92px rgba(0, 0, 0, 0.56),
-    0 0 56px rgba(34, 211, 238, 0.16),
+    0 36px 110px rgba(0, 0, 0, 0.64),
+    0 0 72px rgba(34, 211, 238, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
 }
 
-.case-hanger-card::before {
+.case-wheel-card::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   border-radius: inherit;
   background:
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.45;
+  background-size: 32px 32px;
+  opacity: 0.42;
+  pointer-events: none;
 }
 
-.case-hanger-string {
-  position: absolute;
-  left: 50%;
-  top: -68px;
-  height: 74px;
-  width: 1px;
-  transform: translateX(-50%);
-  background: linear-gradient(180deg, rgba(103, 232, 249, 0.08), rgba(103, 232, 249, 0.7), rgba(110, 231, 183, 0.55));
-  box-shadow: 0 0 18px rgba(103, 232, 249, 0.2);
-}
-
-.case-hanger-pin {
-  position: absolute;
-  left: 50%;
-  top: -10px;
-  height: 16px;
-  width: 16px;
-  transform: translateX(-50%);
-  border: 1px solid rgba(110, 231, 183, 0.5);
-  border-radius: 999px;
-  background: #07100e;
-  box-shadow: 0 0 24px rgba(110, 231, 183, 0.25);
-}
-
-.case-hanger-pin::after {
+.case-wheel-card::after {
   content: "";
   position: absolute;
-  inset: 4px;
+  inset: 0;
+  z-index: 0;
   border-radius: inherit;
-  background: #6ee7b7;
+  background:
+    linear-gradient(115deg, transparent 16%, rgba(34, 211, 238, 0.08) 46%, transparent 72%),
+    radial-gradient(circle at 16% 10%, rgba(110, 231, 183, 0.11), transparent 30%);
+  pointer-events: none;
 }
 
-.case-focus-panel {
+.case-wheel-card-active {
+  border-color: rgba(103, 232, 249, 0.43);
+  cursor: default;
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.68),
+    0 0 86px rgba(34, 211, 238, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.case-wheel-card-muted .case-wheel-card-content {
+  opacity: 0.58;
+}
+
+.case-wheel-card-line {
+  position: absolute;
+  left: 50%;
+  top: -82px;
+  z-index: 2;
+  width: 1px;
+  height: 84px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(103, 232, 249, 0.12), rgba(103, 232, 249, 0.68), rgba(110, 231, 183, 0.5));
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.18);
+}
+
+.case-wheel-card-pin {
+  position: absolute;
+  left: 50%;
+  top: -9px;
+  z-index: 3;
+  width: 18px;
+  height: 18px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(110, 231, 183, 0.52);
+  border-radius: 999px;
+  background: #07100e;
+  box-shadow: 0 0 24px rgba(110, 231, 183, 0.22);
+}
+
+.case-wheel-card-pin::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: inherit;
+  background: rgba(110, 231, 183, 0.9);
+}
+
+.case-wheel-card-content,
+.case-wheel-card-head {
   position: relative;
-  z-index: 4;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 28px;
+  z-index: 1;
+  display: block;
+}
+
+.case-wheel-card-head {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 22px;
 }
 
 .cta-grid {
@@ -324,14 +429,13 @@ summary::-webkit-details-marker {
 }
 
 @media (min-width: 1024px) {
-  .case-hanger-stage {
-    height: 500px;
+  .case-showcase-stage {
+    min-height: 1120px;
+    --case-wheel-node-radius: 315px;
   }
 
-  .case-hanger-card {
-    width: 292px;
-    min-height: 310px;
-    padding: 20px;
+  .case-wheel-card {
+    min-height: 760px;
   }
 
   .process-flow {
