@@ -1,46 +1,27 @@
 "use client";
 
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export function ScrollOrb() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll();
-  const reduceMotion = useReducedMotion();
+const stops = [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1];
+const xStops = [57, 33, 18, 48, 74, 62, 35];
+const yStops = [47, 30, 45, 62, 50, 75, 82];
+const scaleStops = [1, 0.92, 0.88, 1.02, 1.08, 0.94, 1.02];
+const opacityStops = [0.12, 0.1, 0.085, 0.09, 0.1, 0.085, 0.06];
 
-  const x = useTransform(
-    scrollYProgress,
-    [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1],
-    ["57vw", "33vw", "18vw", "48vw", "74vw", "62vw", "35vw"],
-  );
-  const y = useTransform(
-    scrollYProgress,
-    [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1],
-    ["47vh", "30vh", "45vh", "62vh", "50vh", "75vh", "82vh"],
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.28, 0.55, 0.78, 1],
-    [1, 0.88, 1.08, 0.92, 1.02],
-  );
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.08, 0.5, 0.9, 1],
-    [0.12, 0.1, 0.085, 0.1, 0.06],
-  );
+export function ScrollOrb() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const root = rootRef.current;
     const mount = mountRef.current;
-    if (!mount) return;
+    if (!root || !mount) return;
 
     let width = mount.clientWidth;
     let height = mount.clientHeight;
+    let frameId = 0;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 20);
@@ -48,10 +29,10 @@ export function ScrollOrb() {
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
+      antialias: false,
+      powerPreference: "low-power",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.15));
     renderer.setSize(width, height);
     renderer.domElement.className = "h-full w-full";
     mount.appendChild(renderer.domElement);
@@ -74,44 +55,84 @@ export function ScrollOrb() {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+      update();
     };
 
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
 
-    let frameId = 0;
-    const clock = new THREE.Clock();
+    const update = () => {
+      frameId = 0;
+      const progress = getScrollProgress();
+      const x = interpolate(stops, xStops, progress);
+      const y = interpolate(stops, yStops, progress);
+      const scale = interpolate(stops, scaleStops, progress);
+      const opacity = interpolate(stops, opacityStops, progress);
+      root.style.opacity = String(opacity);
+      root.style.transform = `translate3d(calc(${x}vw - 50%), calc(${y}vh - 50%), 0) scale(${scale})`;
 
-    const render = () => {
-      const elapsed = clock.getElapsedTime();
       if (!reduceMotion) {
-        mesh.rotation.y = -0.36 + elapsed * 0.09;
-        mesh.rotation.x = 0.18 + Math.sin(elapsed * 0.18) * 0.08;
-        mesh.rotation.z = 0.08 + elapsed * 0.035;
+        mesh.rotation.y = -0.36 + progress * Math.PI * 1.4;
+        mesh.rotation.x = 0.18 + Math.sin(progress * Math.PI * 2) * 0.08;
+        mesh.rotation.z = 0.08 + progress * Math.PI * 0.5;
       }
 
       renderer.render(scene, camera);
-      frameId = window.requestAnimationFrame(render);
     };
-    render();
+
+    const requestUpdate = () => {
+      if (!frameId && document.visibilityState === "visible") {
+        frameId = window.requestAnimationFrame(update);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") requestUpdate();
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    update();
 
     return () => {
-      window.cancelAnimationFrame(frameId);
+      if (frameId) window.cancelAnimationFrame(frameId);
       observer.disconnect();
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       renderer.dispose();
       geometry.dispose();
       material.dispose();
       mount.removeChild(renderer.domElement);
     };
-  }, [reduceMotion]);
+  }, []);
 
   return (
-    <motion.div
+    <div
+      ref={rootRef}
       aria-hidden
-      className="pointer-events-none fixed z-[1] h-[352px] w-[352px] -translate-x-1/2 -translate-y-1/2 mix-blend-screen md:h-[512px] md:w-[512px]"
-      style={{ x, y, scale, opacity }}
+      className="pointer-events-none fixed z-[1] h-[352px] w-[352px] opacity-0 transition-transform duration-500 ease-out md:h-[512px] md:w-[512px]"
     >
       <div ref={mountRef} className="h-full w-full" />
-    </motion.div>
+    </div>
   );
+}
+
+function getScrollProgress() {
+  const documentElement = document.documentElement;
+  const max = Math.max(documentElement.scrollHeight - window.innerHeight, 1);
+  return Math.min(Math.max(window.scrollY / max, 0), 1);
+}
+
+function interpolate(input: number[], output: number[], value: number) {
+  for (let index = 1; index < input.length; index += 1) {
+    if (value <= input[index]) {
+      const start = input[index - 1];
+      const end = input[index];
+      const progress = (value - start) / (end - start);
+      return output[index - 1] + (output[index] - output[index - 1]) * progress;
+    }
+  }
+  return output[output.length - 1];
 }

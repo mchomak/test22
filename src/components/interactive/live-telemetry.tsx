@@ -1,8 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { RadioTower, ShieldCheck, TerminalSquare } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const events = [
   {
@@ -43,20 +42,39 @@ const pipeline = [
 export function LiveTelemetry() {
   const [active, setActive] = useState(0);
   const [latency, setLatency] = useState(18);
+  const [isVisible, setIsVisible] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const root = rootRef.current;
+    if (!root || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.15 },
+    );
+    observer.observe(root);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
     const interval = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+
       setActive((current) => (current + 1) % events.length);
       setLatency(14 + Math.round(Math.random() * 12));
-    }, 1900);
+    }, 4200);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [isVisible]);
 
   const currentEvent = useMemo(() => events[active], [active]);
 
   return (
-    <>
+    <div ref={rootRef} className="absolute inset-0">
       <div className="absolute left-4 right-4 top-5 z-10 rounded-2xl border border-white/[0.14] bg-[#07100e]/88 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:left-8 sm:right-auto sm:w-[390px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm font-semibold text-white">
@@ -91,18 +109,9 @@ export function LiveTelemetry() {
         </div>
 
         <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black/35 px-3 py-2.5">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={currentEvent.log}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.24 }}
-              className="font-mono text-[11px] leading-5 text-zinc-400"
-            >
-              <span className="text-emerald-300">$</span> {currentEvent.log}
-            </motion.p>
-          </AnimatePresence>
+          <p className="font-mono text-[11px] leading-5 text-zinc-400">
+            <span className="text-emerald-300">$</span> {currentEvent.log}
+          </p>
         </div>
       </div>
 
@@ -116,23 +125,18 @@ export function LiveTelemetry() {
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {pipeline.map((node, index) => (
-            <motion.div
+            <div
               key={node}
-              className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.045] px-3 py-3"
-              animate={{
-                borderColor:
-                  index === active || index === (active + 2) % pipeline.length
-                    ? "rgba(110,231,183,0.45)"
-                    : "rgba(255,255,255,0.1)",
-              }}
-              transition={{ duration: 0.35 }}
+              className={`relative overflow-hidden rounded-xl border bg-white/[0.045] px-3 py-3 transition-colors duration-300 ${
+                index === active || index === (active + 2) % pipeline.length
+                  ? "border-emerald-300/45"
+                  : "border-white/10"
+              }`}
             >
-              <motion.span
-                className="absolute inset-y-0 left-0 w-1 bg-emerald-300"
-                animate={{
-                  opacity: index === active ? 1 : 0.18,
-                  scaleY: index === active ? 1 : 0.35,
-                }}
+              <span
+                className={`absolute inset-y-0 left-0 w-1 bg-emerald-300 transition duration-300 ${
+                  index === active ? "opacity-100" : "scale-y-[0.35] opacity-[0.18]"
+                }`}
               />
               <div className="mb-2 flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-emerald-300/80" />
@@ -143,10 +147,10 @@ export function LiveTelemetry() {
               <div className="text-sm font-medium leading-5 text-zinc-200">
                 {node}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

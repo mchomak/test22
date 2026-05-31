@@ -43,10 +43,10 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
+      antialias: false,
+      powerPreference: "low-power",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     renderer.setSize(width, height);
     renderer.domElement.className = "h-full w-full";
     mount.appendChild(renderer.domElement);
@@ -55,7 +55,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
     scene.add(group);
 
     const particleGeometry = new THREE.BufferGeometry();
-    const particleCount = 620;
+    const particleCount = 240;
     const particlePositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i += 1) {
       particlePositions[i * 3] = (Math.random() - 0.5) * 9;
@@ -99,7 +99,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
         .add(new THREE.Vector3(0, index % 2 === 0 ? 0.32 : -0.22, 0.28));
       const curve = new THREE.CatmullRomCurve3([start, middle, end]);
       curves.push(curve);
-      const points = curve.getPoints(48);
+      const points = curve.getPoints(32);
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
       const line = new THREE.Line(
         geometry,
@@ -108,7 +108,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       group.add(line);
     });
 
-    const nodeGeometry = new THREE.SphereGeometry(0.085, 28, 28);
+    const nodeGeometry = new THREE.SphereGeometry(0.085, 16, 12);
     const coreGeometry = new THREE.IcosahedronGeometry(0.34, 1);
     const nodeMaterial = new THREE.MeshBasicMaterial({
       color: "#6ee7b7",
@@ -148,7 +148,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       group.add(mesh);
 
       const ring = new THREE.Mesh(
-        new THREE.RingGeometry(index === 2 ? 0.52 : 0.17, index === 2 ? 0.54 : 0.18, 48),
+        new THREE.RingGeometry(index === 2 ? 0.52 : 0.17, index === 2 ? 0.54 : 0.18, 32),
         ringMaterial,
       );
       ring.position.copy(position);
@@ -156,7 +156,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       group.add(ring);
     });
 
-    const pulseGeometry = new THREE.SphereGeometry(0.04, 18, 18);
+    const pulseGeometry = new THREE.SphereGeometry(0.04, 12, 10);
     const pulseMaterial = new THREE.MeshBasicMaterial({
       color: "#fef3c7",
       transparent: true,
@@ -173,7 +173,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       return pulse;
     });
 
-    const orbitGeometry = new THREE.TorusGeometry(1.12, 0.006, 10, 120);
+    const orbitGeometry = new THREE.TorusGeometry(1.12, 0.006, 8, 64);
     const orbitMaterial = new THREE.MeshBasicMaterial({
       color: "#5eead4",
       transparent: true,
@@ -192,7 +192,7 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       pointer.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
       pointer.y = -((event.clientY - rect.top) / rect.height - 0.5) * 2;
     };
-    mount.addEventListener("pointermove", onPointerMove);
+    mount.addEventListener("pointermove", onPointerMove, { passive: true });
 
     const resize = () => {
       width = mount.clientWidth;
@@ -200,15 +200,19 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+      render();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
 
     let frameId = 0;
-    const clock = new THREE.Clock();
+    let timeoutId = 0;
+    let isVisible = true;
+    let isDisposed = false;
+    const startedAt = performance.now();
 
     const render = () => {
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startedAt) / 1000;
       const motion = reducedMotion ? 0 : elapsed;
 
       group.rotation.y += (pointer.x * 0.16 - group.rotation.y) * 0.035;
@@ -233,21 +237,75 @@ export function EngineeringScene({ showCore = true }: { showCore?: boolean }) {
       });
 
       renderer.render(scene, camera);
-      frameId = window.requestAnimationFrame(render);
     };
+
+    const stopLoop = () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      if (timeoutId) window.clearTimeout(timeoutId);
+      frameId = 0;
+      timeoutId = 0;
+    };
+
+    const scheduleLoop = () => {
+      stopLoop();
+      if (reducedMotion || !isVisible || document.visibilityState !== "visible") {
+        return;
+      }
+
+      timeoutId = window.setTimeout(() => {
+        frameId = window.requestAnimationFrame(() => {
+          if (isDisposed) return;
+          render();
+          scheduleLoop();
+        });
+      }, 1000 / 8);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && isVisible) {
+        render();
+        scheduleLoop();
+      } else {
+        stopLoop();
+      }
+    };
+
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          render();
+          scheduleLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { threshold: 0.08 },
+    );
+    visibilityObserver.observe(mount);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     render();
+    scheduleLoop();
 
     return () => {
-      window.cancelAnimationFrame(frameId);
+      isDisposed = true;
+      stopLoop();
       observer.disconnect();
+      visibilityObserver.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       mount.removeEventListener("pointermove", onPointerMove);
+      scene.traverse((object) => {
+        const mesh = object as THREE.Mesh;
+        mesh.geometry?.dispose();
+        const material = mesh.material;
+        if (Array.isArray(material)) {
+          material.forEach((item) => item.dispose());
+        } else {
+          material?.dispose();
+        }
+      });
       renderer.dispose();
-      particleGeometry.dispose();
-      nodeGeometry.dispose();
-      coreGeometry.dispose();
-      pulseGeometry.dispose();
-      orbitGeometry.dispose();
-      orbitMaterial.dispose();
       mount.removeChild(renderer.domElement);
     };
   }, [showCore]);

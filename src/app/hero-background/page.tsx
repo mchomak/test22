@@ -6,13 +6,14 @@ export default function HeroBackgroundPage() {
     <main className="relative min-h-screen overflow-hidden bg-[#050607]">
       <div className="absolute inset-0 -z-30 bg-[linear-gradient(180deg,#050607_0%,#07100e_44%,#090a0a_100%)]" />
       <Image
-        src="/images/engineering-command-center.png"
+        src="/images/engineering-command-center.webp"
         alt=""
         aria-hidden
         fill
         priority
+        quality={70}
         sizes="100vw"
-        className="absolute inset-0 -z-20 object-cover opacity-[0.18] mix-blend-screen"
+        className="absolute inset-0 -z-20 object-cover opacity-[0.14]"
       />
       <div className="hero-grid absolute inset-0 -z-10 opacity-70" />
       <EngineeringScene />

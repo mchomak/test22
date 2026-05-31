@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Calculator, Check, Clock3, Gauge, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -119,23 +118,14 @@ export function ProjectEstimator() {
       </div>
 
       <div className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md">
-        <motion.div
-          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent"
-          animate={{ x: ["-100%", "100%"] }}
-          transition={{ duration: 2.8, repeat: Infinity, ease: "linear" }}
-        />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
         <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
           <Calculator size={16} />
           estimate
         </div>
-        <motion.p
-          key={`${estimate.low}-${estimate.high}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-5 text-3xl font-semibold text-white"
-        >
+        <p className="mt-5 text-3xl font-semibold text-white">
           {estimate.low}k-{estimate.high}k ₽
-        </motion.p>
+        </p>
         <p className="mt-2 text-sm leading-6 text-zinc-400">
           {estimate.label}. Это не оферта, а быстрая рамка до нормального
           технического разбора.

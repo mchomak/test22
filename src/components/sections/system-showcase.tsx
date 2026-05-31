@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import {
   Bot,
   BrainCircuit,
@@ -124,10 +123,7 @@ export function SystemShowcase() {
                     }`}
                   >
                     {isActive ? (
-                      <motion.span
-                        layoutId="mode-active"
-                        className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-emerald-300"
-                      />
+                      <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-emerald-300" />
                     ) : null}
                     <span className="flex items-center gap-3">
                       <span className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-black/25 text-emerald-200">
@@ -150,14 +146,7 @@ export function SystemShowcase() {
             <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/25 p-4 md:p-6">
               <div className="system-map-grid absolute inset-0 opacity-55" />
               <div className="relative z-10">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={active.id}
-                    initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -16, filter: "blur(8px)" }}
-                    transition={{ duration: 0.28 }}
-                  >
+                <div key={active.id}>
                     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <p className="font-mono text-xs uppercase tracking-[0.2em] text-emerald-300/80">
@@ -173,28 +162,16 @@ export function SystemShowcase() {
                     </div>
 
                     <div className="grid gap-3 lg:grid-cols-4">
-                      {lanes.map((lane, index) => {
+                      {lanes.map((lane) => {
                         const Icon = lane.icon;
                         const value = active[lane.key];
 
                         return (
-                          <motion.div
+                          <div
                             key={lane.key}
                             className="relative min-h-36 overflow-hidden rounded-2xl border border-white/10 bg-[#0d1110]/62 p-4 backdrop-blur"
-                            initial={{ opacity: 0, y: 14 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.06 }}
                           >
-                            <motion.span
-                              className="absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-emerald-300 to-transparent"
-                              animate={{ x: ["-100%", "100%"] }}
-                              transition={{
-                                duration: 2.6,
-                                repeat: Infinity,
-                                delay: index * 0.25,
-                                ease: "linear",
-                              }}
-                            />
+                            <span className="absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-emerald-300/70 to-transparent" />
                             <Icon size={18} className="text-emerald-300" />
                             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
                               {lane.label}
@@ -202,7 +179,7 @@ export function SystemShowcase() {
                             <p className="mt-2 text-sm leading-6 text-zinc-200">
                               {value}
                             </p>
-                          </motion.div>
+                          </div>
                         );
                       })}
                     </div>
@@ -218,11 +195,8 @@ export function SystemShowcase() {
                       </div>
                       <div className="grid gap-2 p-4 font-mono text-xs leading-6 text-zinc-400 sm:text-sm">
                         {active.code.map((line, index) => (
-                          <motion.div
+                          <div
                             key={line}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.12 + index * 0.05 }}
                             className="grid grid-cols-[28px_1fr] gap-3"
                           >
                             <span className="text-zinc-700">
@@ -232,12 +206,11 @@ export function SystemShowcase() {
                               <span className="text-emerald-300">&gt;</span>{" "}
                               {line}
                             </span>
-                          </motion.div>
+                          </div>
                         ))}
                       </div>
                     </div>
-                  </motion.div>
-                </AnimatePresence>
+                </div>
               </div>
             </div>
           </div>
