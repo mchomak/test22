@@ -8,16 +8,20 @@ import {
   ServerCog,
   Workflow,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { cases } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 const angleStep = 360 / cases.length;
+const dragThreshold = 78;
 
 export function Cases() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [holderRotation, setHolderRotation] = useState(0);
+  const dragStartX = useRef<number | null>(null);
+  const dragPointerId = useRef<number | null>(null);
+  const didDrag = useRef(false);
 
   const carouselCards = useMemo(() => {
     return cases.map((item, index) => {
@@ -28,6 +32,8 @@ export function Cases() {
       const depth = Math.cos(radians);
       const depthRatio = (depth + 1) / 2;
       const isActive = offset === 0;
+      const mutedBrightness = 0.82 + depthRatio * 0.14;
+      const mutedSaturation = 0.64 + depthRatio * 0.2;
 
       return {
         item,
@@ -40,27 +46,74 @@ export function Cases() {
         rotate: side * 3,
         rotateY: side * -18,
         zIndex: Math.round(depthRatio * 80) + (isActive ? 40 : 0),
-        blur: isActive ? 0 : 4 + (1 - depthRatio) * 7,
+        visualFilter: isActive
+          ? "brightness(1) saturate(1)"
+          : `brightness(${mutedBrightness}) saturate(${mutedSaturation})`,
       };
     });
   }, [activeIndex]);
 
-  const go = (direction: -1 | 1) => {
-    const nextIndex =
-      direction > 0
-        ? (activeIndex + 1) % cases.length
-        : (activeIndex - 1 + cases.length) % cases.length;
+  const rotateBy = (steps: number) => {
+    if (steps === 0) return;
 
-    setHolderRotation((current) => current + direction * angleStep);
-    setActiveIndex(nextIndex);
+    setHolderRotation((current) => current + steps * angleStep);
+    setActiveIndex((current) => (current + steps + cases.length) % cases.length);
+  };
+
+  const go = (direction: -1 | 1) => {
+    rotateBy(direction);
   };
 
   const goTo = (index: number) => {
     const offset = getCircularOffset(index, activeIndex);
     if (offset === 0) return;
 
-    setHolderRotation((current) => current + offset * angleStep);
-    setActiveIndex(index);
+    rotateBy(offset);
+  };
+
+  const handleDragStart = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    dragStartX.current = event.clientX;
+    dragPointerId.current = event.pointerId;
+    didDrag.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleDragMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (dragPointerId.current !== event.pointerId || dragStartX.current === null) {
+      return;
+    }
+
+    const delta = event.clientX - dragStartX.current;
+    if (Math.abs(delta) < dragThreshold) return;
+
+    event.preventDefault();
+    didDrag.current = true;
+    rotateBy(delta < 0 ? 1 : -1);
+    dragStartX.current = event.clientX;
+  };
+
+  const handleDragEnd = (event: PointerEvent<HTMLDivElement>) => {
+    if (dragPointerId.current !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    dragStartX.current = null;
+    dragPointerId.current = null;
+
+    if (didDrag.current) {
+      window.setTimeout(() => {
+        didDrag.current = false;
+      }, 0);
+    }
+  };
+
+  const handleCardClick = (index: number) => {
+    if (didDrag.current) return;
+    goTo(index);
   };
 
   return (
@@ -69,15 +122,20 @@ export function Cases() {
         <SectionHeading
           eyebrow="Кейсы"
           title="Кейсы в фокусе, без мелкой карточной сетки"
-          description="Кейсы ведут себя как подвешенные карточки на карусельном треке: одна выходит вперёд и раскрывает детали, остальные уходят назад и остаются приглушёнными ориентирами."
+          description="Кейсы ведут себя как подвешенные карточки на карусельном треке: зажмите карточку мышью и потяните в сторону, чтобы повернуть колесо и вывести следующий проект вперёд."
         />
 
         <Reveal>
           <div className="case-showcase-shell">
             <div className="case-showcase-toolbar mb-5 flex items-center justify-between gap-3">
-              <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
-                {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                {String(cases.length).padStart(2, "0")}
+              <div className="flex items-center gap-3">
+                <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
+                  {String(activeIndex + 1).padStart(2, "0")} /{" "}
+                  {String(cases.length).padStart(2, "0")}
+                </div>
+                <div className="hidden border-l border-white/10 pl-3 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600 sm:block">
+                  зажмите и тяните
+                </div>
               </div>
               <div className="flex gap-2">
                 <button
@@ -99,7 +157,15 @@ export function Cases() {
               </div>
             </div>
 
-            <div className="case-showcase-stage">
+            <div
+              className="case-showcase-stage"
+              role="region"
+              aria-label="Карусель кейсов. Карточки можно вращать мышью или кнопками навигации."
+              onPointerDown={handleDragStart}
+              onPointerMove={handleDragMove}
+              onPointerUp={handleDragEnd}
+              onPointerCancel={handleDragEnd}
+            >
               <div className="case-wheel-holder" aria-hidden="true">
                 <span className="case-wheel-holder-plane">
                   <span className="case-wheel-holder-ring" />
@@ -134,12 +200,12 @@ export function Cases() {
                     rotate,
                     rotateY,
                     zIndex,
-                    blur,
+                    visualFilter,
                   }) => (
                     <motion.button
                       key={item.title}
                       type="button"
-                      onClick={() => goTo(index)}
+                      onClick={() => handleCardClick(index)}
                       className={`case-wheel-card ${
                         isActive ? "case-wheel-card-active" : "case-wheel-card-muted"
                       }`}
@@ -154,7 +220,7 @@ export function Cases() {
                         opacity,
                         rotate,
                         rotateY,
-                        filter: `blur(${blur}px)`,
+                        filter: visualFilter,
                       }}
                       transition={{ type: "spring", stiffness: 112, damping: 23 }}
                     >

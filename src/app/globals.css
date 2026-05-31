@@ -158,7 +158,13 @@ summary::-webkit-details-marker {
   place-items: start center;
   padding: 116px 0 140px;
   perspective: 1500px;
+  cursor: grab;
+  user-select: none;
   --case-wheel-node-radius: min(34vw, 315px);
+}
+
+.case-showcase-stage:active {
+  cursor: grabbing;
 }
 
 .case-showcase-stage::after {
@@ -276,8 +282,14 @@ summary::-webkit-details-marker {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   color: inherit;
   text-align: left;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
   backdrop-filter: blur(14px);
+}
+
+.case-showcase-stage:active .case-wheel-card {
+  cursor: grabbing;
 }
 
 .case-wheel-card::before {
@@ -308,7 +320,10 @@ summary::-webkit-details-marker {
 
 .case-wheel-card-active {
   border-color: rgba(103, 232, 249, 0.43);
-  cursor: default;
+  background:
+    linear-gradient(155deg, rgba(110, 231, 183, 0.15), rgba(34, 211, 238, 0.07) 42%, rgba(255, 255, 255, 0.045)),
+    #06100e;
+  backdrop-filter: none;
   box-shadow:
     0 40px 120px rgba(0, 0, 0, 0.68),
     0 0 86px rgba(34, 211, 238, 0.16),
