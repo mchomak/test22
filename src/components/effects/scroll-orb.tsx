@@ -1,23 +1,44 @@
 "use client";
 
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useRef } from "react";
 
 type ThreeModule = typeof import("three");
 
-const stops = [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1];
-const xStops = [57, 33, 18, 48, 74, 62, 35];
-const yStops = [47, 30, 45, 62, 50, 75, 82];
-const scaleStops = [1, 0.92, 0.88, 1.02, 1.08, 0.94, 1.02];
-const opacityStops = [0.12, 0.1, 0.085, 0.09, 0.1, 0.085, 0.06];
-
 export function ScrollOrb() {
-  const rootRef = useRef<HTMLDivElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  const reduceMotion = useReducedMotion();
+
+  const x = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1],
+    ["57vw", "33vw", "18vw", "48vw", "74vw", "62vw", "35vw"],
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1],
+    ["47vh", "30vh", "45vh", "62vh", "50vh", "75vh", "82vh"],
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.28, 0.55, 0.78, 1],
+    [1, 0.88, 1.08, 0.92, 1.02],
+  );
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.08, 0.5, 0.9, 1],
+    [0.12, 0.1, 0.085, 0.1, 0.06],
+  );
 
   useEffect(() => {
-    const root = rootRef.current;
     const mount = mountRef.current;
-    if (!root || !mount) return;
+    if (!mount) return;
 
     let cleanup: (() => void) | undefined;
     let cancelled = false;
@@ -25,8 +46,8 @@ export function ScrollOrb() {
     const loadTimeout = window.setTimeout(() => {
       void import("three")
         .then((THREE) => {
-          if (cancelled || !root.isConnected || !mount.isConnected) return;
-          cleanup = setupScrollOrb(THREE, root, mount);
+          if (cancelled || !mount.isConnected) return;
+          cleanup = setupScrollOrb(THREE, mount, Boolean(reduceMotion));
         })
         .catch(() => {});
     }, 120);
@@ -36,30 +57,26 @@ export function ScrollOrb() {
       window.clearTimeout(loadTimeout);
       cleanup?.();
     };
-  }, []);
+  }, [reduceMotion]);
 
   return (
-    <div
-      ref={rootRef}
+    <motion.div
       aria-hidden
-      className="pointer-events-none fixed z-[1] h-[352px] w-[352px] opacity-0 transition-transform duration-500 ease-out md:h-[512px] md:w-[512px]"
+      className="pointer-events-none fixed z-[1] h-[352px] w-[352px] -translate-x-1/2 -translate-y-1/2 mix-blend-screen md:h-[512px] md:w-[512px]"
+      style={{ x, y, scale, opacity }}
     >
       <div ref={mountRef} className="h-full w-full" />
-    </div>
+    </motion.div>
   );
 }
 
 function setupScrollOrb(
   THREE: ThreeModule,
-  root: HTMLDivElement,
   mount: HTMLDivElement,
+  reduceMotion: boolean,
 ) {
   let width = Math.max(mount.clientWidth, 1);
   let height = Math.max(mount.clientHeight, 1);
-  let frameId = 0;
-  const reduceMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 20);
@@ -70,7 +87,7 @@ function setupScrollOrb(
     antialias: false,
     powerPreference: "low-power",
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
   renderer.setSize(width, height);
   renderer.domElement.className = "h-full w-full";
   mount.appendChild(renderer.domElement);
@@ -87,57 +104,74 @@ function setupScrollOrb(
   mesh.rotation.set(0.18, -0.36, 0.08);
   scene.add(mesh);
 
-  const update = () => {
-    frameId = 0;
-    const progress = getScrollProgress();
-    const x = interpolate(stops, xStops, progress);
-    const y = interpolate(stops, yStops, progress);
-    const scale = interpolate(stops, scaleStops, progress);
-    const opacity = interpolate(stops, opacityStops, progress);
-    root.style.opacity = String(opacity);
-    root.style.transform = `translate3d(calc(${x}vw - 50%), calc(${y}vh - 50%), 0) scale(${scale})`;
-
-    if (!reduceMotion) {
-      mesh.rotation.y = -0.36 + progress * Math.PI * 1.4;
-      mesh.rotation.x = 0.18 + Math.sin(progress * Math.PI * 2) * 0.08;
-      mesh.rotation.z = 0.08 + progress * Math.PI * 0.5;
-    }
-
-    renderer.render(scene, camera);
-  };
-
   const resize = () => {
     width = Math.max(mount.clientWidth, 1);
     height = Math.max(mount.clientHeight, 1);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-    update();
+    render(performance.now());
   };
 
   const observer = new ResizeObserver(resize);
   observer.observe(mount);
 
-  const requestUpdate = () => {
-    if (!frameId && document.visibilityState === "visible") {
-      frameId = window.requestAnimationFrame(update);
+  let frameId = 0;
+  let lastFrame = 0;
+  let running = false;
+  const clock = new THREE.Clock();
+  const targetFrameInterval = 1000 / 30;
+
+  const render = (now: number) => {
+    const elapsed = clock.getElapsedTime();
+
+    if (!reduceMotion) {
+      mesh.rotation.y = -0.36 + elapsed * 0.09;
+      mesh.rotation.x = 0.18 + Math.sin(elapsed * 0.18) * 0.08;
+      mesh.rotation.z = 0.08 + elapsed * 0.035;
+    }
+
+    renderer.render(scene, camera);
+    lastFrame = now;
+  };
+
+  const loop = (now: number) => {
+    if (!running) return;
+    frameId = window.requestAnimationFrame(loop);
+    if (now - lastFrame >= targetFrameInterval) {
+      render(now);
     }
   };
 
-  const handleVisibilityChange = () => {
-    if (document.visibilityState === "visible") requestUpdate();
+  const stopLoop = () => {
+    running = false;
+    if (frameId) window.cancelAnimationFrame(frameId);
+    frameId = 0;
   };
 
-  window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate, { passive: true });
+  const startLoop = () => {
+    if (running || reduceMotion || document.visibilityState !== "visible") return;
+    running = true;
+    lastFrame = 0;
+    frameId = window.requestAnimationFrame(loop);
+  };
+
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      render(performance.now());
+      startLoop();
+    } else {
+      stopLoop();
+    }
+  };
+
   document.addEventListener("visibilitychange", handleVisibilityChange);
-  update();
+  render(performance.now());
+  startLoop();
 
   return () => {
-    if (frameId) window.cancelAnimationFrame(frameId);
+    stopLoop();
     observer.disconnect();
-    window.removeEventListener("scroll", requestUpdate);
-    window.removeEventListener("resize", requestUpdate);
     document.removeEventListener("visibilitychange", handleVisibilityChange);
     renderer.dispose();
     geometry.dispose();
@@ -146,22 +180,4 @@ function setupScrollOrb(
       mount.removeChild(renderer.domElement);
     }
   };
-}
-
-function getScrollProgress() {
-  const documentElement = document.documentElement;
-  const max = Math.max(documentElement.scrollHeight - window.innerHeight, 1);
-  return Math.min(Math.max(window.scrollY / max, 0), 1);
-}
-
-function interpolate(input: number[], output: number[], value: number) {
-  for (let index = 1; index < input.length; index += 1) {
-    if (value <= input[index]) {
-      const start = input[index - 1];
-      const end = input[index];
-      const progress = (value - start) / (end - start);
-      return output[index - 1] + (output[index] - output[index - 1]) * progress;
-    }
-  }
-  return output[output.length - 1];
 }

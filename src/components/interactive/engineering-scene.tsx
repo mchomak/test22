@@ -85,7 +85,7 @@ function setupEngineeringScene(
     antialias: false,
     powerPreference: "low-power",
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
   renderer.setSize(width, height);
   renderer.domElement.className = "h-full w-full";
   mount.appendChild(renderer.domElement);
@@ -98,7 +98,7 @@ function setupEngineeringScene(
   );
 
   const particleGeometry = track(new THREE.BufferGeometry());
-  const particleCount = 180;
+  const particleCount = 620;
   const particlePositions = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount; i += 1) {
     particlePositions[i * 3] = (Math.random() - 0.5) * 9;
@@ -148,7 +148,7 @@ function setupEngineeringScene(
       .add(new THREE.Vector3(0, index % 2 === 0 ? 0.32 : -0.22, 0.28));
     const curve = new THREE.CatmullRomCurve3([start, middle, end]);
     curves.push(curve);
-    const points = curve.getPoints(24);
+    const points = curve.getPoints(48);
     const geometry = track(new THREE.BufferGeometry().setFromPoints(points));
     const line = new THREE.Line(
       geometry,
@@ -157,7 +157,7 @@ function setupEngineeringScene(
     group.add(line);
   });
 
-  const nodeGeometry = track(new THREE.SphereGeometry(0.085, 12, 8));
+  const nodeGeometry = track(new THREE.SphereGeometry(0.085, 28, 28));
   const coreGeometry = track(new THREE.IcosahedronGeometry(0.34, 1));
   const nodeMaterial = track(
     new THREE.MeshBasicMaterial({
@@ -209,7 +209,7 @@ function setupEngineeringScene(
         new THREE.RingGeometry(
           index === 2 ? 0.52 : 0.17,
           index === 2 ? 0.54 : 0.18,
-          24,
+          48,
         ),
       ),
       ringMaterial,
@@ -219,7 +219,7 @@ function setupEngineeringScene(
     group.add(ring);
   });
 
-  const pulseGeometry = track(new THREE.SphereGeometry(0.04, 8, 6));
+  const pulseGeometry = track(new THREE.SphereGeometry(0.04, 18, 18));
   const pulseMaterial = track(
     new THREE.MeshBasicMaterial({
       color: "#fef3c7",
@@ -238,7 +238,7 @@ function setupEngineeringScene(
     return pulse;
   });
 
-  const orbitGeometry = track(new THREE.TorusGeometry(1.12, 0.006, 8, 48));
+  const orbitGeometry = track(new THREE.TorusGeometry(1.12, 0.006, 10, 120));
   const orbitMaterial = track(
     new THREE.MeshBasicMaterial({
       color: "#5eead4",
@@ -262,14 +262,14 @@ function setupEngineeringScene(
   mount.addEventListener("pointermove", onPointerMove, { passive: true });
 
   let frameId = 0;
-  let timeoutId = 0;
+  let lastFrame = 0;
   let isVisible = true;
   let isDisposed = false;
-  const frameInterval = 1000 / 7;
+  const targetFrameInterval = 1000 / 30;
   const startedAt = performance.now();
 
-  const render = () => {
-    const elapsed = (performance.now() - startedAt) / 1000;
+  const render = (now = performance.now()) => {
+    const elapsed = (now - startedAt) / 1000;
     const motion = reducedMotion ? 0 : elapsed;
 
     group.rotation.y += (pointer.x * 0.16 - group.rotation.y) * 0.035;
@@ -294,6 +294,7 @@ function setupEngineeringScene(
     });
 
     renderer.render(scene, camera);
+    lastFrame = now;
   };
 
   const resize = () => {
@@ -309,24 +310,39 @@ function setupEngineeringScene(
 
   const stopLoop = () => {
     if (frameId) window.cancelAnimationFrame(frameId);
-    if (timeoutId) window.clearTimeout(timeoutId);
     frameId = 0;
-    timeoutId = 0;
   };
 
-  const scheduleLoop = () => {
-    stopLoop();
-    if (reducedMotion || !isVisible || document.visibilityState !== "visible") {
+  const loop = (now: number) => {
+    frameId = 0;
+    if (
+      isDisposed ||
+      reducedMotion ||
+      !isVisible ||
+      document.visibilityState !== "visible"
+    ) {
       return;
     }
 
-    timeoutId = window.setTimeout(() => {
-      frameId = window.requestAnimationFrame(() => {
-        if (isDisposed) return;
-        render();
-        scheduleLoop();
-      });
-    }, frameInterval);
+    if (now - lastFrame >= targetFrameInterval) {
+      render(now);
+    }
+
+    frameId = window.requestAnimationFrame(loop);
+  };
+
+  const scheduleLoop = () => {
+    if (
+      frameId ||
+      reducedMotion ||
+      !isVisible ||
+      document.visibilityState !== "visible"
+    ) {
+      return;
+    }
+
+    lastFrame = 0;
+    frameId = window.requestAnimationFrame(loop);
   };
 
   const handleVisibilityChange = () => {
