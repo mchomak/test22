@@ -262,10 +262,8 @@ function setupEngineeringScene(
   mount.addEventListener("pointermove", onPointerMove, { passive: true });
 
   let frameId = 0;
-  let lastFrame = 0;
   let isVisible = true;
   let isDisposed = false;
-  const targetFrameInterval = 1000 / 30;
   const startedAt = performance.now();
 
   const render = (now = performance.now()) => {
@@ -294,7 +292,6 @@ function setupEngineeringScene(
     });
 
     renderer.render(scene, camera);
-    lastFrame = now;
   };
 
   const resize = () => {
@@ -324,10 +321,7 @@ function setupEngineeringScene(
       return;
     }
 
-    if (now - lastFrame >= targetFrameInterval) {
-      render(now);
-    }
-
+    render(now);
     frameId = window.requestAnimationFrame(loop);
   };
 
@@ -341,7 +335,6 @@ function setupEngineeringScene(
       return;
     }
 
-    lastFrame = 0;
     frameId = window.requestAnimationFrame(loop);
   };
 

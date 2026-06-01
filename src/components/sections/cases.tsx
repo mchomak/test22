@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -31,6 +32,8 @@ export function Cases() {
       const depth = Math.cos(radians);
       const depthRatio = (depth + 1) / 2;
       const isActive = offset === 0;
+      const mutedBrightness = 0.82 + depthRatio * 0.14;
+      const mutedSaturation = 0.64 + depthRatio * 0.2;
 
       return {
         item,
@@ -43,6 +46,9 @@ export function Cases() {
         rotate: side * 3,
         rotateY: side * -18,
         zIndex: Math.round(depthRatio * 80) + (isActive ? 40 : 0),
+        visualFilter: isActive
+          ? "brightness(1) saturate(1)"
+          : `brightness(${mutedBrightness}) saturate(${mutedSaturation})`,
       };
     });
   }, [activeIndex]);
@@ -163,9 +169,10 @@ export function Cases() {
               <div className="case-wheel-holder" aria-hidden="true">
                 <span className="case-wheel-holder-plane">
                   <span className="case-wheel-holder-ring" />
-                  <span
+                  <motion.span
                     className="case-wheel-holder-rotor"
-                    style={{ transform: `rotate(${holderRotation}deg)` }}
+                    animate={{ rotate: holderRotation }}
+                    transition={{ type: "spring", stiffness: 78, damping: 18 }}
                   >
                     {cases.map((item, index) => (
                       <span
@@ -176,7 +183,7 @@ export function Cases() {
                         }}
                       />
                     ))}
-                  </span>
+                  </motion.span>
                 </span>
               </div>
 
@@ -193,8 +200,9 @@ export function Cases() {
                     rotate,
                     rotateY,
                     zIndex,
+                    visualFilter,
                   }) => (
-                    <button
+                    <motion.button
                       key={item.title}
                       type="button"
                       onClick={() => handleCardClick(index)}
@@ -203,11 +211,18 @@ export function Cases() {
                       }`}
                       aria-label={item.title}
                       aria-current={isActive ? "true" : undefined}
-                      style={{
-                        zIndex,
+                      initial={false}
+                      style={{ zIndex }}
+                      animate={{
+                        x,
+                        y,
+                        scale,
                         opacity,
-                        transform: `translate3d(calc(-50% + ${x}px), ${y}px, 0) scale(${scale}) rotate(${rotate}deg) rotateY(${rotateY}deg)`,
+                        rotate,
+                        rotateY,
+                        filter: visualFilter,
                       }}
+                      transition={{ type: "spring", stiffness: 112, damping: 23 }}
                     >
                       <span className="case-wheel-card-line" aria-hidden="true" />
                       <span className="case-wheel-card-pin" aria-hidden="true" />
@@ -281,7 +296,7 @@ export function Cases() {
                           </span>
                         </span>
                       </span>
-                    </button>
+                    </motion.button>
                   ),
                 )}
               </div>

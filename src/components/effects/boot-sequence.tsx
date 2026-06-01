@@ -56,11 +56,7 @@ export function BootSequence() {
             className="absolute inset-y-0 left-1/2 w-px bg-gradient-to-b from-transparent via-cyan-200 to-transparent"
             initial={{ scaleY: 0 }}
             animate={{ scaleY: 1 }}
-            transition={{
-              duration: 1.1,
-              delay: 0.15,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           />
 
           <div className="absolute inset-0 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -86,11 +82,7 @@ export function BootSequence() {
             className="absolute left-1/2 top-1/2 w-[min(92vw,720px)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-white/10 bg-black/45 p-5 shadow-2xl shadow-black/60 backdrop-blur-md sm:p-8"
             initial={{ opacity: 0, y: 28, filter: "blur(16px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{
-              duration: 0.65,
-              delay: 0.5,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            transition={{ duration: 0.65, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -145,11 +137,7 @@ export function BootSequence() {
                 className="h-full rounded-full bg-gradient-to-r from-emerald-300 via-cyan-200 to-amber-200"
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
-                transition={{
-                  duration: 2.35,
-                  delay: 0.78,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
+                transition={{ duration: 2.35, delay: 0.78, ease: [0.22, 1, 0.36, 1] }}
               />
             </div>
           </motion.div>

@@ -110,19 +110,17 @@ function setupScrollOrb(
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-    render(performance.now());
+    render();
   };
 
   const observer = new ResizeObserver(resize);
   observer.observe(mount);
 
   let frameId = 0;
-  let lastFrame = 0;
   let running = false;
   const clock = new THREE.Clock();
-  const targetFrameInterval = 1000 / 30;
 
-  const render = (now: number) => {
+  const render = () => {
     const elapsed = clock.getElapsedTime();
 
     if (!reduceMotion) {
@@ -132,15 +130,12 @@ function setupScrollOrb(
     }
 
     renderer.render(scene, camera);
-    lastFrame = now;
   };
 
-  const loop = (now: number) => {
+  const loop = () => {
     if (!running) return;
+    render();
     frameId = window.requestAnimationFrame(loop);
-    if (now - lastFrame >= targetFrameInterval) {
-      render(now);
-    }
   };
 
   const stopLoop = () => {
@@ -152,13 +147,12 @@ function setupScrollOrb(
   const startLoop = () => {
     if (running || reduceMotion || document.visibilityState !== "visible") return;
     running = true;
-    lastFrame = 0;
     frameId = window.requestAnimationFrame(loop);
   };
 
   const handleVisibilityChange = () => {
     if (document.visibilityState === "visible") {
-      render(performance.now());
+      render();
       startLoop();
     } else {
       stopLoop();
@@ -166,7 +160,7 @@ function setupScrollOrb(
   };
 
   document.addEventListener("visibilitychange", handleVisibilityChange);
-  render(performance.now());
+  render();
   startLoop();
 
   return () => {
