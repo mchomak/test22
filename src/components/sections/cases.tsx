@@ -4,19 +4,36 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
-  CheckCircle2,
-  ExternalLink,
+  Calculator,
   FileText,
-  ServerCog,
-  Workflow,
+  Layers3,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useRef, useState, type PointerEvent } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 import { cases } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 
-const angleStep = 360 / cases.length;
+const showcaseCaseSlugs = [
+  "subscription-bot",
+  "sapsanex-mini-app",
+  "seedream-tryon",
+  "bybit-trading-bot",
+  "frax-redesign",
+  "tech-rise-academy",
+  "skillup",
+];
+
+const showcaseCases = cases.filter((item) =>
+  showcaseCaseSlugs.includes(item.slug),
+);
+const angleStep = 360 / showcaseCases.length;
 const dragThreshold = 78;
 
 export function Cases() {
@@ -27,7 +44,7 @@ export function Cases() {
   const didDrag = useRef(false);
 
   const carouselCards = useMemo(() => {
-    return cases.map((item, index) => {
+    return showcaseCases.map((item, index) => {
       const offset = getCircularOffset(index, activeIndex);
       const angle = offset * angleStep;
       const radians = (angle * Math.PI) / 180;
@@ -60,7 +77,9 @@ export function Cases() {
     if (steps === 0) return;
 
     setHolderRotation((current) => current - steps * angleStep);
-    setActiveIndex((current) => (current + steps + cases.length) % cases.length);
+    setActiveIndex(
+      (current) => (current + steps + showcaseCases.length) % showcaseCases.length,
+    );
   };
 
   const go = (direction: -1 | 1) => {
@@ -119,9 +138,22 @@ export function Cases() {
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Кейсы"
-          title="Кейсы, которые показывают подход к разработке"
-          description="Кейсы ниже работают как доказательство: бот, AI-сервис, backend, crypto-интеграция, Mini App и автоматизация с понятной задачей, решением и результатом."
+          title="Витрина реальных проектов: быстро понять тип задачи и результат"
+          description="На главной — короткая подборка из разных типов работ: Telegram, AI, crypto, backend, Mini App и web. Подробности, схемы и технические решения вынесены на отдельную страницу."
         />
+
+        <Reveal>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-2xl text-sm leading-6 text-zinc-400">
+              Карточка показывает задачу, собранные модули и итоговые outcomes.
+              Для подробной доказательной базы откройте кейс целиком.
+            </p>
+            <Link href="/cases" className="case-showcase-library-link">
+              <Layers3 size={16} />
+              Все кейсы
+            </Link>
+          </div>
+        </Reveal>
 
         <Reveal>
           <div className="case-showcase-shell">
@@ -142,7 +174,7 @@ export function Cases() {
                     animate={{ rotate: holderRotation }}
                     transition={{ type: "spring", stiffness: 78, damping: 18 }}
                   >
-                    {cases.map((item, index) => (
+                    {showcaseCases.map((item, index) => (
                       <span
                         key={item.title}
                         className="case-wheel-holder-node"
@@ -174,7 +206,9 @@ export function Cases() {
                     <motion.article
                       key={item.title}
                       className={`case-wheel-card ${
-                        isActive ? "case-wheel-card-active" : "case-wheel-card-muted"
+                        isActive
+                          ? "case-wheel-card-active"
+                          : "case-wheel-card-muted"
                       }`}
                       aria-label={item.title}
                       aria-current={isActive ? "true" : undefined}
@@ -229,10 +263,10 @@ export function Cases() {
               <div className="case-showcase-pagination" aria-live="polite">
                 <span className="case-showcase-pagination-count">
                   {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                  {String(cases.length).padStart(2, "0")}
+                  {String(showcaseCases.length).padStart(2, "0")}
                 </span>
                 <span className="case-showcase-dots">
-                  {cases.map((item, index) => (
+                  {showcaseCases.map((item, index) => (
                     <button
                       key={item.title}
                       type="button"
@@ -256,7 +290,6 @@ export function Cases() {
                 <ArrowRight size={18} />
               </button>
             </div>
-
           </div>
         </Reveal>
       </div>
@@ -267,82 +300,148 @@ export function Cases() {
 function CaseCardContent({
   item,
 }: {
-  item: (typeof cases)[number];
+  item: (typeof showcaseCases)[number];
 }) {
   return (
-    <span className="case-wheel-card-content">
-      <span className="case-wheel-card-head">
-        <span className="case-wheel-card-title-group">
-          <span className="case-wheel-card-type">
-            {item.type}
-          </span>
-          <span className="case-wheel-card-title">
-            {item.title}
-          </span>
-        </span>
+    <div
+      className="case-wheel-card-content"
+      style={{ "--case-accent": item.preview.accent } as CSSProperties}
+    >
+      <div className="case-showcase-copy">
+        <div className="case-wheel-card-title-group">
+          <span className="case-wheel-card-type">{item.category}</span>
+          <h3 className="case-wheel-card-title">{item.title}</h3>
+        </div>
 
-        <span className="case-wheel-card-actions">
+        <p className="case-wheel-card-summary">{item.shortSummary}</p>
+
+        <div className="case-wheel-outcomes" aria-label="Ключевые модули">
+          {item.outcomes.slice(0, 4).map((outcome) => (
+            <span key={outcome} className="case-wheel-outcome">
+              {outcome}
+            </span>
+          ))}
+        </div>
+
+        <div className="case-wheel-card-actions">
           <Link href={`/cases#${item.slug}`} className="case-wheel-card-action">
             <FileText size={16} />
             Подробнее
           </Link>
+          <Link
+            href="/#estimator"
+            className="case-wheel-card-action case-wheel-card-action-secondary"
+          >
+            <Calculator size={16} />
+            Хочу похожий проект
+          </Link>
+        </div>
+      </div>
 
-          {item.projectUrl ? (
-            <a
-              href={item.projectUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="case-wheel-card-action"
-            >
-              <ExternalLink size={16} />
-              Ссылка на проект
-            </a>
-          ) : (
-            <span className="case-wheel-card-action case-wheel-card-action-muted">
-              <ExternalLink size={16} />
-              Ссылка скоро
+      <CasePreview item={item} />
+    </div>
+  );
+}
+
+function CasePreview({
+  item,
+}: {
+  item: (typeof showcaseCases)[number];
+}) {
+  const title = item.preview.label;
+
+  if (item.preview.kind === "chart") {
+    return (
+      <div className="case-preview case-preview-chart" aria-hidden="true">
+        <PreviewHeader title={title} stats={item.preview.stats} />
+        <span className="case-preview-chart-grid">
+          <span className="case-preview-candle case-preview-candle-a" />
+          <span className="case-preview-candle case-preview-candle-b" />
+          <span className="case-preview-candle case-preview-candle-c" />
+          <span className="case-preview-candle case-preview-candle-d" />
+          <span className="case-preview-signal" />
+        </span>
+      </div>
+    );
+  }
+
+  if (item.preview.kind === "tree") {
+    return (
+      <div className="case-preview case-preview-tree" aria-hidden="true">
+        <PreviewHeader title={title} stats={item.preview.stats} />
+        <span className="case-preview-tree-canvas">
+          <span className="case-preview-branch case-preview-branch-a" />
+          <span className="case-preview-branch case-preview-branch-b" />
+          <span className="case-preview-branch case-preview-branch-c" />
+          <span className="case-preview-node case-preview-node-a" />
+          <span className="case-preview-node case-preview-node-b" />
+          <span className="case-preview-node case-preview-node-c" />
+          <span className="case-preview-node case-preview-node-d" />
+        </span>
+      </div>
+    );
+  }
+
+  if (item.preview.kind === "web" || item.preview.kind === "dashboard") {
+    return (
+      <div className="case-preview case-preview-web" aria-hidden="true">
+        <PreviewHeader title={title} stats={item.preview.stats} />
+        <span className="case-preview-browser">
+          <span className="case-preview-browser-bar">
+            <span />
+            <span />
+            <span />
+          </span>
+          <span className="case-preview-browser-body">
+            <span className="case-preview-browser-hero" />
+            <span className="case-preview-browser-row" />
+            <span className="case-preview-browser-row case-preview-browser-row-short" />
+            <span className="case-preview-browser-table">
+              <span />
+              <span />
+              <span />
             </span>
-          )}
+          </span>
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="case-preview case-preview-device" aria-hidden="true">
+      <PreviewHeader title={title} stats={item.preview.stats} />
+      <span className="case-preview-device-grid">
+        <span className="case-preview-phone">
+          <span className="case-preview-phone-notch" />
+          <span className="case-preview-bubble case-preview-bubble-in" />
+          <span className="case-preview-bubble case-preview-bubble-out" />
+          <span className="case-preview-bubble case-preview-bubble-in case-preview-bubble-short" />
+          <span className="case-preview-paid" />
+        </span>
+        <span className="case-preview-panel">
+          <span className="case-preview-panel-title" />
+          <span className="case-preview-panel-row" />
+          <span className="case-preview-panel-row" />
+          <span className="case-preview-panel-row case-preview-panel-row-active" />
+          <span className="case-preview-panel-chart">
+            <span />
+            <span />
+            <span />
+          </span>
         </span>
       </span>
+    </div>
+  );
+}
 
-      <span className="case-wheel-card-body">
-        <span className="case-wheel-card-narrative">
-          <CaseLine label="Проблема" text={item.problem} />
-          <CaseLine label="Решение" text={item.solution} />
-          <CaseLine label="Результат" text={item.result} />
-        </span>
-
-        <span className="case-wheel-card-aside">
-          <span className="case-wheel-card-aside-block">
-            <span className="case-wheel-card-aside-title">
-            <ServerCog size={18} className="text-emerald-300" />
-              stack
-            </span>
-            <span className="case-wheel-stack">
-              {item.stack.map((tech) => (
-                <span key={tech} className="case-wheel-stack-pill">
-                  {tech}
-                </span>
-              ))}
-            </span>
-          </span>
-
-          <span className="case-wheel-card-aside-block">
-            <span className="case-wheel-card-aside-title">
-            <Workflow size={18} className="text-cyan-200" />
-              metrics
-            </span>
-            <span className="case-wheel-metrics">
-              {item.metrics.map((metric) => (
-                <span key={metric} className="case-wheel-metric">
-                  <CheckCircle2 size={15} />
-                  <span>{metric}</span>
-                </span>
-              ))}
-            </span>
-          </span>
-        </span>
+function PreviewHeader({ title, stats }: { title: string; stats: string[] }) {
+  return (
+    <span className="case-preview-header">
+      <span className="case-preview-label">{title}</span>
+      <span className="case-preview-stats">
+        {stats.map((stat) => (
+          <span key={stat}>{stat}</span>
+        ))}
       </span>
     </span>
   );
@@ -350,18 +449,7 @@ function CaseCardContent({
 
 function getCircularOffset(index: number, activeIndex: number) {
   let offset = index - activeIndex;
-  if (offset > cases.length / 2) offset -= cases.length;
-  if (offset < -cases.length / 2) offset += cases.length;
+  if (offset > showcaseCases.length / 2) offset -= showcaseCases.length;
+  if (offset < -showcaseCases.length / 2) offset += showcaseCases.length;
   return offset;
-}
-
-function CaseLine({ label, text }: { label: string; text: string }) {
-  return (
-    <span className="case-wheel-line">
-      <span className="case-wheel-line-label">
-        {label}
-      </span>
-      <span className="case-wheel-line-text">{text}</span>
-    </span>
-  );
 }

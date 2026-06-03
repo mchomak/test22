@@ -359,116 +359,553 @@ export const projectModules: Record<ProjectTypeId, ProjectModule[]> = {
   ],
 };
 
-export const cases = [
+export type CaseStudy = {
+  slug: string;
+  projectUrl: string;
+  title: string;
+  type: string;
+  category: string;
+  shortSummary: string;
+  problem: string;
+  solution: string;
+  result: string;
+  stack: string[];
+  metrics: string[];
+  outcomes: string[];
+  timeframe: string;
+  keyResult: string;
+  context: string[];
+  modules: string[];
+  integrations: string[];
+  architecture: string[];
+  media: Array<{
+    title: string;
+    items: string[];
+  }>;
+  challenges: Array<{
+    title: string;
+    text: string;
+  }>;
+  resultDetails: string[];
+  screenshotFolder: string;
+  preview: {
+    kind: "bot" | "mini-app" | "ai" | "chart" | "dashboard" | "web" | "tree";
+    accent: string;
+    label: string;
+    stats: string[];
+  };
+};
+
+export const cases: CaseStudy[] = [
   {
     slug: "subscription-bot",
     projectUrl: "",
     title: "Subscription Bot — цифровые подписки с автовыдачей",
     type: "Subscription automation",
+    category: "Telegram",
+    shortSummary: "Telegram-бот для подписочного продукта: тарифы, четыре платёжных провайдера, автоматическая выдача доступа и web-админка для операторов.",
     problem: "Заявки, платежи и выдача доступа велись вручную в чате: клиенты ждали оператора, тарифы путались, а рост аудитории ломал операционную схему.",
     solution: "Один aiohttp-сервис обслуживает Telegram-бота, webhooks платёжных провайдеров и Jinja2-админку. Покупка построена как FSM: тариф, локация, оплата, автовыдача доступа.",
     result: "Воронка от выбора тарифа до получения доступа работает без человека, а оператор управляет тарифами, платежами, рассылками и спорными случаями из админки.",
     stack: ["Python", "aiogram 3", "aiohttp", "SQLAlchemy 2.0 async", "PostgreSQL", "APScheduler", "Docker"],
     metrics: ["4 платёжных провайдера", "автовыдача доступа", "рассылки и напоминания"],
+    outcomes: ["платежи", "админка", "автовыдача", "рассылки"],
+    timeframe: "MVP + production-запуск",
+    keyResult: "Покупка подписки проходит без оператора: от выбора тарифа до выдачи доступа.",
+    context: [
+      "Заказчику нужна была воронка продаж цифровых подписок внутри Telegram, без ручной выдачи данных в личных сообщениях.",
+      "Ручной процесс плохо масштабировался: операторы путали тарифы, локации и статусы платежей.",
+      "Простого чат-бота было недостаточно: нужны были webhooks платежей, админка, напоминания и контролируемые edge-кейсы.",
+    ],
+    modules: [
+      "FSM-сценарий покупки: тариф, локация, провайдер оплаты, счёт, выдача доступа.",
+      "Jinja2-админка для тарифов, пользователей, платежей, провайдеров и рассылок.",
+      "APScheduler для истечения подписок, напоминаний и фоновых broadcast-задач.",
+      "Кэш настроек и кнопок с инвалидированием при изменениях в админке.",
+    ],
+    integrations: ["Telegram Bot API", "Rapira", "CryptoBot", "ParityPay", "PostgreSQL"],
+    architecture: ["Пользователь", "Telegram-бот", "aiohttp backend", "PostgreSQL", "payment webhooks", "админка"],
+    media: [
+      { title: "Telegram-бот", items: ["главное меню", "тарифы", "выбор провайдера оплаты", "доступ выдан"] },
+      { title: "Админка", items: ["платежи по провайдерам", "редактор тарифов", "рассылки", "настройки платёжных систем"] },
+      { title: "Техника", items: ["FSM покупки", "задачи APScheduler", "схема webhook-потока"] },
+    ],
+    challenges: [
+      { title: "Много платёжных провайдеров", text: "События приведены к единой модели платежа, чтобы оператор видел статусы одинаково независимо от источника." },
+      { title: "Автовыдача без хаоса", text: "Покупка разделена на FSM-шаги, а выдача доступа запускается только после подтверждённого платежного события." },
+      { title: "Настройки без редеплоя", text: "Тарифы, локации и платёжные переключатели вынесены в админку с контролируемым обновлением кэша." },
+    ],
+    resultDetails: [
+      "Оператор подключается только к спорным случаям и поддержке.",
+      "Тарифная сетка, локации и провайдеры управляются через админку.",
+      "Пользователь получает доступ сразу после успешной оплаты.",
+    ],
+    screenshotFolder: "public/cases/subscription-bot",
+    preview: {
+      kind: "bot",
+      accent: "#67e8f9",
+      label: "paid webhook",
+      stats: ["4 providers", "FSM flow", "auto issue"],
+    },
   },
   {
     slug: "sapsanex-mini-app",
     projectUrl: "",
     title: "SapsanEx — Telegram Mini App обменника",
     type: "Telegram Mini App / exchanger",
+    category: "Mini App",
+    shortSummary: "Mini App для обменника: расчёт курса, создание заявки, polling статуса и уведомления остаются внутри Telegram.",
     problem: "Пользователь приходил из Telegram, уходил на сайт, создавал заявку и проверял статус на отдельном экране — мобильная воронка теряла людей на каждом переходе.",
     solution: "Собран Docker Compose из React Mini App, FastAPI-шлюза, aiogram-бота и PostgreSQL. Авторизация идёт через Telegram initData, а внешний API обменника обёрнут в типизированный слой.",
     result: "Расчёт курса, создание заявки, polling статуса, автоотмена по таймауту и уведомления о смене статуса остались внутри Telegram без отдельного логина.",
     stack: ["React", "TypeScript", "FastAPI", "aiogram 3", "SQLAlchemy async", "PostgreSQL", "Docker Compose"],
     metrics: ["Telegram WebApp auth", "typed exchanger gateway", "ru/en i18n"],
+    outcomes: ["Mini App", "Telegram auth", "API gateway", "статусы"],
+    timeframe: "готово к production-деплою",
+    keyResult: "Обменный поток проходит в Telegram без перехода на внешний сайт.",
+    context: [
+      "Клиенты приходили из Telegram, но ключевые шаги обмена происходили на внешнем сайте.",
+      "Мобильная воронка теряла пользователей на переходах между ботом, браузером и страницей статуса.",
+      "Сторонний API обменника работал через form-data и не давал удобной типизированной модели заявки.",
+    ],
+    modules: [
+      "React + TypeScript Mini App с калькулятором, созданием заявки и историей.",
+      "FastAPI-шлюз над сторонним API обменника с Pydantic-моделями.",
+      "aiogram-бот для запуска WebApp и уведомлений о смене статуса.",
+      "Фоновая автоотмена зависших заявок и polling статуса в интерфейсе.",
+    ],
+    integrations: ["Telegram WebApp initData", "Premium Exchanger API", "Telegram Bot API", "PostgreSQL"],
+    architecture: ["Пользователь", "Telegram WebApp", "React Mini App", "FastAPI gateway", "Premium Exchanger API", "PostgreSQL", "aiogram bot"],
+    media: [
+      { title: "Mini App", items: ["калькулятор", "подтверждение заявки", "status polling", "история заявок"] },
+      { title: "Telegram-уведомления", items: ["создание заявки", "смена статуса", "автоотмена по таймауту"] },
+      { title: "Техника", items: ["HMAC initData", "typed API wrapper", "схема WebApp-потока"] },
+    ],
+    challenges: [
+      { title: "Авторизация без логина", text: "Telegram initData валидируется через HMAC-SHA256, поэтому пользователю не нужен отдельный аккаунт." },
+      { title: "Неприятный внешний API", text: "form-data API закрыт типизированным gateway-слоем, чтобы фронт работал с нормальными DTO." },
+      { title: "Зависшие заявки", text: "Фоновая задача закрывает заявки по таймауту, а пользователь видит актуальный статус прямо в Mini App." },
+    ],
+    resultDetails: [
+      "Расчёт, создание и отслеживание заявки остались в Telegram.",
+      "Статусы приходят уведомлением от бота и обновляются в Mini App.",
+      "Собственный журнал заявок хранит историю и снижает зависимость от внешнего API.",
+    ],
+    screenshotFolder: "public/cases/sapsanex-mini-app",
+    preview: {
+      kind: "mini-app",
+      accent: "#f97316",
+      label: "HMAC initData",
+      stats: ["rate calc", "status polling", "i18n"],
+    },
   },
   {
     slug: "seedream-tryon",
     projectUrl: "",
     title: "Seedream Bot — AI-примерка одежды в Telegram",
     type: "AI bot / e-commerce",
+    category: "AI",
+    shortSummary: "Telegram-бот для AI-примерки: загрузка товара, параметры генерации, Seedream API, Telegram Stars, YooKassa и FastAPI-админка.",
     problem: "Небольшим магазинам дорого снимать каждую позицию на модели, а внешние AI-сервисы требуют ручной работы и вытаскивают продавца из Telegram.",
     solution: "aiogram-бот принимает фото товара, ведёт пользователя через FSM-параметры генерации, вызывает Seedream API, принимает оплату через Telegram Stars или YooKassa и отдаёт результат в чат.",
     result: "Получился законченный продукт для e-commerce: бот, генерация, две платёжные системы и FastAPI-админка для пользователей, балансов, тарифов и транзакций.",
     stack: ["Python", "aiogram 3", "FastAPI", "Seedream API", "Telegram Stars", "YooKassa", "PostgreSQL"],
     metrics: ["две платёжные дорожки", "админка операторов", "RU/EN локализация"],
+    outcomes: ["AI-модуль", "Stars", "YooKassa", "админка"],
+    timeframe: "собственный продукт / demo-ready",
+    keyResult: "Магазин получает AI-примерку и монетизацию внутри Telegram.",
+    context: [
+      "Маленьким e-commerce-командам дорого снимать каждую вещь на модели.",
+      "Готовые AI-сервисы уводят пользователя из Telegram и требуют ручных шагов.",
+      "Нужен был продуктовый бот: генерация, платежи, баланс, история и операторская админка.",
+    ],
+    modules: [
+      "FSM загрузки товара и выбора параметров генерации.",
+      "Обёртка над Seedream API для img2img-сценария.",
+      "Две платёжные дорожки: Telegram Stars и YooKassa.",
+      "FastAPI-админка с пользователями, балансами, тарифами и транзакциями.",
+    ],
+    integrations: ["Seedream API", "Telegram Stars", "YooKassa", "Telegram Bot API", "PostgreSQL"],
+    architecture: ["Пользователь", "aiogram bot", "Seedream service", "payment providers", "PostgreSQL", "FastAPI admin"],
+    media: [
+      { title: "Telegram-бот", items: ["загрузка товара", "параметры", "AI-результат", "история генераций"] },
+      { title: "Платежи", items: ["Stars invoice", "YooKassa checkout", "баланс генераций"] },
+      { title: "Админка", items: ["пользователи", "платежи", "тарифы", "ручные начисления"] },
+    ],
+    challenges: [
+      { title: "AI как продукт, а не демо", text: "Генерация встроена в понятный пользовательский flow с балансом, историей и тарифами." },
+      { title: "Две кассы в одном боте", text: "Stars закрывает быстрые микропокупки, YooKassa — пакеты и подписочные сценарии." },
+      { title: "Операторский контроль", text: "Админка позволяет видеть платежи, пользователей и начисления без доступа к базе." },
+    ],
+    resultDetails: [
+      "Пользователь получает результат AI-примерки в том же Telegram-чате.",
+      "Владелец управляет тарифами, балансами и платежами из админки.",
+      "Стек готов к переиспользованию для других img2img-сервисов.",
+    ],
+    screenshotFolder: "public/cases/seedream-tryon",
+    preview: {
+      kind: "ai",
+      accent: "#a78bfa",
+      label: "Seedream 4.0",
+      stats: ["img2img", "Stars", "YooKassa"],
+    },
   },
   {
     slug: "ai-reply-assistant",
     projectUrl: "",
     title: "AI Reply Assistant — Telegram-бот с 7 AI-сценариями",
     type: "AI Telegram bot",
+    category: "AI",
+    shortSummary: "AI-ассистент внутри Telegram: семь сценариев, GPT-4o, YooKassa, рефералка и прокси-ротация для стабильного доступа к модели.",
     problem: "Пользователю нужен был быстрый помощник внутри Telegram: без ручного копипаста в отдельные AI-сервисы и без зависания из-за нестабильного доступа к модели.",
     solution: "Собран aiogram + aiohttp webhook-сервис с 7 AI-сценариями, prompt-builder/response-parser модулями, YooKassa-платежами, реферальной логикой и пулом HTTP-прокси для OpenAI.",
     result: "MVP с оплатой готов к production: бот выбирает рабочий прокси, принимает оплату с фискальным чеком и возвращает варианты ответа в одном Telegram-окне.",
     stack: ["Python", "aiogram 3", "aiohttp", "OpenAI GPT-4o", "YooKassa", "PostgreSQL", "Docker"],
     metrics: ["7 AI-сценариев", "proxy healthcheck + cooldown", "trial и referral flow"],
+    outcomes: ["AI-сценарии", "YooKassa", "proxy pool", "referral"],
+    timeframe: "MVP готов к production",
+    keyResult: "Пользователь получает AI-ответы в Telegram, а модель вызывается через устойчивый proxy pool.",
+    context: [
+      "Нужен был AI-помощник, который принимает текст или скриншот и возвращает варианты ответа в одном окне.",
+      "Ручной copy-paste в отдельные AI-сервисы ломал скорость и привычный Telegram-flow.",
+      "Доступ к OpenAI был нестабилен, поэтому простого прямого API-вызова было мало.",
+    ],
+    modules: [
+      "Семь AI-сценариев с отдельными prompt-builder и response-parser модулями.",
+      "Персонализация тона, роли и имени AI-персонажа.",
+      "YooKassa-платежи, trial flow и реферальная программа.",
+      "Пул HTTP-прокси с healthcheck, cooldown и slow-threshold ротацией.",
+    ],
+    integrations: ["OpenAI GPT-4o", "YooKassa", "Telegram Bot API", "PostgreSQL", "HTTP proxy pool"],
+    architecture: ["Пользователь", "Telegram-бот", "AI router", "proxy pool", "OpenAI", "YooKassa webhook", "PostgreSQL"],
+    media: [
+      { title: "Telegram-бот", items: ["главное меню", "выбор сценария", "загрузка контекста", "варианты ответа"] },
+      { title: "Платежи", items: ["пакеты", "YooKassa checkout", "реферальный экран"] },
+      { title: "Техника", items: ["prompt builder", "proxy rotation", "YooKassa webhook"] },
+    ],
+    challenges: [
+      { title: "Нейтральный UX", text: "Сценарии сформулированы как универсальный помощник переписки без публичных серых формулировок." },
+      { title: "Нестабильный upstream", text: "Proxy pool выбирает рабочий узел, охлаждает ошибочные прокси и ротирует медленные." },
+      { title: "Платёжная воронка", text: "Trial, пакеты, фискальный чек и рефералка связаны с лимитами пользователя в базе." },
+    ],
+    resultDetails: [
+      "Пользователь остаётся в Telegram и получает варианты ответа без ручного копирования.",
+      "Бот сам выбирает рабочий прокси для вызова модели.",
+      "Оплата и бонусы попадают в единый пользовательский баланс.",
+    ],
+    screenshotFolder: "public/cases/ai-reply-assistant",
+    preview: {
+      kind: "bot",
+      accent: "#38bdf8",
+      label: "GPT-4o router",
+      stats: ["7 scenarios", "YooKassa", "proxy"],
+    },
   },
   {
     slug: "bybit-trading-bot",
     projectUrl: "",
     title: "ByBit Trading Bot — спотовая торговля 24/7",
     type: "Crypto trading automation",
+    category: "Crypto",
+    shortSummary: "Автоматизация торговли: Bybit WebSocket/REST, стратегия Volume Spike + Price Acceleration, риск-менеджер и Telegram-отчёты.",
     problem: "Ручная торговля не успевала за 300+ спотовыми парами: нужно одновременно ловить всплески объёма, ускорение цены и контролировать риск по открытым позициям.",
     solution: "Собран трёхслойный пайплайн: Bybit WebSocket/REST-сканер, стратегия Volume Spike + Price Acceleration и риск-менеджер со стопами, тейк-профитом и Telegram-отчётами.",
     result: "Цикл «сканирование → сигнал → сделка → выход» работает автономно 24/7, а dry-run режим позволяет проверять стратегию на реальных данных без риска для боевого счёта.",
     stack: ["Python asyncio", "Bybit API", "CoinPaprika", "PostgreSQL", "Telegram Bot API", "Docker Compose"],
     metrics: ["300+ монет в мониторинге", "автоуправление позициями", "dry-run перед production"],
+    outcomes: ["Bybit API", "risk manager", "dry-run", "alerts"],
+    timeframe: "production-ready pipeline",
+    keyResult: "Сканирование, сигнал, вход и выход из позиции работают автономно 24/7.",
+    context: [
+      "Стратегия требовала одновременно отслеживать объёмные всплески и ускорение цены по сотням инструментов.",
+      "Ручной мониторинг приводил к пропущенным сигналам и эмоциональным решениям.",
+      "Нужно было проверить стратегию на live-данных без риска для боевого счёта.",
+    ],
+    modules: [
+      "Bybit WebSocket/REST-сканер с фильтрацией ликвидности через CoinPaprika.",
+      "Стратегия Volume Spike + Price Acceleration.",
+      "Риск-менеджер со стоп-лоссом, тейк-профитом и лимитом открытых позиций.",
+      "Telegram-уведомления о сделках, позициях и дневном P&L.",
+    ],
+    integrations: ["Bybit REST API", "Bybit WebSocket", "CoinPaprika API", "Telegram Bot API", "PostgreSQL"],
+    architecture: ["Bybit market data", "scanner", "strategy", "risk manager", "Bybit REST", "PostgreSQL", "Telegram"],
+    media: [
+      { title: "Стратегия", items: ["volume spike chart", "price acceleration", "таблица позиций"] },
+      { title: "Telegram", items: ["сигнал входа", "закрытие позиции", "daily report"] },
+      { title: "Техника", items: ["scanner log", "strategy code", "position manager"] },
+    ],
+    challenges: [
+      { title: "300+ инструментов", text: "Сканер разделён от стратегии, чтобы фильтрация рынка не смешивалась с логикой входа." },
+      { title: "Риск до боевого режима", text: "Dry-run позволяет прогнать поток на реальных данных без ордеров на аккаунте." },
+      { title: "Контроль позиций", text: "Риск-менеджер следит за лимитом позиций, стопами и условиями выхода." },
+    ],
+    resultDetails: [
+      "Бот не требует постоянного ручного мониторинга рынка.",
+      "Все ключевые события уходят в Telegram.",
+      "Dry-run режим снижает риск перед включением реальной торговли.",
+    ],
+    screenshotFolder: "public/cases/bybit-trading-bot",
+    preview: {
+      kind: "chart",
+      accent: "#f7a600",
+      label: "Volume Spike",
+      stats: ["300+ coins", "24/7", "dry-run"],
+    },
   },
   {
     slug: "eps-bot",
     projectUrl: "",
     title: "EPS Bot — ML-торговля на Solana DEX",
     type: "DEX trading / ML pipeline",
+    category: "Crypto",
+    shortSummary: "R&D-пайплайн для Solana DEX: сбор OHLCV, обучение ML-моделей, стратегия, on-chain исполнение и Telegram-отчёты.",
     problem: "Для проверки стратегий на Solana DEX нужно было вручную собирать данные по пулам, готовить датасеты, запускать бэктесты и отдельно исполнять сделки в кошельке.",
     solution: "Собран pipeline: Raydium + GeckoTerminal данные, PostgreSQL-хранилище, ML-модуль на PyTorch/scikit-learn и слой tx_tools для формирования Solana-транзакций.",
     result: "Проект закрыл полный цикл «данные → модель → сигнал → сделка → отчёт» и стал технической базой для последующих crypto/automation решений.",
     stack: ["Python 3.12", "PyTorch", "scikit-learn", "Raydium API", "Solana RPC", "PostgreSQL", "Docker Compose"],
     metrics: ["LSTM / GRU / CNN / Transformer", "on-chain исполнение", "ежедневный PnL в Telegram"],
+    outcomes: ["PyTorch", "on-chain tx", "PnL alerts", "backtest"],
+    timeframe: "R&D / технологический кейс",
+    keyResult: "Проверка гипотезы проходит от данных до on-chain сделки в одном пайплайне.",
+    context: [
+      "Для DEX-стратегий нужно было собирать пулы, свечи, датасеты и бэктесты без ручного копирования.",
+      "ML-модели требовали отдельного слоя обучения и сравнения результатов.",
+      "Исполнение сделки в кошельке вручную ломало идею автономной стратегии.",
+    ],
+    modules: [
+      "Raydium + GeckoTerminal клиенты для пулов и OHLCV.",
+      "PostgreSQL-хранилище датасетов и истории.",
+      "ML-модуль с LSTM, GRU, CNN, Transformer и Random Forest.",
+      "tx_tools для формирования Solana-транзакций и Telegram-отчёты.",
+    ],
+    integrations: ["Raydium API", "GeckoTerminal API", "Solana RPC", "Telegram Bot API", "PostgreSQL"],
+    architecture: ["Raydium / GeckoTerminal", "data collector", "PostgreSQL", "PyTorch models", "strategy", "Solana RPC", "Telegram"],
+    media: [
+      { title: "ML и рынок", items: ["OHLCV signals", "training curves", "models compare"] },
+      { title: "CLI", items: ["collect pools", "train model", "backtest report"] },
+      { title: "Техника", items: ["LSTM snippet", "strategy threshold", "Raydium tx"] },
+    ],
+    challenges: [
+      { title: "Данные до модели", text: "Сбор рынка и обучение разделены, чтобы модель можно было менять без переписывания API-клиентов." },
+      { title: "Разные модели", text: "Пайплайн допускает сравнение нескольких архитектур и порогов под разные рыночные режимы." },
+      { title: "On-chain исполнение", text: "tx_tools вынесены в отдельный слой, чтобы стратегия не зависела от деталей Solana RPC." },
+    ],
+    resultDetails: [
+      "Пайплайн стал базой для дальнейших crypto automation решений.",
+      "Модели и пороги можно менять без слома архитектуры.",
+      "Telegram-отчёты дают наблюдаемость без отдельной панели.",
+    ],
+    screenshotFolder: "public/cases/eps-bot",
+    preview: {
+      kind: "chart",
+      accent: "#8b5cf6",
+      label: "LSTM-v3",
+      stats: ["OHLCV", "ML", "Solana"],
+    },
   },
   {
     slug: "frax-redesign",
     projectUrl: "",
     title: "Frax — редизайн криптообменника на WordPress",
     type: "Crypto exchanger redesign",
+    category: "Web",
+    shortSummary: "Редизайн фронтенда обменника на WordPress: новый UI, мобильный калькулятор и аккуратная интеграция поверх существующего плагина.",
     problem: "Рабочий обменник на WordPress визуально устарел, мобильный UX калькулятора проседал, но переписывать обменный плагин было слишком рискованно.",
     solution: "Перевёрстаны WordPress-шаблоны, собрана новая визуальная система, переработан главный экран и калькулятор, а выводы плагина встроены в новую разметку через хуки и шорткоды.",
     result: "Production-сайт стал соответствовать ожиданиям рынка обменников, мобильный сценарий стал рабочим, а существующая backend-логика осталась стабильной.",
     stack: ["WordPress", "PHP", "CSS", "JavaScript", "Exchange plugin"],
     metrics: ["без замены CMS", "мобильный UX калькулятора", "production rollout"],
+    outcomes: ["редизайн", "mobile UX", "WordPress", "без миграции"],
+    timeframe: "production rollout",
+    keyResult: "Новый интерфейс выкачен без замены CMS и без риска для обменного backend.",
+    context: [
+      "У заказчика уже был рабочий обменник на WordPress со специализированным плагином.",
+      "Плагин хранил курсы, направления, лимиты, заявки и партнёрские API.",
+      "Полная миграция была дорогой и рискованной, поэтому нужно было улучшить frontend поверх текущей логики.",
+    ],
+    modules: [
+      "Новая визуальная система и переработанные WordPress-шаблоны.",
+      "Главный экран и калькулятор обмена с мобильной адаптацией.",
+      "Интеграция выводов плагина через хуки и шорткоды.",
+      "CSS/JS-слой без тяжёлых сборщиков, чтобы сайт было проще поддерживать.",
+    ],
+    integrations: ["WordPress", "Exchange plugin", "PHP templates", "shortcodes", "CSS/JS"],
+    architecture: ["Пользователь", "WordPress theme", "shortcode wrapper", "exchange plugin", "orders / rates", "production site"],
+    media: [
+      { title: "Before / after", items: ["старый hero", "новый hero", "мобильный калькулятор"] },
+      { title: "Новый дизайн", items: ["направления обмена", "форма заявки", "FAQ / правила"] },
+      { title: "Техника", items: ["PHP shortcode wrapper", "CSS component layer"] },
+    ],
+    challenges: [
+      { title: "Не сломать плагин", text: "Бизнес-логика не переписывалась: новая разметка оборачивала существующие выводы." },
+      { title: "Мобильный калькулятор", text: "Поля, кнопки и порядок действий переработаны под сценарий одной рукой." },
+      { title: "Поддержка заказчиком", text: "Стили и шаблоны оставлены в простом WordPress-слое без лишней сборочной инфраструктуры." },
+    ],
+    resultDetails: [
+      "Сайт стал визуально ближе к рынку обменников 2026 года.",
+      "Мобильный поток заявки стал понятнее и крупнее.",
+      "Существующий backend остался стабильным и знакомым заказчику.",
+    ],
+    screenshotFolder: "public/cases/frax-redesign",
+    preview: {
+      kind: "web",
+      accent: "#22c55e",
+      label: "before / after",
+      stats: ["WP", "mobile", "plugin"],
+    },
   },
   {
     slug: "tech-rise-academy",
     projectUrl: "",
     title: "Tech Rise Academy — лендинг с заявками в Telegram",
     type: "Landing / lead automation",
+    category: "Backend",
+    shortSummary: "Многостраничный лендинг академии с FastAPI endpoint: заявки валидируются и за несколько секунд уходят владельцу в Telegram.",
     problem: "Академии нужен был быстрый сайт без CRM: заявки терялись в директе и почте, а скорость ответа в первые минуты критична для продажи курса.",
     solution: "Собраны главная и страницы курсов на Vanilla HTML/CSS/JS, общий config.js для контента и FastAPI endpoint, который валидирует заявку и отправляет её владельцу через Telegram Bot API.",
     result: "Сайт задеплоен на собственный домен, заявки приходят в Telegram за несколько секунд, а контакты и ссылки можно менять без участия разработчика.",
     stack: ["HTML", "CSS", "JavaScript", "FastAPI", "Pydantic", "Telegram Bot API", "Nginx"],
     metrics: ["без CRM и базы", "заявка в Telegram", "Docker Compose deployment"],
+    outcomes: ["лиды", "FastAPI", "Telegram", "без CRM"],
+    timeframe: "быстрый запуск на домене",
+    keyResult: "Заявка попадает владельцу в Telegram через несколько секунд после формы.",
+    context: [
+      "У академии не было сайта и отдельного бюджета на CRM.",
+      "Лиды терялись между директом, почтой и ручными сообщениями.",
+      "Нужна была лёгкая связка, которую можно поддерживать без сложного backend и базы.",
+    ],
+    modules: [
+      "Главная и две страницы курсов на Vanilla HTML/CSS/JS.",
+      "Общий config.js для ссылок, контактов и оферты.",
+      "FastAPI endpoint /api/lead с Pydantic-валидацией.",
+      "Отправка карточки заявки через Telegram Bot API.",
+    ],
+    integrations: ["FastAPI", "Pydantic", "Telegram Bot API", "Docker Compose", "Nginx"],
+    architecture: ["Пользователь", "landing form", "FastAPI /api/lead", "Telegram Bot API", "чат владельца"],
+    media: [
+      { title: "Лендинг", items: ["hero", "программы", "страница курса", "форма заявки"] },
+      { title: "Поток заявки", items: ["карточка лида в Telegram", "config.js", "lead handler"] },
+      { title: "Техника", items: ["Docker Compose", "Nginx", "FastAPI endpoint"] },
+    ],
+    challenges: [
+      { title: "Без CRM", text: "Telegram-чат стал единым inbox для заявок, без отдельной базы и платной CRM." },
+      { title: "Правки без разработчика", text: "Контакты, ссылки и оферта вынесены в config.js." },
+      { title: "Быстрая реакция", text: "Backend отправляет заявку владельцу сразу после валидации формы." },
+    ],
+    resultDetails: [
+      "Владелец получает заявку сразу в привычном Telegram.",
+      "Контентные изменения делаются точечно в конфиге.",
+      "Сайт работает без тяжёлого фреймворка и отдельной CRM.",
+    ],
+    screenshotFolder: "public/cases/tech-rise-academy",
+    preview: {
+      kind: "dashboard",
+      accent: "#06b6d4",
+      label: "lead inbox",
+      stats: ["FastAPI", "Telegram", "no CRM"],
+    },
   },
   {
     slug: "gym-progres",
     projectUrl: "",
     title: "gym_progres — трекер тренировок с auto-save",
     type: "Niche web app",
+    category: "Backend",
+    shortSummary: "Личный web-трекер тренировок: SSR на FastAPI, Alpine.js auto-save, публичные шаблоны и история прогресса.",
     problem: "Заметки и таблицы быстро превращались в хаос, а готовые фитнес-приложения были перегружены рекламой, подписками и лишними сценариями.",
     solution: "FastAPI отдаёт SSR-страницы на Jinja2, Alpine.js отправляет debounced JSON-запросы, упражнения хранятся в расширяемом каталоге, а шаблоны импортируются по публичной ссылке.",
     result: "Пользователь записывает подходы без кнопки «Сохранить», видит историю прогресса и может импортировать тренировочный шаблон без дублей.",
     stack: ["Python 3.12", "FastAPI", "Jinja2", "Alpine.js", "SQLAlchemy", "PostgreSQL", "Docker Compose"],
     metrics: ["auto-save без кнопки", "публичные шаблоны", "40+ упражнений в каталоге"],
+    outcomes: ["auto-save", "SSR", "шаблоны", "графики"],
+    timeframe: "собственный продукт",
+    keyResult: "Тренировку можно вести в одном экране: вводишь подходы, данные сохраняются сами.",
+    context: [
+      "Заметки и таблицы плохо подходят для регулярной записи подходов и прогресса.",
+      "Готовые приложения перегружены лишними сценариями и подписками.",
+      "Нужен был лёгкий продукт с публичными шаблонами и сохранением без кнопки.",
+    ],
+    modules: [
+      "FastAPI + Jinja2 SSR для страниц приложения.",
+      "Alpine.js островки с debounced auto-save в JSON API.",
+      "Каталог упражнений из data/exercises.json с расширением без перезапуска.",
+      "Публичные шаблоны тренировок и идемпотентный импорт.",
+    ],
+    integrations: ["FastAPI", "Jinja2", "Alpine.js", "PostgreSQL", "Docker Compose"],
+    architecture: ["Пользователь", "SSR page", "Alpine.js", "JSON API", "PostgreSQL", "exercise catalog"],
+    media: [
+      { title: "Web app", items: ["dashboard", "workout form", "exercise catalog", "progress chart"] },
+      { title: "Шаблоны", items: ["public template", "import confirm", "share modal"] },
+      { title: "Техника", items: ["auto-save snippet", "template import", "архитектура SSR + JSON"] },
+    ],
+    challenges: [
+      { title: "Auto-save без сюрпризов", text: "Изменения дебаунсятся на клиенте и уходят в JSON API, поэтому пользователь просто вводит данные." },
+      { title: "Шаблоны без дублей", text: "Импорт сделан идемпотентным: уже существующие элементы не размножаются." },
+      { title: "Нишевое приложение без React", text: "SSR + Alpine.js дали быстрый интерфейс без тяжёлого клиентского стека." },
+    ],
+    resultDetails: [
+      "Подходы сохраняются без кнопки и ручного контроля.",
+      "Шаблонами можно делиться публичной ссылкой.",
+      "История и графики дают быстрый обзор прогресса.",
+    ],
+    screenshotFolder: "public/cases/gym-progres",
+    preview: {
+      kind: "dashboard",
+      accent: "#84cc16",
+      label: "auto-save",
+      stats: ["SSR", "templates", "charts"],
+    },
   },
   {
     slug: "skillup",
     projectUrl: "",
     title: "SkillUp — AI-платформа обучения",
     type: "AI education product",
+    category: "AI",
+    shortSummary: "Full-stack AI-сервис: онбординг, генерация персонального roadmap, дерево прогресса, Celery/Redis и Anthropic API.",
     problem: "Обычные AI-ответы дают хаотичные стены текста, а готовые roadmap-сайты не учитывают текущий уровень и цель конкретного пользователя.",
     solution: "Собран full-stack продукт: Next.js frontend, FastAPI backend, Celery + Redis для AI-задач и Anthropic API для онбординга, плана, объяснений и квизов.",
     result: "Пользователь за несколько минут получает персональный 4-уровневый roadmap, где прогресс отображается как интерактивное дерево с активными и закрытыми узлами.",
     stack: ["Next.js", "TypeScript", "FastAPI", "Celery", "Redis", "PostgreSQL", "Anthropic API"],
     metrics: ["4 уровня плана", "AI-онбординг и квизы", "Docker + Nginx deployment"],
+    outcomes: ["AI roadmap", "Celery", "квизы", "дерево"],
+    timeframe: "собственный AI-продукт",
+    keyResult: "Пользователь получает персональный план обучения и видит прогресс как интерактивное дерево.",
+    context: [
+      "Обычные AI-ответы плохо превращаются в последовательный план действий.",
+      "Готовые roadmap-сайты слишком общие и не учитывают уровень пользователя.",
+      "Нужен был продуктовый AI-flow: онбординг, генерация плана, прогресс, объяснения и квизы.",
+    ],
+    modules: [
+      "Next.js frontend с интерактивным деревом прогресса.",
+      "FastAPI backend с PostgreSQL и асинхронной бизнес-логикой.",
+      "Celery + Redis для тяжёлых AI-задач и прогресса генерации.",
+      "Anthropic API для онбординга, плана, объяснений и квизов.",
+    ],
+    integrations: ["Anthropic API", "Celery", "Redis", "PostgreSQL", "Docker Compose", "Nginx"],
+    architecture: ["Пользователь", "Next.js", "FastAPI", "PostgreSQL", "Celery / Redis", "Anthropic API"],
+    media: [
+      { title: "Продукт", items: ["онбординг", "построение плана", "дерево", "квиз"] },
+      { title: "AI pipeline", items: ["onboarding chat", "plan generation", "node explanation", "quiz generation"] },
+      { title: "Техника", items: ["Celery task", "canvas layout", "Claude API call"] },
+    ],
+    challenges: [
+      { title: "План вместо стены текста", text: "AI-ответ структурируется в 4 уровня с узлами, статусами и порядком прохождения." },
+      { title: "Долгие AI-задачи", text: "Генерация вынесена в Celery, чтобы фронт показывал прогресс и не зависал." },
+      { title: "Гибкий layout дерева", text: "Позиции узлов считаются на фронте из tier и order_index, без хранения координат в БД." },
+    ],
+    resultDetails: [
+      "Пользователь проходит онбординг и получает персональный roadmap за несколько минут.",
+      "Прогресс виден визуально через активные и закрытые узлы.",
+      "AI-пайплайн разделён на генерацию плана, объяснения и квизы.",
+    ],
+    screenshotFolder: "public/cases/skillup",
+    preview: {
+      kind: "tree",
+      accent: "#c084fc",
+      label: "AI roadmap",
+      stats: ["4 tiers", "Celery", "Claude"],
+    },
   },
 ];
 
