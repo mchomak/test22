@@ -281,12 +281,18 @@ function setupEngineeringScene(
 
     pulses.forEach((pulse) => {
       const { curve, offset, speed } = pulse.userData as {
-        curve: import("three").CatmullRomCurve3;
+        curve?: import("three").CatmullRomCurve3;
         offset: number;
         speed: number;
       };
       const t = reducedMotion ? offset : (offset + motion * speed) % 1;
-      pulse.position.copy(curve.getPointAt(t));
+      const point =
+        curve && Number.isFinite(t)
+          ? curve.getPointAt(THREE.MathUtils.clamp(t, 0, 1))
+          : null;
+      if (!point) return;
+
+      pulse.position.copy(point);
       const material = pulse.material as import("three").MeshBasicMaterial;
       material.opacity = 0.35 + Math.sin((t + motion) * Math.PI * 2) * 0.28;
     });

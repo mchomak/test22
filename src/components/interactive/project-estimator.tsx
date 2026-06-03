@@ -1,164 +1,636 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calculator, Check, Clock3, Gauge, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Calculator,
+  Check,
+  Clock3,
+  FileText,
+  Gauge,
+  Link as LinkIcon,
+  Loader2,
+  Mail,
+  MessageCircle,
+  Send,
+  SlidersHorizontal,
+  User,
+} from "lucide-react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import {
+  complexityLevels,
+  projectModules,
+  projectTypes,
+  urgencyOptions,
+  type ProjectTypeId,
+} from "@/data/site";
 
-const options = [
-  { id: "payments", label: "Платежи", price: 45, weeks: 1 },
-  { id: "admin", label: "Админка", price: 40, weeks: 1 },
-  { id: "ai", label: "AI/RAG", price: 90, weeks: 2 },
-  { id: "crypto", label: "Crypto/API", price: 70, weeks: 2 },
-  { id: "monitoring", label: "Мониторинг", price: 30, weeks: 1 },
+type SubmitState = "idle" | "sending" | "success" | "error";
+
+const steps = [
+  "Тип проекта",
+  "Сложность",
+  "Модули",
+  "Сроки",
+  "Контакты",
+  "Отправка",
 ];
 
+const money = new Intl.NumberFormat("ru-RU");
+
+const formatMoney = (value: number) => `${money.format(value)} ₽`;
+const roundBudget = (value: number) =>
+  Math.max(15000, Math.round(value / 5000) * 5000);
+
 export function ProjectEstimator() {
-  const [selected, setSelected] = useState(["payments", "admin"]);
-  const [complexity, setComplexity] = useState(2);
+  const [selectedTypeId, setSelectedTypeId] = useState<ProjectTypeId>(
+    projectTypes[0].id,
+  );
+  const [selectedModules, setSelectedModules] = useState<string[]>(
+    projectTypes[0].defaultModules,
+  );
+  const [complexityId, setComplexityId] = useState(complexityLevels[1].id);
+  const [urgencyId, setUrgencyId] = useState(urgencyOptions[1].id);
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [contact, setContact] = useState({
+    name: "",
+    telegram: "",
+    email: "",
+    comment: "",
+    fileUrl: "",
+  });
+
+  const activeType =
+    projectTypes.find((item) => item.id === selectedTypeId) ?? projectTypes[0];
+  const activeComplexity =
+    complexityLevels.find((item) => item.id === complexityId) ??
+    complexityLevels[1];
+  const activeUrgency =
+    urgencyOptions.find((item) => item.id === urgencyId) ?? urgencyOptions[1];
+  const modules = useMemo(() => projectModules[selectedTypeId], [selectedTypeId]);
+  const selectedModuleDetails = useMemo(
+    () => modules.filter((item) => selectedModules.includes(item.id)),
+    [modules, selectedModules],
+  );
 
   const estimate = useMemo(() => {
-    const selectedOptions = options.filter((option) =>
-      selected.includes(option.id),
+    const moduleLow = selectedModuleDetails.reduce(
+      (sum, item) => sum + item.price,
+      0,
     );
-    const base = 60 + complexity * 35;
-    const extra = selectedOptions.reduce((sum, option) => sum + option.price, 0);
-    const weeks =
-      1 + complexity + selectedOptions.reduce((sum, option) => sum + option.weeks, 0);
-    const low = base + extra;
-    const high = Math.round(low * 1.32);
+    const moduleHigh = selectedModuleDetails.reduce(
+      (sum, item) => sum + Math.round(item.price * 1.45),
+      0,
+    );
+    const moduleDays = selectedModuleDetails.reduce(
+      (sum, item) => sum + item.days,
+      0,
+    );
+    const priceFactor =
+      activeComplexity.priceFactor * activeUrgency.priceFactor;
+    const daysFactor = activeComplexity.daysFactor * activeUrgency.daysFactor;
+    const low = roundBudget((activeType.baseLow + moduleLow) * priceFactor);
+    const high = Math.max(
+      low + 10000,
+      roundBudget((activeType.baseHigh + moduleHigh) * priceFactor),
+    );
+    const daysLow = Math.max(
+      3,
+      Math.round((activeType.daysLow + moduleDays * 0.65) * daysFactor),
+    );
+    const daysHigh = Math.max(
+      daysLow + 2,
+      Math.round((activeType.daysHigh + moduleDays * 1.15) * daysFactor),
+    );
 
     return {
       low,
       high,
-      weeks: `${Math.max(2, weeks - 1)}-${weeks + 1}`,
-      label:
-        low < 140
-          ? "MVP / точечная интеграция"
-          : low < 280
-            ? "Полноценный продуктовый контур"
-            : "Сложная система с интеграциями",
+      daysLow,
+      daysHigh,
+      budget: `${formatMoney(low)} – ${formatMoney(high)}`,
+      timeline: `${daysLow}–${daysHigh} рабочих дней`,
     };
-  }, [complexity, selected]);
+  }, [activeComplexity, activeType, activeUrgency, selectedModuleDetails]);
 
-  const toggle = (id: string) => {
-    setSelected((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
+  const chooseType = (typeId: ProjectTypeId) => {
+    const nextType = projectTypes.find((item) => item.id === typeId);
+    if (!nextType) return;
+
+    setSelectedTypeId(typeId);
+    setSelectedModules(nextType.defaultModules);
+    setSubmitState("idle");
+    setSubmitMessage("");
+  };
+
+  const toggleModule = (moduleId: string) => {
+    setSelectedModules((current) =>
+      current.includes(moduleId)
+        ? current.filter((item) => item !== moduleId)
+        : [...current, moduleId],
     );
+    setSubmitState("idle");
+    setSubmitMessage("");
+  };
+
+  const updateContact = (field: keyof typeof contact, value: string) => {
+    setContact((current) => ({ ...current, [field]: value }));
+    setSubmitState("idle");
+    setSubmitMessage("");
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!contact.telegram.trim() || !contact.comment.trim()) {
+      setSubmitState("error");
+      setSubmitMessage("Укажите Telegram и коротко опишите задачу.");
+      return;
+    }
+
+    setSubmitState("sending");
+    setSubmitMessage("");
+
+    const payload = {
+      category: activeType.label,
+      complexity: activeComplexity.label.toLowerCase(),
+      urgency: activeUrgency.label,
+      options: selectedModuleDetails.map((item) => item.label),
+      estimate: {
+        budget: estimate.budget,
+        timeline: estimate.timeline,
+      },
+      contact: {
+        name: contact.name.trim(),
+        telegram: contact.telegram.trim(),
+        email: contact.email.trim(),
+      },
+      comment: contact.comment.trim(),
+      fileUrl: contact.fileUrl.trim(),
+    };
+
+    try {
+      const response = await fetch("/api/project-leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await response.json().catch(() => null)) as
+        | { delivered?: boolean; error?: string }
+        | null;
+
+      if (!response.ok) {
+        throw new Error(data?.error ?? "Не удалось отправить заявку.");
+      }
+
+      setSubmitState("success");
+      setSubmitMessage(
+        data?.delivered
+          ? "Заявка отправлена в Telegram. Я вернусь с уточнениями."
+          : "Заявка собрана и отправлена в API-заглушку. Telegram-получателя можно подключить через env.",
+      );
+    } catch (error) {
+      setSubmitState("error");
+      setSubmitMessage(
+        error instanceof Error
+          ? error.message
+          : "Не удалось отправить заявку. Попробуйте написать в Telegram.",
+      );
+    }
   };
 
   return (
-    <div className="mt-5 grid gap-5 rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md lg:grid-cols-[1fr_340px]">
-      <div>
-        <div className="mb-5 flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
-            <SlidersHorizontal size={20} />
-          </span>
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
-              Быстрая прикидка
-            </p>
-            <h3 className="text-xl font-semibold text-white">
-              Соберите примерный контур проекта
-            </h3>
+    <div className="grid gap-5 rounded-[2rem] border border-white/10 bg-[#101311]/68 p-4 backdrop-blur-md sm:p-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <form onSubmit={handleSubmit} className="grid gap-6">
+        <div className="rounded-3xl border border-white/10 bg-black/18 p-4 sm:p-5">
+          <div className="mb-5 flex items-center gap-3">
+            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
+              <SlidersHorizontal size={20} />
+            </span>
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
+                Project config
+              </p>
+              <h3 className="text-xl font-semibold text-white">
+                Тип проекта → модули → заявка
+              </h3>
+            </div>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-6">
+            {steps.map((step, index) => (
+              <div
+                key={step}
+                className="rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-2"
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-300/70">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="mt-1 block text-xs font-medium text-zinc-300">
+                  {step}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-5">
-          {options.map((option) => {
-            const isActive = selected.includes(option.id);
+        <ConfigBlock
+          label="01"
+          title="Выберите тип решения"
+          description="После выбора типа ниже остаются только релевантные модули."
+        >
+          <div className="grid gap-3 md:grid-cols-2">
+            {projectTypes.map((type) => {
+              const isActive = type.id === selectedTypeId;
 
-            return (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => toggle(option.id)}
-                className={`relative min-h-24 rounded-2xl border p-3 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
-                  isActive
-                    ? "border-emerald-300/45 bg-emerald-300/10"
-                    : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
-                }`}
-              >
-                <span
-                  className={`mb-4 grid h-6 w-6 place-items-center rounded-full border ${
+              return (
+                <button
+                  key={type.id}
+                  type="button"
+                  onClick={() => chooseType(type.id)}
+                  aria-pressed={isActive}
+                  className={`min-h-32 rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
                     isActive
-                      ? "border-emerald-300 bg-emerald-300 text-zinc-950"
-                      : "border-white/15 text-transparent"
+                      ? "border-emerald-300/50 bg-emerald-300/10"
+                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
                   }`}
                 >
-                  <Check size={14} />
-                </span>
-                <span className="block text-sm font-semibold text-white">
-                  {option.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-6">
-          <div className="mb-3 flex items-center justify-between gap-4">
-            <span className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-              сложность сценариев
-            </span>
-            <span className="font-mono text-xs text-emerald-200">
-              level {complexity}
-            </span>
+                  <span className="flex items-start justify-between gap-3">
+                    <span>
+                      <span className="block text-base font-semibold text-white">
+                        {type.label}
+                      </span>
+                      <span className="mt-2 block text-sm leading-6 text-zinc-400">
+                        {type.description}
+                      </span>
+                    </span>
+                    <span
+                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border ${
+                        isActive
+                          ? "border-emerald-300 bg-emerald-300 text-zinc-950"
+                          : "border-white/15 text-transparent"
+                      }`}
+                    >
+                      <Check size={15} />
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <input
-            aria-label="Сложность сценариев"
-            type="range"
-            min="1"
-            max="4"
-            value={complexity}
-            onChange={(event) => setComplexity(Number(event.target.value))}
-            className="w-full accent-emerald-300"
-          />
-        </div>
-      </div>
+        </ConfigBlock>
 
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md">
+        <ConfigBlock
+          label="02"
+          title="Сложность"
+          description="Это влияет на вилку бюджета и срок: MVP, бизнес-продукт или сложная система."
+        >
+          <div className="grid gap-3 md:grid-cols-3">
+            {complexityLevels.map((level) => {
+              const isActive = level.id === complexityId;
+
+              return (
+                <button
+                  key={level.id}
+                  type="button"
+                  onClick={() => setComplexityId(level.id)}
+                  aria-pressed={isActive}
+                  className={`rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                    isActive
+                      ? "border-cyan-200/45 bg-cyan-200/10"
+                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                  }`}
+                >
+                  <span className="font-semibold text-white">{level.label}</span>
+                  <span className="mt-2 block text-sm leading-6 text-zinc-400">
+                    {level.description}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </ConfigBlock>
+
+        <ConfigBlock
+          label="03"
+          title="Модули"
+          description={`Показаны опции для категории «${activeType.label}».`}
+        >
+          <div className="grid gap-3 md:grid-cols-2">
+            {modules.map((module) => {
+              const isActive = selectedModules.includes(module.id);
+
+              return (
+                <button
+                  key={module.id}
+                  type="button"
+                  onClick={() => toggleModule(module.id)}
+                  aria-pressed={isActive}
+                  className={`min-h-28 rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                    isActive
+                      ? "border-emerald-300/45 bg-emerald-300/10"
+                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                  }`}
+                >
+                  <span className="flex items-start gap-3">
+                    <span
+                      className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border ${
+                        isActive
+                          ? "border-emerald-300 bg-emerald-300 text-zinc-950"
+                          : "border-white/15 text-transparent"
+                      }`}
+                    >
+                      <Check size={14} />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-semibold text-white">
+                        {module.label}
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-zinc-400">
+                        {module.description}
+                      </span>
+                      <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+                        + {formatMoney(module.price)} / +{module.days} дн.
+                      </span>
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </ConfigBlock>
+
+        <ConfigBlock
+          label="04"
+          title="Сроки"
+          description="Выберите комфортный темп. Срочность повышает стоимость, но сжимает план работ."
+        >
+          <div className="grid gap-3 md:grid-cols-3">
+            {urgencyOptions.map((option) => {
+              const isActive = option.id === urgencyId;
+
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setUrgencyId(option.id)}
+                  aria-pressed={isActive}
+                  className={`rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                    isActive
+                      ? "border-amber-200/45 bg-amber-200/10"
+                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                  }`}
+                >
+                  <span className="font-semibold text-white">{option.label}</span>
+                  <span className="mt-2 block text-sm leading-6 text-zinc-400">
+                    {option.description}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </ConfigBlock>
+
+        <ConfigBlock
+          label="05"
+          title="Контакты и описание"
+          description="Эти данные попадут в заявку вместе с выбранной конфигурацией и расчётом."
+        >
+          <div className="grid gap-3 md:grid-cols-2">
+            <Field
+              icon={<User size={16} />}
+              label="Имя"
+              value={contact.name}
+              placeholder="Как к вам обращаться"
+              onChange={(value) => updateContact("name", value)}
+            />
+            <Field
+              icon={<MessageCircle size={16} />}
+              label="Telegram"
+              value={contact.telegram}
+              placeholder="@username"
+              required
+              onChange={(value) => updateContact("telegram", value)}
+            />
+            <Field
+              icon={<Mail size={16} />}
+              label="Email"
+              value={contact.email}
+              placeholder="необязательно"
+              type="email"
+              onChange={(value) => updateContact("email", value)}
+            />
+            <Field
+              icon={<LinkIcon size={16} />}
+              label="Ссылка на ТЗ / файл"
+              value={contact.fileUrl}
+              placeholder="Google Docs, Figma, архив"
+              onChange={(value) => updateContact("fileUrl", value)}
+            />
+          </div>
+
+          <label className="mt-3 block">
+            <span className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-300">
+              <FileText size={16} className="text-emerald-300" />
+              Краткое описание задачи
+            </span>
+            <textarea
+              required
+              rows={5}
+              value={contact.comment}
+              onChange={(event) => updateContact("comment", event.target.value)}
+              placeholder="Например: нужно сделать мини-приложение для магазина одежды с каталогом, оплатой и реферальной системой."
+              className="min-h-32 w-full resize-y rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-zinc-600 focus:border-emerald-300/55"
+            />
+          </label>
+        </ConfigBlock>
+
+        <div className="rounded-3xl border border-emerald-300/20 bg-emerald-300/10 p-4 sm:p-5">
+          <p className="text-sm leading-6 text-emerald-50/90">
+            Калькулятор показывает ориентир. Финальная стоимость фиксируется
+            после короткого обсуждения задачи, интеграций, дизайна и сроков.
+          </p>
+          <button
+            type="submit"
+            disabled={submitState === "sending"}
+            className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-zinc-950 transition duration-300 hover:bg-emerald-200 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+          >
+            {submitState === "sending" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Send size={18} />
+            )}
+            Отправить конфигурацию
+          </button>
+          {submitMessage ? (
+            <p
+              className={`mt-3 text-sm leading-6 ${
+                submitState === "error" ? "text-red-200" : "text-emerald-100"
+              }`}
+              aria-live="polite"
+            >
+              {submitMessage}
+            </p>
+          ) : null}
+        </div>
+      </form>
+
+      <aside className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md lg:sticky lg:top-24 lg:self-start">
         <motion.div
           className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent"
           animate={{ x: ["-100%", "100%"] }}
           transition={{ duration: 2.8, repeat: Infinity, ease: "linear" }}
         />
+
         <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
           <Calculator size={16} />
-          estimate
+          live estimate
         </div>
-        <motion.p
-          key={`${estimate.low}-${estimate.high}`}
+
+        <motion.div
+          key={`${estimate.low}-${estimate.high}-${estimate.daysLow}-${estimate.daysHigh}`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-5 text-3xl font-semibold text-white"
+          className="mt-5"
         >
-          {estimate.low}k-{estimate.high}k ₽
-        </motion.p>
-        <p className="mt-2 text-sm leading-6 text-zinc-400">
-          {estimate.label}. Это не оферта, а быстрая рамка до нормального
-          технического разбора.
-        </p>
-        <div className="mt-6 grid gap-3">
-          <div className="flex items-center justify-between border-t border-white/10 pt-3">
-            <span className="flex items-center gap-2 text-sm text-zinc-400">
-              <Clock3 size={16} className="text-amber-200" />
-              сроки
-            </span>
-            <span className="font-mono text-sm text-white">
-              {estimate.weeks} недель
-            </span>
-          </div>
-          <div className="flex items-center justify-between border-t border-white/10 pt-3">
-            <span className="flex items-center gap-2 text-sm text-zinc-400">
-              <Gauge size={16} className="text-cyan-200" />
-              старт
-            </span>
-            <span className="font-mono text-sm text-white">50% предоплата</span>
-          </div>
+          <p className="text-sm text-zinc-500">Предварительная оценка</p>
+          <p className="mt-2 text-3xl font-semibold leading-tight text-white">
+            {estimate.budget}
+          </p>
+          <p className="mt-5 flex items-center gap-2 text-sm text-zinc-400">
+            <Clock3 size={16} className="text-amber-200" />
+            Срок:{" "}
+            <span className="font-mono text-white">{estimate.timeline}</span>
+          </p>
+        </motion.div>
+
+        <div className="mt-6 grid gap-3 border-t border-white/10 pt-5">
+          <SummaryLine label="Категория" value={activeType.label} />
+          <SummaryLine label="Сложность" value={activeComplexity.label} />
+          <SummaryLine label="Темп" value={activeUrgency.label} />
+        </div>
+
+        <div className="mt-6">
+          <p className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
+            <Gauge size={15} className="text-cyan-200" />
+            Выбранные модули
+          </p>
+          {selectedModuleDetails.length ? (
+            <div className="flex flex-wrap gap-2">
+              {selectedModuleDetails.map((module) => (
+                <span
+                  key={module.id}
+                  className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100"
+                >
+                  {module.label}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm leading-6 text-zinc-500">
+              Модули не выбраны. Оценка считается только по базовой разработке.
+            </p>
+          )}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-black/24 p-4">
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
+            Формат заявки
+          </p>
+          <p className="mt-3 whitespace-pre-line text-xs leading-6 text-zinc-400">
+            {`Новая заявка с сайта
+
+Категория: ${activeType.label}
+Сложность: ${activeComplexity.label.toLowerCase()}
+Опции: ${selectedModuleDetails.length ? selectedModuleDetails.map((item) => item.label).join(", ") : "базовая разработка"}
+Оценка: ${estimate.budget}
+Срок: ${estimate.timeline}`}
+          </p>
+        </div>
+
+        <a
+          href="#cases"
+          className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.07]"
+        >
+          Смотреть кейсы
+          <ArrowRight size={16} />
+        </a>
+      </aside>
+    </div>
+  );
+}
+
+function ConfigBlock({
+  label,
+  title,
+  description,
+  children,
+}: {
+  label: string;
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-3xl border border-white/10 bg-black/18 p-4 sm:p-5">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/75">
+            step {label}
+          </p>
+          <h3 className="mt-2 text-xl font-semibold text-white">{title}</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+            {description}
+          </p>
         </div>
       </div>
+      {children}
+    </section>
+  );
+}
+
+function Field({
+  icon,
+  label,
+  value,
+  placeholder,
+  type = "text",
+  required = false,
+  onChange,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+  placeholder: string;
+  type?: string;
+  required?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-300">
+        <span className="text-emerald-300">{icon}</span>
+        {label}
+        {required ? <span className="text-emerald-300">*</span> : null}
+      </span>
+      <input
+        type={type}
+        required={required}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className="h-12 w-full rounded-2xl border border-white/10 bg-black/25 px-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-emerald-300/55"
+      />
+    </label>
+  );
+}
+
+function SummaryLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
+      <span className="text-sm text-zinc-500">{label}</span>
+      <span className="text-right text-sm font-medium text-white">{value}</span>
     </div>
   );
 }

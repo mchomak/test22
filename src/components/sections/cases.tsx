@@ -4,10 +4,13 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
-  Layers3,
+  CheckCircle2,
+  ExternalLink,
+  FileText,
   ServerCog,
   Workflow,
 } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { cases } from "@/data/site";
 import { Reveal } from "@/components/reveal";
@@ -32,20 +35,20 @@ export function Cases() {
       const depth = Math.cos(radians);
       const depthRatio = (depth + 1) / 2;
       const isActive = offset === 0;
-      const mutedBrightness = 0.82 + depthRatio * 0.14;
-      const mutedSaturation = 0.64 + depthRatio * 0.2;
+      const mutedBrightness = 0.68 + depthRatio * 0.12;
+      const mutedSaturation = 0.42 + depthRatio * 0.16;
 
       return {
         item,
         index,
         isActive,
-        x: side * 430,
-        y: isActive ? 18 : 52 + (1 - depth) * 86,
-        scale: isActive ? 1 : 0.7 + depthRatio * 0.22,
-        opacity: isActive ? 1 : 0.16 + depthRatio * 0.5,
-        rotate: side * 3,
-        rotateY: side * -18,
-        zIndex: Math.round(depthRatio * 80) + (isActive ? 40 : 0),
+        x: side * 440,
+        y: isActive ? 10 : 56 + (1 - depth) * 62,
+        scale: isActive ? 1 : 0.58 + depthRatio * 0.16,
+        opacity: isActive ? 1 : 0.06 + depthRatio * 0.16,
+        rotate: side * 1.8,
+        rotateY: side * -8,
+        zIndex: isActive ? 140 : Math.round(depthRatio * 36),
         visualFilter: isActive
           ? "brightness(1) saturate(1)"
           : `brightness(${mutedBrightness}) saturate(${mutedSaturation})`,
@@ -56,7 +59,7 @@ export function Cases() {
   const rotateBy = (steps: number) => {
     if (steps === 0) return;
 
-    setHolderRotation((current) => current + steps * angleStep);
+    setHolderRotation((current) => current - steps * angleStep);
     setActiveIndex((current) => (current + steps + cases.length) % cases.length);
   };
 
@@ -111,52 +114,17 @@ export function Cases() {
     }
   };
 
-  const handleCardClick = (index: number) => {
-    if (didDrag.current) return;
-    goTo(index);
-  };
-
   return (
     <section id="cases" className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Кейсы"
-          title="Кейсы в фокусе, без мелкой карточной сетки"
-          description="Кейсы ведут себя как подвешенные карточки на карусельном треке: зажмите карточку мышью и потяните в сторону, чтобы повернуть колесо и вывести следующий проект вперёд."
+          title="Кейсы, которые показывают подход к разработке"
+          description="Кейсы ниже работают как доказательство: бот, AI-сервис, backend, crypto-интеграция, Mini App и автоматизация с понятной задачей, решением и результатом."
         />
 
         <Reveal>
           <div className="case-showcase-shell">
-            <div className="case-showcase-toolbar mb-5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
-                  {String(activeIndex + 1).padStart(2, "0")} /{" "}
-                  {String(cases.length).padStart(2, "0")}
-                </div>
-                <div className="hidden border-l border-white/10 pl-3 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600 sm:block">
-                  зажмите и тяните
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => go(-1)}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-300 transition duration-300 hover:border-cyan-200/35 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
-                  aria-label="Предыдущий кейс"
-                >
-                  <ArrowLeft size={17} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => go(1)}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-300 transition duration-300 hover:border-cyan-200/35 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
-                  aria-label="Следующий кейс"
-                >
-                  <ArrowRight size={17} />
-                </button>
-              </div>
-            </div>
-
             <div
               className="case-showcase-stage"
               role="region"
@@ -179,7 +147,9 @@ export function Cases() {
                         key={item.title}
                         className="case-wheel-holder-node"
                         style={{
-                          transform: `rotate(${index * angleStep}deg) translateX(var(--case-wheel-node-radius))`,
+                          transform: `rotate(${
+                            index * angleStep + 90
+                          }deg) translateX(var(--case-wheel-node-radius))`,
                         }}
                       />
                     ))}
@@ -191,7 +161,6 @@ export function Cases() {
                 {carouselCards.map(
                   ({
                     item,
-                    index,
                     isActive,
                     x,
                     y,
@@ -202,17 +171,19 @@ export function Cases() {
                     zIndex,
                     visualFilter,
                   }) => (
-                    <motion.button
+                    <motion.article
                       key={item.title}
-                      type="button"
-                      onClick={() => handleCardClick(index)}
                       className={`case-wheel-card ${
                         isActive ? "case-wheel-card-active" : "case-wheel-card-muted"
                       }`}
                       aria-label={item.title}
                       aria-current={isActive ? "true" : undefined}
+                      tabIndex={isActive ? 0 : -1}
                       initial={false}
-                      style={{ zIndex }}
+                      style={{
+                        zIndex,
+                        pointerEvents: isActive ? "auto" : "none",
+                      }}
                       animate={{
                         x,
                         y,
@@ -222,89 +193,158 @@ export function Cases() {
                         rotateY,
                         filter: visualFilter,
                       }}
-                      transition={{ type: "spring", stiffness: 112, damping: 23 }}
+                      transition={{
+                        duration: 0.35,
+                        ease: [0.4, 0, 0.2, 1],
+                      }}
                     >
                       <span className="case-wheel-card-line" aria-hidden="true" />
                       <span className="case-wheel-card-pin" aria-hidden="true" />
-                      <span className="case-wheel-card-content">
-                        <span className="case-wheel-card-head">
-                          <span className="font-mono text-xs uppercase tracking-[0.22em] text-cyan-200/80">
-                            {item.type}
-                          </span>
-                          <span className="mt-3 block text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl">
-                            {item.title}
-                          </span>
-
-                          <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400">
-                            <span className="text-cyan-200">
-                              {String(index + 1).padStart(2, "0")}
-                            </span>
-                            <span>/</span>
-                            <span>{String(cases.length).padStart(2, "0")}</span>
-                          </span>
+                      {isActive ? (
+                        <CaseCardContent item={item} />
+                      ) : (
+                        <span className="case-wheel-card-ghost" aria-hidden="true">
+                          <span />
+                          <span />
+                          <span />
+                          <span />
                         </span>
-
-                        <span className="mt-7 grid gap-5">
-                          <CaseLine label="Проблема" text={item.problem} />
-                          <CaseLine label="Решение" text={item.solution} />
-                          <CaseLine label="Результат" text={item.result} />
-                        </span>
-
-                        <span className="mt-7 block space-y-6 border-t border-white/10 pt-6">
-                          <span className="block">
-                            <span className="mb-3 flex items-center gap-2">
-                              <ServerCog size={18} className="text-emerald-300" />
-                              <span className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                                stack
-                              </span>
-                            </span>
-                            <span className="flex flex-wrap gap-2">
-                              {item.stack.map((tech) => (
-                                <span
-                                  key={tech}
-                                  className="rounded-full border border-white/10 bg-black/25 px-3 py-1.5 font-mono text-[11px] text-zinc-400"
-                                >
-                                  {tech}
-                                </span>
-                              ))}
-                            </span>
-                          </span>
-
-                          <span className="block">
-                            <span className="mb-3 flex items-center gap-2">
-                              <Workflow size={18} className="text-cyan-200" />
-                              <span className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                                metrics
-                              </span>
-                            </span>
-                            <span className="grid gap-3">
-                              {item.metrics.map((metric) => (
-                                <span
-                                  key={metric}
-                                  className="flex gap-3 border-l border-cyan-200/25 bg-white/[0.03] px-3 py-2"
-                                >
-                                  <Layers3
-                                    size={15}
-                                    className="mt-1 shrink-0 text-cyan-200"
-                                  />
-                                  <span className="text-xs leading-5 text-zinc-300">
-                                    {metric}
-                                  </span>
-                                </span>
-                              ))}
-                            </span>
-                          </span>
-                        </span>
-                      </span>
-                    </motion.button>
+                      )}
+                    </motion.article>
                   ),
                 )}
               </div>
             </div>
+
+            <div className="case-showcase-controls" aria-label="Навигация кейсов">
+              <button
+                type="button"
+                onClick={() => go(-1)}
+                className="case-showcase-control-button"
+                aria-label="Предыдущий кейс"
+              >
+                <ArrowLeft size={18} />
+              </button>
+
+              <div className="case-showcase-pagination" aria-live="polite">
+                <span className="case-showcase-pagination-count">
+                  {String(activeIndex + 1).padStart(2, "0")} /{" "}
+                  {String(cases.length).padStart(2, "0")}
+                </span>
+                <span className="case-showcase-dots">
+                  {cases.map((item, index) => (
+                    <button
+                      key={item.title}
+                      type="button"
+                      onClick={() => goTo(index)}
+                      className={`case-showcase-dot ${
+                        index === activeIndex ? "case-showcase-dot-active" : ""
+                      }`}
+                      aria-label={`Открыть кейс ${index + 1}: ${item.title}`}
+                      aria-current={index === activeIndex ? "true" : undefined}
+                    />
+                  ))}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => go(1)}
+                className="case-showcase-control-button"
+                aria-label="Следующий кейс"
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
+
           </div>
         </Reveal>
       </div>
     </section>
+  );
+}
+
+function CaseCardContent({
+  item,
+}: {
+  item: (typeof cases)[number];
+}) {
+  return (
+    <span className="case-wheel-card-content">
+      <span className="case-wheel-card-head">
+        <span className="case-wheel-card-title-group">
+          <span className="case-wheel-card-type">
+            {item.type}
+          </span>
+          <span className="case-wheel-card-title">
+            {item.title}
+          </span>
+        </span>
+
+        <span className="case-wheel-card-actions">
+          <Link href={`/cases#${item.slug}`} className="case-wheel-card-action">
+            <FileText size={16} />
+            Подробнее
+          </Link>
+
+          {item.projectUrl ? (
+            <a
+              href={item.projectUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="case-wheel-card-action"
+            >
+              <ExternalLink size={16} />
+              Ссылка на проект
+            </a>
+          ) : (
+            <span className="case-wheel-card-action case-wheel-card-action-muted">
+              <ExternalLink size={16} />
+              Ссылка скоро
+            </span>
+          )}
+        </span>
+      </span>
+
+      <span className="case-wheel-card-body">
+        <span className="case-wheel-card-narrative">
+          <CaseLine label="Проблема" text={item.problem} />
+          <CaseLine label="Решение" text={item.solution} />
+          <CaseLine label="Результат" text={item.result} />
+        </span>
+
+        <span className="case-wheel-card-aside">
+          <span className="case-wheel-card-aside-block">
+            <span className="case-wheel-card-aside-title">
+            <ServerCog size={18} className="text-emerald-300" />
+              stack
+            </span>
+            <span className="case-wheel-stack">
+              {item.stack.map((tech) => (
+                <span key={tech} className="case-wheel-stack-pill">
+                  {tech}
+                </span>
+              ))}
+            </span>
+          </span>
+
+          <span className="case-wheel-card-aside-block">
+            <span className="case-wheel-card-aside-title">
+            <Workflow size={18} className="text-cyan-200" />
+              metrics
+            </span>
+            <span className="case-wheel-metrics">
+              {item.metrics.map((metric) => (
+                <span key={metric} className="case-wheel-metric">
+                  <CheckCircle2 size={15} />
+                  <span>{metric}</span>
+                </span>
+              ))}
+            </span>
+          </span>
+        </span>
+      </span>
+    </span>
   );
 }
 
@@ -317,11 +357,11 @@ function getCircularOffset(index: number, activeIndex: number) {
 
 function CaseLine({ label, text }: { label: string; text: string }) {
   return (
-    <span className="block border-t border-white/10 pt-4">
-      <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+    <span className="case-wheel-line">
+      <span className="case-wheel-line-label">
         {label}
       </span>
-      <span className="mt-3 block text-sm leading-6 text-zinc-300">{text}</span>
+      <span className="case-wheel-line-text">{text}</span>
     </span>
   );
 }

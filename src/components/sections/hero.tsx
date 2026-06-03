@@ -1,9 +1,9 @@
 import Image from "next/image";
 import {
   ArrowRight,
+  Calculator,
   Code2,
   Mail,
-  MessageCircle,
 } from "lucide-react";
 import { contacts, heroMetrics, stack } from "@/data/site";
 import { Reveal } from "@/components/reveal";
@@ -38,25 +38,23 @@ export function Hero() {
         <Reveal className="max-w-3xl">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-300 shadow-2xl shadow-black/30 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,231,183,0.8)]" />
-            Python backend / bots / AI systems
+            Telegram / AI / backend / automation
           </div>
 
           <HeroHeadline />
 
           <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-zinc-300 sm:text-xl">
-            Архитектура, FastAPI, Telegram Bot API, платежи, базы данных,
-            очереди, AI/LLM, деплой и поддержка. 5 лет опыта, 30+ проектов
-            под ключ.
+            Собираю Telegram-ботов, Mini Apps, backend-системы,
+            AI-модули, парсеры и интеграции — от MVP до рабочего продукта с
+            админкой, платежами и аналитикой.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink
-              href={contacts.telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              icon={<MessageCircle size={18} />}
+              href="#estimator"
+              icon={<Calculator size={18} />}
             >
-              Обсудить проект
+              Рассчитать проект
             </ButtonLink>
             <ButtonLink
               href="#cases"

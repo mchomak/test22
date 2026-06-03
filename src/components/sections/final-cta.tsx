@@ -16,31 +16,30 @@ export function FinalCTA() {
                   Next step
                 </p>
                 <h2 className="mt-4 max-w-4xl text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl">
-                  Опишите задачу - я вернусь с архитектурой, сроками и вилкой
-                  бюджета.
+                  Опишите задачу — я вернусь с архитектурой, сроками и вилкой бюджета.
                 </h2>
                 <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300">
-                  Лучше всего прислать сценарии пользователей, платежи,
-                  интеграции, текущие материалы и желаемую дату запуска. Если
-                  вводных мало, начнём с диагностики.
+                  Быстрее всего начать с конфигуратора: он соберёт тип проекта,
+                  модули, сроки и контакт в одну заявку. Если вводных мало,
+                  можно сразу написать в Telegram.
                 </p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
                 <ButtonLink
+                  href="#estimator"
+                  icon={<Send size={18} />}
+                >
+                  Рассчитать проект
+                </ButtonLink>
+                <ButtonLink
                   href={contacts.telegramUrl}
                   target="_blank"
                   rel="noreferrer"
+                  variant="secondary"
                   icon={<MessageCircle size={18} />}
                 >
-                  Telegram
-                </ButtonLink>
-                <ButtonLink
-                  href={`mailto:${contacts.email}`}
-                  variant="secondary"
-                  icon={<Mail size={18} />}
-                >
-                  Email
+                  Написать в Telegram
                 </ButtonLink>
               </div>
             </div>

@@ -16,22 +16,25 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: "Рамиль Канеев - Python-разработчик для Telegram, AI и backend",
+  title: "Рамиль Канеев - AI, backend и Telegram-разработка под ключ",
   description:
-    "Production-grade портфолио Python-разработчика Рамиля Канеева: Telegram-боты с оплатой, AI/LLM-интеграции, backend-сервисы, crypto automation, деплой и поддержка.",
+    "Telegram-боты, Mini Apps, AI/ML-интеграции, backend API, парсинг, web-сервисы, crypto/trading-инструменты, деплой и поддержка.",
   keywords: [
     "Рамиль Канеев",
     "mchomak",
-    "Python разработчик",
+    "AI разработчик",
+    "backend разработка",
     "Telegram бот",
+    "Telegram Mini App",
     "FastAPI",
     "AI интеграции",
-    "backend разработка",
+    "парсинг",
+    "crypto bot",
   ],
   openGraph: {
-    title: "Рамиль Канеев - Python backend, Telegram bots, AI integrations",
+    title: "Рамиль Канеев - AI, backend и Telegram-разработка",
     description:
-      "5 лет опыта, 30+ проектов под ключ: архитектура, backend, платежи, AI, деплой и поддержка.",
+      "Telegram-боты, Mini Apps, AI-модули, backend-системы, парсеры и интеграции от MVP до production.",
     type: "website",
     images: ["/images/engineering-command-center.png"],
   },

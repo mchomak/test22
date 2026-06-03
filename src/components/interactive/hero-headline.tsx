@@ -12,7 +12,7 @@ export function HeroHeadline() {
           animate={{ y: 0, rotateX: 0 }}
           transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
         >
-          Python backend
+          AI, backend и
         </motion.span>
       </span>
       <span className="block overflow-hidden pb-2">
@@ -22,7 +22,7 @@ export function HeroHeadline() {
           animate={{ y: 0, rotateX: 0 }}
           transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.24 }}
         >
-          под ключ
+          Telegram-разработка
         </motion.span>
       </span>
       <motion.span
@@ -31,7 +31,7 @@ export function HeroHeadline() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1], delay: 0.48 }}
       >
-        для ботов, AI и платежей
+        под ключ
         <motion.span
           aria-hidden
           className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-transparent via-white/35 to-transparent"

@@ -92,12 +92,26 @@ function setupScrollOrb(
   renderer.domElement.className = "h-full w-full";
   mount.appendChild(renderer.domElement);
 
-  const geometry = new THREE.IcosahedronGeometry(0.34, 1);
+  const geometry = new THREE.IcosahedronGeometry(0.34, 3);
+  const positionAttribute = geometry.getAttribute(
+    "position",
+  ) as import("three").BufferAttribute;
+  const basePositions = new Float32Array(
+    positionAttribute.array as Float32Array,
+  );
+  const dentDirections = [
+    new THREE.Vector3(1, 0.18, 0.12).normalize(),
+    new THREE.Vector3(0.18, 0.92, -0.28).normalize(),
+    new THREE.Vector3(-0.72, 0.18, 0.62).normalize(),
+    new THREE.Vector3(-0.16, -0.96, 0.22).normalize(),
+    new THREE.Vector3(0.56, -0.42, -0.72).normalize(),
+  ];
+  const vertexDirection = new THREE.Vector3();
   const material = new THREE.MeshBasicMaterial({
     color: "#a7f3d0",
     wireframe: true,
     transparent: true,
-    opacity: 0.62,
+    opacity: 0.68,
   });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.scale.setScalar(2.45);
@@ -120,10 +134,47 @@ function setupScrollOrb(
   let running = false;
   const clock = new THREE.Clock();
 
+  const deformOrb = (elapsed: number) => {
+    for (let index = 0; index < positionAttribute.count; index += 1) {
+      const offset = index * 3;
+      const baseX = basePositions[offset];
+      const baseY = basePositions[offset + 1];
+      const baseZ = basePositions[offset + 2];
+
+      vertexDirection.set(baseX, baseY, baseZ).normalize();
+
+      let inward = 0;
+      let outward = 0;
+      dentDirections.forEach((center, centerIndex) => {
+        const cycle =
+          (elapsed * 0.16 + centerIndex / dentDirections.length) % 1;
+        const wave = Math.sin(cycle * Math.PI * 2);
+        const influence = Math.pow(
+          Math.max(0, (vertexDirection.dot(center) - 0.38) / 0.62),
+          2.4,
+        );
+
+        inward = Math.max(inward, influence * Math.pow(Math.max(0, wave), 3));
+        outward = Math.max(
+          outward,
+          influence * Math.pow(Math.max(0, -wave), 3.6),
+        );
+      });
+
+      const breathing = 1 + Math.sin(elapsed * 1.1 + baseX * 7) * 0.018;
+      const scale = Math.max(0.22, breathing + outward * 0.14 - inward * 0.82);
+
+      positionAttribute.setXYZ(index, baseX * scale, baseY * scale, baseZ * scale);
+    }
+
+    positionAttribute.needsUpdate = true;
+  };
+
   const render = () => {
     const elapsed = clock.getElapsedTime();
 
     if (!reduceMotion) {
+      deformOrb(elapsed);
       mesh.rotation.y = -0.36 + elapsed * 0.09;
       mesh.rotation.x = 0.18 + Math.sin(elapsed * 0.18) * 0.08;
       mesh.rotation.z = 0.08 + elapsed * 0.035;
