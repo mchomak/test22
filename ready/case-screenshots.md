@@ -1,26 +1,33 @@
 # Скрины для кейсов
 
-Сайт сейчас использует обложки из `public/cases/<slug>/cover.png`.
-Я уже перенес выбранные изображения из корневой папки `img` в эти папки.
+Сайт использует выбранные изображения из `public/cases/<slug>/`.
+Корневую папку `img/` можно держать как рабочий архив, а на сайт подключать только отобранные файлы из `public/cases`.
 
-## Как называть файлы
+## Текущие обложки
 
-Для каждого проекта лучше держать отдельную папку:
+- `public/cases/subscription-bot/telegram-subscription-bot-preview.png`
+- `public/cases/sapsanex-mini-app/sapsanex-mini-app-calculator-preview.png`
+- `public/cases/seedream-tryon/seedream-ai-tryon-bot-preview.png`
+- `public/cases/ai-reply-assistant/ai-reply-assistant-preview.png`
+- `public/cases/bybit-trading-bot/bybit-market-scanner-preview.png`
+- `public/cases/eps-bot/solana-eps-trading-bot-preview.png`
+- `public/cases/frax-redesign/frax-redesign-before-after-preview.png`
+- `public/cases/tech-rise-academy/tech-rise-academy-leads-preview.png`
+- `public/cases/gym-progres/gym-progres-tracker-preview.png`
+- `public/cases/skillup/skillup-ai-learning-tree-preview.png`
 
-- `public/cases/subscription-bot/`
-- `public/cases/sapsanex-mini-app/`
-- `public/cases/seedream-tryon/`
-- `public/cases/ai-reply-assistant/`
-- `public/cases/bybit-trading-bot/`
-- `public/cases/eps-bot/`
-- `public/cases/frax-redesign/`
-- `public/cases/tech-rise-academy/`
-- `public/cases/gym-progres/`
-- `public/cases/skillup/`
+## Как называть новые файлы
 
-Главная обложка проекта:
+Для каждого проекта держим отдельную папку:
 
-- `cover.png`
+- `public/cases/<slug>/`
+
+Главную обложку называй по смыслу проекта:
+
+- `<slug>-preview.png`
+- `<slug>-dashboard-preview.png`
+- `<slug>-before-after-preview.png`
+- `<slug>-lead-flow-preview.png`
 
 Дополнительные скрины называй по порядку и по зоне интерфейса:
 

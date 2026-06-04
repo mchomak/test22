@@ -443,7 +443,7 @@ export const cases: CaseStudy[] = [
       "Пользователь получает доступ сразу после успешной оплаты.",
     ],
     screenshotFolder: "public/cases/subscription-bot",
-    coverImage: "/cases/subscription-bot/cover.png",
+    coverImage: "/cases/subscription-bot/telegram-subscription-bot-preview.png",
     coverAlt: "Subscription bot Telegram flow and admin dashboard preview",
     preview: {
       kind: "bot",
@@ -496,7 +496,7 @@ export const cases: CaseStudy[] = [
       "Собственный журнал заявок хранит историю и снижает зависимость от внешнего API.",
     ],
     screenshotFolder: "public/cases/sapsanex-mini-app",
-    coverImage: "/cases/sapsanex-mini-app/cover.png",
+    coverImage: "/cases/sapsanex-mini-app/sapsanex-mini-app-calculator-preview.png",
     coverAlt: "SapsanEx Telegram Mini App calculator and admin workflow preview",
     preview: {
       kind: "mini-app",
@@ -549,7 +549,7 @@ export const cases: CaseStudy[] = [
       "Стек готов к переиспользованию для других img2img-сервисов.",
     ],
     screenshotFolder: "public/cases/seedream-tryon",
-    coverImage: "/cases/seedream-tryon/cover.png",
+    coverImage: "/cases/seedream-tryon/seedream-ai-tryon-bot-preview.png",
     coverAlt: "Seedream try-on bot with before and after generation preview",
     preview: {
       kind: "ai",
@@ -602,7 +602,7 @@ export const cases: CaseStudy[] = [
       "Оплата и бонусы попадают в единый пользовательский баланс.",
     ],
     screenshotFolder: "public/cases/ai-reply-assistant",
-    coverImage: "/cases/ai-reply-assistant/cover.png",
+    coverImage: "/cases/ai-reply-assistant/ai-reply-assistant-preview.png",
     coverAlt: "AI reply assistant Telegram bot and moderation pipeline preview",
     preview: {
       kind: "bot",
@@ -655,7 +655,7 @@ export const cases: CaseStudy[] = [
       "Dry-run режим снижает риск перед включением реальной торговли.",
     ],
     screenshotFolder: "public/cases/bybit-trading-bot",
-    coverImage: "/cases/bybit-trading-bot/cover.png",
+    coverImage: "/cases/bybit-trading-bot/bybit-market-scanner-preview.png",
     coverAlt: "Bybit trading bot market scanner and alert dashboard preview",
     preview: {
       kind: "chart",
@@ -708,7 +708,7 @@ export const cases: CaseStudy[] = [
       "Telegram-отчёты дают наблюдаемость без отдельной панели.",
     ],
     screenshotFolder: "public/cases/eps-bot",
-    coverImage: "/cases/eps-bot/cover.png",
+    coverImage: "/cases/eps-bot/solana-eps-trading-bot-preview.png",
     coverAlt: "Solana trading bot Telegram alerts and backend architecture preview",
     preview: {
       kind: "chart",
@@ -761,7 +761,7 @@ export const cases: CaseStudy[] = [
       "Существующий backend остался стабильным и знакомым заказчику.",
     ],
     screenshotFolder: "public/cases/frax-redesign",
-    coverImage: "/cases/frax-redesign/cover.png",
+    coverImage: "/cases/frax-redesign/frax-redesign-before-after-preview.png",
     coverAlt: "Frax real estate website redesign before and after preview",
     preview: {
       kind: "web",
@@ -814,7 +814,7 @@ export const cases: CaseStudy[] = [
       "Сайт работает без тяжёлого фреймворка и отдельной CRM.",
     ],
     screenshotFolder: "public/cases/tech-rise-academy",
-    coverImage: "/cases/tech-rise-academy/cover.png",
+    coverImage: "/cases/tech-rise-academy/tech-rise-academy-leads-preview.png",
     coverAlt: "TechRise Academy landing page and Telegram lead bot preview",
     preview: {
       kind: "dashboard",
@@ -867,7 +867,7 @@ export const cases: CaseStudy[] = [
       "История и графики дают быстрый обзор прогресса.",
     ],
     screenshotFolder: "public/cases/gym-progres",
-    coverImage: "/cases/gym-progres/cover.png",
+    coverImage: "/cases/gym-progres/gym-progres-tracker-preview.png",
     coverAlt: "Gym Progres training tracker and analytics dashboard preview",
     preview: {
       kind: "dashboard",
@@ -920,7 +920,7 @@ export const cases: CaseStudy[] = [
       "AI-пайплайн разделён на генерацию плана, объяснения и квизы.",
     ],
     screenshotFolder: "public/cases/skillup",
-    coverImage: "/cases/skillup/cover.png",
+    coverImage: "/cases/skillup/skillup-ai-learning-tree-preview.png",
     coverAlt: "SkillUp AI learning tree and onboarding chat preview",
     preview: {
       kind: "tree",

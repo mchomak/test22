@@ -40,8 +40,6 @@ export function Cases() {
       const depth = Math.cos(radians);
       const depthRatio = (depth + 1) / 2;
       const isActive = offset === 0;
-      const mutedBrightness = 0.68 + depthRatio * 0.12;
-      const mutedSaturation = 0.42 + depthRatio * 0.16;
 
       return {
         item,
@@ -50,13 +48,11 @@ export function Cases() {
         x: side * 440,
         y: isActive ? 10 : 56 + (1 - depth) * 62,
         scale: isActive ? 1 : 0.58 + depthRatio * 0.16,
-        opacity: isActive ? 1 : 0.06 + depthRatio * 0.16,
+        opacity: isActive ? 1 : 0,
         rotate: side * 1.8,
         rotateY: side * -8,
         zIndex: isActive ? 140 : Math.round(depthRatio * 36),
-        visualFilter: isActive
-          ? "brightness(1) saturate(1)"
-          : `brightness(${mutedBrightness}) saturate(${mutedSaturation})`,
+        visualFilter: "brightness(1) saturate(1)",
       };
     });
   }, [activeIndex]);
@@ -199,6 +195,7 @@ export function Cases() {
                           : "case-wheel-card-muted"
                       }`}
                       aria-label={item.title}
+                      aria-hidden={isActive ? undefined : true}
                       aria-current={isActive ? "true" : undefined}
                       tabIndex={isActive ? 0 : -1}
                       initial={false}
