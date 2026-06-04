@@ -1,26 +1,11 @@
 # Скрины для кейсов
 
-Класть в `public/cases/<slug>/`, где `slug` совпадает с кейсом на сайте.
+Сайт сейчас использует обложки из `public/cases/<slug>/cover.png`.
+Я уже перенес выбранные изображения из корневой папки `img` в эти папки.
 
-## Базовые имена
+## Как называть файлы
 
-- `cover-800x600.png` — обложка для витрины.
-- `hero-1600x900.png` — широкий hero-скрин для подробного кейса.
-- `arch-diagram.svg` — схема работы.
-- `demo-flow.mp4` — короткое видео основного сценария.
-
-Если экранов несколько, называй по зоне интерфейса и порядку:
-
-- `bot-01-main-menu.png`
-- `bot-02-payment.png`
-- `admin-01-users.png`
-- `admin-02-payments.png`
-- `web-01-hero.png`
-- `web-02-form.png`
-- `chart-01-signal.png`
-- `code-01-handler.png`
-
-## Папки
+Для каждого проекта лучше держать отдельную папку:
 
 - `public/cases/subscription-bot/`
 - `public/cases/sapsanex-mini-app/`
@@ -33,4 +18,40 @@
 - `public/cases/gym-progres/`
 - `public/cases/skillup/`
 
-Детальные чек-листы по каждому проекту лежат в отдельных файлах `ready/<slug>.md`.
+Главная обложка проекта:
+
+- `cover.png`
+
+Дополнительные скрины называй по порядку и по зоне интерфейса:
+
+- `01-bot-main-menu.png`
+- `02-bot-payment.png`
+- `03-admin-dashboard.png`
+- `04-admin-payments.png`
+- `05-user-flow.png`
+- `06-architecture.png`
+- `07-result.png`
+
+Для web-проектов:
+
+- `01-web-hero.png`
+- `02-web-form.png`
+- `03-web-mobile.png`
+- `04-admin-leads.png`
+
+Для trading/parser/backend-проектов:
+
+- `01-dashboard.png`
+- `02-signals.png`
+- `03-api-flow.png`
+- `04-logs.png`
+- `05-architecture.png`
+
+Если есть видео:
+
+- `demo-flow.mp4`
+- `admin-flow.mp4`
+
+`originals/` можно оставлять рядом как архив исходников, но на сайт лучше подключать уже выбранные и очищенные файлы из `public/cases/<slug>/`.
+
+Детальные чек-листы по проектам лежат в `ready/<slug>.md`.

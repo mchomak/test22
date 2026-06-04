@@ -7,6 +7,7 @@ import {
   Layers3,
   PlayCircle,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { cases, contacts, type CaseStudy } from "@/data/site";
 import { Footer } from "@/components/sections/final-cta";
@@ -134,6 +135,8 @@ function CaseArticle({ item, index }: { item: CaseStudy; index: number }) {
         </aside>
       </div>
 
+      <CaseCover item={item} preload={index === 0} />
+
       <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="grid gap-10">
           <TextSection title="Контекст задачи" items={item.context} />
@@ -202,6 +205,29 @@ function CaseArticle({ item, index }: { item: CaseStudy; index: number }) {
         </aside>
       </div>
     </article>
+  );
+}
+
+function CaseCover({
+  item,
+  preload = false,
+}: {
+  item: CaseStudy;
+  preload?: boolean;
+}) {
+  return (
+    <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-black/35 p-2 shadow-2xl shadow-black/30">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#030505]">
+        <Image
+          src={item.coverImage}
+          alt={item.coverAlt}
+          fill
+          preload={preload}
+          sizes="(max-width: 1024px) 100vw, 1180px"
+          className="object-contain"
+        />
+      </div>
+    </div>
   );
 }
 

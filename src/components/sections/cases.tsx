@@ -20,19 +20,7 @@ import { cases } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 
-const showcaseCaseSlugs = [
-  "subscription-bot",
-  "sapsanex-mini-app",
-  "seedream-tryon",
-  "bybit-trading-bot",
-  "frax-redesign",
-  "tech-rise-academy",
-  "skillup",
-];
-
-const showcaseCases = cases.filter((item) =>
-  showcaseCaseSlugs.includes(item.slug),
-);
+const showcaseCases = cases;
 const angleStep = 360 / showcaseCases.length;
 const dragThreshold = 78;
 
@@ -348,6 +336,21 @@ function CasePreview({
 }: {
   item: (typeof showcaseCases)[number];
 }) {
+  if (item.coverImage) {
+    return (
+      <div className="case-preview case-preview-image-card" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.coverImage}
+          alt=""
+          loading="eager"
+          decoding="async"
+          className="case-preview-image"
+        />
+      </div>
+    );
+  }
+
   const title = item.preview.label;
 
   if (item.preview.kind === "chart") {

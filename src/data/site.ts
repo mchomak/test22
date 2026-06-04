@@ -388,6 +388,8 @@ export type CaseStudy = {
   }>;
   resultDetails: string[];
   screenshotFolder: string;
+  coverImage: string;
+  coverAlt: string;
   preview: {
     kind: "bot" | "mini-app" | "ai" | "chart" | "dashboard" | "web" | "tree";
     accent: string;
@@ -441,6 +443,8 @@ export const cases: CaseStudy[] = [
       "Пользователь получает доступ сразу после успешной оплаты.",
     ],
     screenshotFolder: "public/cases/subscription-bot",
+    coverImage: "/cases/subscription-bot/cover.png",
+    coverAlt: "Subscription bot Telegram flow and admin dashboard preview",
     preview: {
       kind: "bot",
       accent: "#67e8f9",
@@ -492,6 +496,8 @@ export const cases: CaseStudy[] = [
       "Собственный журнал заявок хранит историю и снижает зависимость от внешнего API.",
     ],
     screenshotFolder: "public/cases/sapsanex-mini-app",
+    coverImage: "/cases/sapsanex-mini-app/cover.png",
+    coverAlt: "SapsanEx Telegram Mini App calculator and admin workflow preview",
     preview: {
       kind: "mini-app",
       accent: "#f97316",
@@ -543,6 +549,8 @@ export const cases: CaseStudy[] = [
       "Стек готов к переиспользованию для других img2img-сервисов.",
     ],
     screenshotFolder: "public/cases/seedream-tryon",
+    coverImage: "/cases/seedream-tryon/cover.png",
+    coverAlt: "Seedream try-on bot with before and after generation preview",
     preview: {
       kind: "ai",
       accent: "#a78bfa",
@@ -594,6 +602,8 @@ export const cases: CaseStudy[] = [
       "Оплата и бонусы попадают в единый пользовательский баланс.",
     ],
     screenshotFolder: "public/cases/ai-reply-assistant",
+    coverImage: "/cases/ai-reply-assistant/cover.png",
+    coverAlt: "AI reply assistant Telegram bot and moderation pipeline preview",
     preview: {
       kind: "bot",
       accent: "#38bdf8",
@@ -645,6 +655,8 @@ export const cases: CaseStudy[] = [
       "Dry-run режим снижает риск перед включением реальной торговли.",
     ],
     screenshotFolder: "public/cases/bybit-trading-bot",
+    coverImage: "/cases/bybit-trading-bot/cover.png",
+    coverAlt: "Bybit trading bot market scanner and alert dashboard preview",
     preview: {
       kind: "chart",
       accent: "#f7a600",
@@ -696,6 +708,8 @@ export const cases: CaseStudy[] = [
       "Telegram-отчёты дают наблюдаемость без отдельной панели.",
     ],
     screenshotFolder: "public/cases/eps-bot",
+    coverImage: "/cases/eps-bot/cover.png",
+    coverAlt: "Solana trading bot Telegram alerts and backend architecture preview",
     preview: {
       kind: "chart",
       accent: "#8b5cf6",
@@ -747,6 +761,8 @@ export const cases: CaseStudy[] = [
       "Существующий backend остался стабильным и знакомым заказчику.",
     ],
     screenshotFolder: "public/cases/frax-redesign",
+    coverImage: "/cases/frax-redesign/cover.png",
+    coverAlt: "Frax real estate website redesign before and after preview",
     preview: {
       kind: "web",
       accent: "#22c55e",
@@ -798,6 +814,8 @@ export const cases: CaseStudy[] = [
       "Сайт работает без тяжёлого фреймворка и отдельной CRM.",
     ],
     screenshotFolder: "public/cases/tech-rise-academy",
+    coverImage: "/cases/tech-rise-academy/cover.png",
+    coverAlt: "TechRise Academy landing page and Telegram lead bot preview",
     preview: {
       kind: "dashboard",
       accent: "#06b6d4",
@@ -849,6 +867,8 @@ export const cases: CaseStudy[] = [
       "История и графики дают быстрый обзор прогресса.",
     ],
     screenshotFolder: "public/cases/gym-progres",
+    coverImage: "/cases/gym-progres/cover.png",
+    coverAlt: "Gym Progres training tracker and analytics dashboard preview",
     preview: {
       kind: "dashboard",
       accent: "#84cc16",
@@ -900,6 +920,8 @@ export const cases: CaseStudy[] = [
       "AI-пайплайн разделён на генерацию плана, объяснения и квизы.",
     ],
     screenshotFolder: "public/cases/skillup",
+    coverImage: "/cases/skillup/cover.png",
+    coverAlt: "SkillUp AI learning tree and onboarding chat preview",
     preview: {
       kind: "tree",
       accent: "#c084fc",
