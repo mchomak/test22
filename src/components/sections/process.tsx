@@ -1,37 +1,38 @@
 import { GitBranch, Rocket, Settings2 } from "lucide-react";
 import type { ReactNode } from "react";
-import { processSteps } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
+import type { SiteData } from "@/data/site";
 
-export function Process() {
+const metricIcons = [
+  <GitBranch key="architecture" size={18} />,
+  <Settings2 key="delivery" size={18} />,
+  <Rocket key="launch" size={18} />,
+];
+
+export function Process({ site }: { site: SiteData }) {
+  const { processSteps, ui } = site;
+
   return (
     <section id="process" className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Как проходит работа"
-          title="После заявки понятно, что происходит дальше"
-          description="Процесс снижает неопределённость: сначала конфигурация и уточнение деталей, потом границы MVP, финальная смета, разработка, запуск и поддержка."
+          eyebrow={ui.process.eyebrow}
+          title={ui.process.title}
+          description={ui.process.description}
         />
 
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#101311]/68 p-5 backdrop-blur-md sm:p-7">
             <div className="mb-8 grid gap-4 md:grid-cols-3">
-              <PipelineMetric
-                icon={<GitBranch size={18} />}
-                label="Architecture"
-                value="схема до кода"
-              />
-              <PipelineMetric
-                icon={<Settings2 size={18} />}
-                label="Delivery"
-                value="итерации и проверки"
-              />
-              <PipelineMetric
-                icon={<Rocket size={18} />}
-                label="Launch"
-                value="деплой и стабилизация"
-              />
+              {ui.process.metrics.map((metric, index) => (
+                <PipelineMetric
+                  key={metric.label}
+                  icon={metricIcons[index]}
+                  label={metric.label}
+                  value={metric.value}
+                />
+              ))}
             </div>
 
             <div className="process-flow">

@@ -16,41 +16,145 @@ import {
   SlidersHorizontal,
   User,
 } from "lucide-react";
-import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import {
-  complexityLevels,
-  projectModules,
-  projectTypes,
-  urgencyOptions,
+  type ProjectComplexityId,
   type ProjectTypeId,
+  type SiteData,
 } from "@/data/site";
 
 type SubmitState = "idle" | "sending" | "success" | "error";
 
-const steps = [
-  "Тип проекта",
-  "Сложность",
-  "Модули",
-  "Сроки",
-  "Контакты",
-  "Отправка",
-];
+type ProjectEstimatorData = Pick<
+  SiteData,
+  "projectTypes" | "complexityLevels" | "urgencyOptions" | "projectModules" | "ui"
+>;
 
-const money = new Intl.NumberFormat("ru-RU");
-
-const formatMoney = (value: number) => `${money.format(value)} ₽`;
 const roundBudget = (value: number) =>
   Math.max(15000, Math.round(value / 5000) * 5000);
 
-export function ProjectEstimator() {
+const isProjectTypeId = (
+  value: string | null,
+  projectTypes: ProjectEstimatorData["projectTypes"],
+): value is ProjectTypeId =>
+  projectTypes.some((item) => item.id === value);
+
+const isProjectComplexityId = (
+  value: string | null,
+  complexityLevels: ProjectEstimatorData["complexityLevels"],
+): value is ProjectComplexityId =>
+  complexityLevels.some((item) => item.id === value);
+
+const getEstimatorPresetModules = (
+  typeId: ProjectTypeId,
+  rawModules: string | null,
+  data: ProjectEstimatorData,
+) => {
+  const { projectModules, projectTypes } = data;
+  const nextType = projectTypes.find((item) => item.id === typeId) ?? projectTypes[0];
+
+  if (!rawModules) {
+    return nextType.defaultModules;
+  }
+
+  const availableModuleIds = new Set(projectModules[typeId].map((item) => item.id));
+  const presetModules = rawModules
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => availableModuleIds.has(item));
+
+  return presetModules.length ? presetModules : nextType.defaultModules;
+};
+
+type EstimatorInitialState = {
+  key: string;
+  selectedTypeId: ProjectTypeId;
+  selectedModules: string[];
+  complexityId: ProjectComplexityId;
+  urgencyId: string;
+};
+
+const getEstimatorInitialState = (
+  query: string,
+  data: ProjectEstimatorData,
+): EstimatorInitialState => {
+  const params = new URLSearchParams(query);
+  const typeParam = params.get("estimateType");
+  const { complexityLevels, projectTypes, urgencyOptions } = data;
+
+  if (!isProjectTypeId(typeParam, projectTypes)) {
+    return {
+      key: "default",
+      selectedTypeId: projectTypes[0].id,
+      selectedModules: projectTypes[0].defaultModules,
+      complexityId: "business",
+      urgencyId: urgencyOptions[1].id,
+    };
+  }
+
+  const complexityParam = params.get("estimateComplexity");
+  const selectedModules = getEstimatorPresetModules(
+    typeParam,
+    params.get("estimateModules"),
+    data,
+  );
+  const complexityId = isProjectComplexityId(complexityParam, complexityLevels)
+    ? complexityParam
+    : "business";
+
+  return {
+    key: `preset:${typeParam}:${complexityId}:${selectedModules.join(",")}`,
+    selectedTypeId: typeParam,
+    selectedModules,
+    complexityId,
+    urgencyId: "standard",
+  };
+};
+
+export function ProjectEstimator({ data }: { data: ProjectEstimatorData }) {
+  const searchParams = useSearchParams();
+  const estimatorQuery = searchParams?.toString() ?? "";
+  const initialState = useMemo(
+    () => getEstimatorInitialState(estimatorQuery, data),
+    [data, estimatorQuery],
+  );
+
+  return (
+    <ProjectEstimatorForm
+      key={initialState.key}
+      data={data}
+      initialState={initialState}
+    />
+  );
+}
+
+function ProjectEstimatorForm({
+  data,
+  initialState,
+}: {
+  data: ProjectEstimatorData;
+  initialState: EstimatorInitialState;
+}) {
+  const { complexityLevels, projectModules, projectTypes, ui, urgencyOptions } = data;
+  const copy = ui.estimator;
+  const money = useMemo(
+    () => new Intl.NumberFormat(copy.moneyLocale),
+    [copy.moneyLocale],
+  );
+  const formatMoney = useCallback(
+    (value: number) => `${money.format(value)} ${copy.currency}`,
+    [copy.currency, money],
+  );
   const [selectedTypeId, setSelectedTypeId] = useState<ProjectTypeId>(
-    projectTypes[0].id,
+    initialState.selectedTypeId,
   );
   const [selectedModules, setSelectedModules] = useState<string[]>(
-    projectTypes[0].defaultModules,
+    initialState.selectedModules,
   );
-  const [complexityId, setComplexityId] = useState(complexityLevels[1].id);
-  const [urgencyId, setUrgencyId] = useState(urgencyOptions[1].id);
+  const [complexityId, setComplexityId] =
+    useState<ProjectComplexityId>(initialState.complexityId);
+  const [urgencyId, setUrgencyId] = useState(initialState.urgencyId);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [contact, setContact] = useState({
@@ -68,7 +172,10 @@ export function ProjectEstimator() {
     complexityLevels[1];
   const activeUrgency =
     urgencyOptions.find((item) => item.id === urgencyId) ?? urgencyOptions[1];
-  const modules = useMemo(() => projectModules[selectedTypeId], [selectedTypeId]);
+  const modules = useMemo(
+    () => projectModules[selectedTypeId],
+    [projectModules, selectedTypeId],
+  );
   const selectedModuleDetails = useMemo(
     () => modules.filter((item) => selectedModules.includes(item.id)),
     [modules, selectedModules],
@@ -109,10 +216,10 @@ export function ProjectEstimator() {
       high,
       daysLow,
       daysHigh,
-      budget: `${formatMoney(low)} – ${formatMoney(high)}`,
-      timeline: `${daysLow}–${daysHigh} рабочих дней`,
+      budget: `${formatMoney(low)} - ${formatMoney(high)}`,
+      timeline: `${daysLow}-${daysHigh} ${copy.timelineSuffix}`,
     };
-  }, [activeComplexity, activeType, activeUrgency, selectedModuleDetails]);
+  }, [activeComplexity, activeType, activeUrgency, copy.timelineSuffix, formatMoney, selectedModuleDetails]);
 
   const chooseType = (typeId: ProjectTypeId) => {
     const nextType = projectTypes.find((item) => item.id === typeId);
@@ -145,7 +252,7 @@ export function ProjectEstimator() {
 
     if (!contact.telegram.trim() || !contact.comment.trim()) {
       setSubmitState("error");
-      setSubmitMessage("Укажите Telegram и коротко опишите задачу.");
+      setSubmitMessage(copy.validationError);
       return;
     }
 
@@ -181,21 +288,21 @@ export function ProjectEstimator() {
         | null;
 
       if (!response.ok) {
-        throw new Error(data?.error ?? "Не удалось отправить заявку.");
+        throw new Error(data?.error ?? copy.fallbackSubmitError);
       }
 
       setSubmitState("success");
       setSubmitMessage(
         data?.delivered
-          ? "Заявка отправлена в Telegram. Я вернусь с уточнениями."
-          : "Заявка собрана и отправлена в API-заглушку. Telegram-получателя можно подключить через env.",
+          ? copy.successDelivered
+          : copy.successStub,
       );
     } catch (error) {
       setSubmitState("error");
       setSubmitMessage(
         error instanceof Error
           ? error.message
-          : "Не удалось отправить заявку. Попробуйте написать в Telegram.",
+          : copy.unknownSubmitError,
       );
     }
   };
@@ -210,16 +317,16 @@ export function ProjectEstimator() {
             </span>
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
-                Project config
+                {copy.kicker}
               </p>
               <h3 className="text-xl font-semibold text-white">
-                Тип проекта → модули → заявка
+                {copy.title}
               </h3>
             </div>
           </div>
 
           <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-6">
-            {steps.map((step, index) => (
+            {copy.steps.map((step, index) => (
               <div
                 key={step}
                 className="rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-2"
@@ -237,8 +344,9 @@ export function ProjectEstimator() {
 
         <ConfigBlock
           label="01"
-          title="Выберите тип решения"
-          description="После выбора типа ниже остаются только релевантные модули."
+          copy={copy}
+          title={copy.typeTitle}
+          description={copy.typeDescription}
         >
           <div className="grid gap-3 md:grid-cols-2">
             {projectTypes.map((type) => {
@@ -283,8 +391,9 @@ export function ProjectEstimator() {
 
         <ConfigBlock
           label="02"
-          title="Сложность"
-          description="Это влияет на вилку бюджета и срок: MVP, бизнес-продукт или сложная система."
+          copy={copy}
+          title={copy.complexityTitle}
+          description={copy.complexityDescription}
         >
           <div className="grid gap-3 md:grid-cols-3">
             {complexityLevels.map((level) => {
@@ -314,8 +423,9 @@ export function ProjectEstimator() {
 
         <ConfigBlock
           label="03"
-          title="Модули"
-          description={`Показаны опции для категории «${activeType.label}».`}
+          copy={copy}
+          title={copy.modulesTitle}
+          description={copy.modulesDescription.replace("{category}", activeType.label)}
         >
           <div className="grid gap-3 md:grid-cols-2">
             {modules.map((module) => {
@@ -351,7 +461,7 @@ export function ProjectEstimator() {
                         {module.description}
                       </span>
                       <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">
-                        + {formatMoney(module.price)} / +{module.days} дн.
+                        + {formatMoney(module.price)} / +{module.days} {copy.dayShort}
                       </span>
                     </span>
                   </span>
@@ -363,8 +473,9 @@ export function ProjectEstimator() {
 
         <ConfigBlock
           label="04"
-          title="Сроки"
-          description="Выберите комфортный темп. Срочность повышает стоимость, но сжимает план работ."
+          copy={copy}
+          title={copy.urgencyTitle}
+          description={copy.urgencyDescription}
         >
           <div className="grid gap-3 md:grid-cols-3">
             {urgencyOptions.map((option) => {
@@ -394,20 +505,21 @@ export function ProjectEstimator() {
 
         <ConfigBlock
           label="05"
-          title="Контакты и описание"
-          description="Эти данные попадут в заявку вместе с выбранной конфигурацией и расчётом."
+          copy={copy}
+          title={copy.contactsTitle}
+          description={copy.contactsDescription}
         >
           <div className="grid gap-3 md:grid-cols-2">
             <Field
               icon={<User size={16} />}
-              label="Имя"
+              label={copy.fields.name}
               value={contact.name}
-              placeholder="Как к вам обращаться"
+              placeholder={copy.fields.namePlaceholder}
               onChange={(value) => updateContact("name", value)}
             />
             <Field
               icon={<MessageCircle size={16} />}
-              label="Telegram"
+              label={copy.fields.telegram}
               value={contact.telegram}
               placeholder="@username"
               required
@@ -415,17 +527,17 @@ export function ProjectEstimator() {
             />
             <Field
               icon={<Mail size={16} />}
-              label="Email"
+              label={copy.fields.email}
               value={contact.email}
-              placeholder="необязательно"
+              placeholder={copy.fields.emailPlaceholder}
               type="email"
               onChange={(value) => updateContact("email", value)}
             />
             <Field
               icon={<LinkIcon size={16} />}
-              label="Ссылка на ТЗ / файл"
+              label={copy.fields.fileUrl}
               value={contact.fileUrl}
-              placeholder="Google Docs, Figma, архив"
+              placeholder={copy.fields.fileUrlPlaceholder}
               onChange={(value) => updateContact("fileUrl", value)}
             />
           </div>
@@ -433,14 +545,14 @@ export function ProjectEstimator() {
           <label className="mt-3 block">
             <span className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-300">
               <FileText size={16} className="text-emerald-300" />
-              Краткое описание задачи
+              {copy.fields.comment}
             </span>
             <textarea
               required
               rows={5}
               value={contact.comment}
               onChange={(event) => updateContact("comment", event.target.value)}
-              placeholder="Например: нужно сделать мини-приложение для магазина одежды с каталогом, оплатой и реферальной системой."
+              placeholder={copy.fields.commentPlaceholder}
               className="min-h-32 w-full resize-y rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-zinc-600 focus:border-emerald-300/55"
             />
           </label>
@@ -448,8 +560,7 @@ export function ProjectEstimator() {
 
         <div className="rounded-3xl border border-emerald-300/20 bg-emerald-300/10 p-4 sm:p-5">
           <p className="text-sm leading-6 text-emerald-50/90">
-            Калькулятор показывает ориентир. Финальная стоимость фиксируется
-            после короткого обсуждения задачи, интеграций, дизайна и сроков.
+            {copy.note}
           </p>
           <button
             type="submit"
@@ -461,7 +572,7 @@ export function ProjectEstimator() {
             ) : (
               <Send size={18} />
             )}
-            Отправить конфигурацию
+            {copy.submit}
           </button>
           {submitMessage ? (
             <p
@@ -476,7 +587,7 @@ export function ProjectEstimator() {
         </div>
       </form>
 
-      <aside className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md lg:sticky lg:top-24 lg:self-start">
+      <aside className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
         <motion.div
           className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent"
           animate={{ x: ["-100%", "100%"] }}
@@ -494,27 +605,27 @@ export function ProjectEstimator() {
           animate={{ opacity: 1, y: 0 }}
           className="mt-5"
         >
-          <p className="text-sm text-zinc-500">Предварительная оценка</p>
+          <p className="text-sm text-zinc-500">{copy.estimateLabel}</p>
           <p className="mt-2 text-3xl font-semibold leading-tight text-white">
             {estimate.budget}
           </p>
           <p className="mt-5 flex items-center gap-2 text-sm text-zinc-400">
             <Clock3 size={16} className="text-amber-200" />
-            Срок:{" "}
+            {copy.timelineLabel}{" "}
             <span className="font-mono text-white">{estimate.timeline}</span>
           </p>
         </motion.div>
 
         <div className="mt-6 grid gap-3 border-t border-white/10 pt-5">
-          <SummaryLine label="Категория" value={activeType.label} />
-          <SummaryLine label="Сложность" value={activeComplexity.label} />
-          <SummaryLine label="Темп" value={activeUrgency.label} />
+          <SummaryLine label={copy.summaryLabels.category} value={activeType.label} />
+          <SummaryLine label={copy.summaryLabels.complexity} value={activeComplexity.label} />
+          <SummaryLine label={copy.summaryLabels.urgency} value={activeUrgency.label} />
         </div>
 
         <div className="mt-6">
           <p className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
             <Gauge size={15} className="text-cyan-200" />
-            Выбранные модули
+            {copy.selectedModules}
           </p>
           {selectedModuleDetails.length ? (
             <div className="flex flex-wrap gap-2">
@@ -529,23 +640,23 @@ export function ProjectEstimator() {
             </div>
           ) : (
             <p className="text-sm leading-6 text-zinc-500">
-              Модули не выбраны. Оценка считается только по базовой разработке.
+              {copy.noModules}
             </p>
           )}
         </div>
 
         <div className="mt-6 rounded-2xl border border-white/10 bg-black/24 p-4">
           <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-            Формат заявки
+            {copy.requestFormat}
           </p>
           <p className="mt-3 whitespace-pre-line text-xs leading-6 text-zinc-400">
-            {`Новая заявка с сайта
+            {`${copy.requestTitle}
 
-Категория: ${activeType.label}
-Сложность: ${activeComplexity.label.toLowerCase()}
-Опции: ${selectedModuleDetails.length ? selectedModuleDetails.map((item) => item.label).join(", ") : "базовая разработка"}
-Оценка: ${estimate.budget}
-Срок: ${estimate.timeline}`}
+${copy.summaryLabels.category}: ${activeType.label}
+${copy.summaryLabels.complexity}: ${activeComplexity.label.toLowerCase()}
+${copy.requestOptions}: ${selectedModuleDetails.length ? selectedModuleDetails.map((item) => item.label).join(", ") : copy.baseDevelopment}
+${copy.requestEstimate}: ${estimate.budget}
+${copy.timelineLabel} ${estimate.timeline}`}
           </p>
         </div>
 
@@ -553,7 +664,7 @@ export function ProjectEstimator() {
           href="#cases"
           className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.07]"
         >
-          Смотреть кейсы
+          {copy.viewCases}
           <ArrowRight size={16} />
         </a>
       </aside>
@@ -563,11 +674,13 @@ export function ProjectEstimator() {
 
 function ConfigBlock({
   label,
+  copy,
   title,
   description,
   children,
 }: {
   label: string;
+  copy: ProjectEstimatorData["ui"]["estimator"];
   title: string;
   description: string;
   children: ReactNode;
@@ -577,7 +690,7 @@ function ConfigBlock({
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/75">
-            step {label}
+            {copy.stepPrefix} {label}
           </p>
           <h3 className="mt-2 text-xl font-semibold text-white">{title}</h3>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">

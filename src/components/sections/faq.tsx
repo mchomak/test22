@@ -1,16 +1,18 @@
 import { CircleHelp } from "lucide-react";
-import { faqs } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
+import type { SiteData } from "@/data/site";
 
-export function FAQ() {
+export function FAQ({ site }: { site: SiteData }) {
+  const { faqs, ui } = site;
+
   return (
     <section id="faq" className="section-shell bg-[#090a0a]">
       <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="FAQ"
-          title="Вопросы, которые лучше закрыть до старта"
-          description="Чем точнее на входе сценарии, интеграции и ограничения, тем меньше сюрпризов на этапе разработки."
+          eyebrow={ui.faq.eyebrow}
+          title={ui.faq.title}
+          description={ui.faq.description}
           align="center"
         />
 

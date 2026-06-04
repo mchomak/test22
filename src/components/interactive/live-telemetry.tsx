@@ -3,57 +3,26 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { RadioTower, ShieldCheck, TerminalSquare } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import type { SiteData } from "@/data/site";
 
-const events = [
-  {
-    label: "Telegram webhook",
-    value: "18 ms",
-    tone: "text-emerald-200",
-    log: "event.message -> scenario.router -> state.commit",
-  },
-  {
-    label: "Payment callback",
-    value: "verified",
-    tone: "text-cyan-200",
-    log: "provider.webhook -> signature.check -> order.paid",
-  },
-  {
-    label: "LLM guardrail",
-    value: "scoped",
-    tone: "text-amber-200",
-    log: "query -> retrieval -> policy.limit -> answer",
-  },
-  {
-    label: "Deploy health",
-    value: "green",
-    tone: "text-emerald-200",
-    log: "docker.restart=0 errors=0 queue.depth=3",
-  },
-];
-
-const pipeline = [
-  "Telegram Bot",
-  "Payments",
-  "FastAPI",
-  "PostgreSQL",
-  "Redis Queue",
-  "AI Gateway",
-];
-
-export function LiveTelemetry() {
+export function LiveTelemetry({
+  copy,
+}: {
+  copy: SiteData["ui"]["liveTelemetry"];
+}) {
   const [active, setActive] = useState(0);
   const [latency, setLatency] = useState(18);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setActive((current) => (current + 1) % events.length);
+      setActive((current) => (current + 1) % copy.events.length);
       setLatency(14 + Math.round(Math.random() * 12));
     }, 1900);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [copy.events.length]);
 
-  const currentEvent = useMemo(() => events[active], [active]);
+  const currentEvent = useMemo(() => copy.events[active], [active, copy.events]);
 
   return (
     <>
@@ -61,15 +30,15 @@ export function LiveTelemetry() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm font-semibold text-white">
             <RadioTower size={17} className="text-emerald-300" />
-            Live product contour
+            {copy.title}
           </div>
           <span className="rounded-full bg-emerald-300/12 px-2.5 py-1 font-mono text-[11px] text-emerald-200">
-            online
+            {copy.status}
           </span>
         </div>
 
         <div className="mt-4 grid gap-2">
-          {events.map((event, index) => (
+          {copy.events.map((event, index) => (
             <button
               key={event.label}
               type="button"
@@ -84,7 +53,7 @@ export function LiveTelemetry() {
                 {event.label}
               </span>
               <span className={`font-mono text-xs ${event.tone}`}>
-                {event.label === "Telegram webhook" ? `${latency} ms` : event.value}
+                {index === 0 ? `${latency} ms` : event.value}
               </span>
             </button>
           ))}
@@ -110,18 +79,18 @@ export function LiveTelemetry() {
         <div className="mb-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-white">
             <TerminalSquare size={17} className="text-cyan-200" />
-            Bot to payment pipeline
+            {copy.pipelineTitle}
           </div>
           <ShieldCheck size={17} className="text-emerald-300" />
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {pipeline.map((node, index) => (
+          {copy.pipeline.map((node, index) => (
             <motion.div
               key={node}
               className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.045] px-3 py-3"
               animate={{
                 borderColor:
-                  index === active || index === (active + 2) % pipeline.length
+                  index === active || index === (active + 2) % copy.pipeline.length
                     ? "rgba(110,231,183,0.45)"
                     : "rgba(255,255,255,0.1)",
               }}

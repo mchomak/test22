@@ -1,16 +1,18 @@
 import { Quote } from "lucide-react";
-import { testimonials } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
+import type { SiteData } from "@/data/site";
 
-export function Testimonials() {
+export function Testimonials({ site }: { site: SiteData }) {
+  const { testimonials, ui } = site;
+
   return (
     <section className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Отзывы"
-          title="Спокойная инженерная работа без лишнего шума"
-          description="Формулировки обезличены, но передают типичный запрос: довести продукт до рабочего состояния, а не просто написать отдельный скрипт."
+          eyebrow={ui.testimonials.eyebrow}
+          title={ui.testimonials.title}
+          description={ui.testimonials.description}
         />
 
         <div className="grid gap-5 lg:grid-cols-3">

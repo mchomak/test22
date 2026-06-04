@@ -3,14 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CheckCircle2, CircuitBoard, TerminalSquare } from "lucide-react";
 import { useEffect, useState } from "react";
-
-const bootLogs = [
-  "loading python backend contour",
-  "mapping bot scenarios",
-  "linking payments, api, queues",
-  "starting ai gateway",
-  "deploy surface ready",
-];
+import type { SiteData } from "@/data/site";
 
 const nodes = [
   { left: "18%", top: "31%" },
@@ -20,7 +13,7 @@ const nodes = [
   { left: "81%", top: "36%" },
 ];
 
-export function BootSequence() {
+export function BootSequence({ copy }: { copy: SiteData["ui"]["boot"] }) {
   const [done, setDone] = useState(false);
   const reduceMotion = useReducedMotion();
 
@@ -43,7 +36,7 @@ export function BootSequence() {
             clipPath: "inset(0 0 100% 0)",
             transition: { duration: 0.85, ease: [0.77, 0, 0.175, 1] },
           }}
-          aria-label="Сборка интерфейса"
+          aria-label={copy.ariaLabel}
         >
           <div className="boot-grid absolute inset-0 opacity-70" />
           <motion.div
@@ -91,7 +84,7 @@ export function BootSequence() {
                   mchomak.system
                 </div>
                 <h2 className="max-w-xl text-balance text-3xl font-semibold leading-tight sm:text-5xl">
-                  Собираю интерфейс как production-контур
+                  {copy.title}
                 </h2>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
@@ -107,7 +100,7 @@ export function BootSequence() {
                 </span>
               </div>
               <div className="grid gap-2 p-4 font-mono text-xs leading-6 text-zinc-400 sm:text-sm">
-                {bootLogs.map((line, index) => (
+                {copy.logs.map((line, index) => (
                   <motion.div
                     key={line}
                     className="grid grid-cols-[28px_1fr_auto] items-center gap-3"

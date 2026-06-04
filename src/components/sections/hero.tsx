@@ -5,14 +5,16 @@ import {
   Code2,
   Mail,
 } from "lucide-react";
-import { contacts, heroMetrics, stack } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { ButtonLink } from "@/components/ui/button-link";
 import { EngineeringScene } from "@/components/interactive/engineering-scene";
 import { HeroHeadline } from "@/components/interactive/hero-headline";
 import { LiveTelemetry } from "@/components/interactive/live-telemetry";
+import type { SiteData } from "@/data/site";
 
-export function Hero() {
+export function Hero({ site }: { site: SiteData }) {
+  const { contacts, heroMetrics, stack, ui } = site;
+
   return (
     <section
       id="top"
@@ -38,15 +40,13 @@ export function Hero() {
         <Reveal className="max-w-3xl">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-300 shadow-2xl shadow-black/30 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,231,183,0.8)]" />
-            Telegram / AI / backend / automation
+            {ui.hero.badge}
           </div>
 
-          <HeroHeadline />
+          <HeroHeadline lines={ui.hero.headline} />
 
           <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-zinc-300 sm:text-xl">
-            Собираю Telegram-ботов, Mini Apps, backend-системы,
-            AI-модули, парсеры и интеграции — от MVP до рабочего продукта с
-            админкой, платежами и аналитикой.
+            {ui.hero.description}
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -54,14 +54,14 @@ export function Hero() {
               href="#estimator"
               icon={<Calculator size={18} />}
             >
-              Рассчитать проект
+              {ui.hero.primaryCta}
             </ButtonLink>
             <ButtonLink
               href="#cases"
               variant="secondary"
               icon={<ArrowRight size={18} />}
             >
-              Смотреть кейсы
+              {ui.hero.secondaryCta}
             </ButtonLink>
           </div>
 
@@ -100,13 +100,13 @@ export function Hero() {
           className="relative min-h-[560px] lg:min-h-[700px]"
         >
           <div className="absolute inset-0 rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_52%_48%,rgba(16,185,129,0.12),transparent_35%)] shadow-[0_0_120px_rgba(16,185,129,0.08)]" />
-          <LiveTelemetry />
+          <LiveTelemetry copy={ui.liveTelemetry} />
         </Reveal>
       </div>
 
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-3 px-4 pb-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
         <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-600">
-          Architecture / build / launch / support
+          {ui.hero.bottomNote}
         </div>
         <div className="flex flex-wrap gap-3 text-sm text-zinc-400">
           <a

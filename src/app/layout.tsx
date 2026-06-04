@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Manrope } from "next/font/google";
+import { headers } from "next/headers";
+import { defaultLocale, isLocale } from "@/data/site";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -16,25 +18,25 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: "Рамиль Канеев - AI, backend и Telegram-разработка под ключ",
+  title: "Ramil Kaneev - AI, backend and Telegram development",
   description:
-    "Telegram-боты, Mini Apps, AI/ML-интеграции, backend API, парсинг, web-сервисы, crypto/trading-инструменты, деплой и поддержка.",
+    "Telegram bots, Mini Apps, AI/ML integrations, backend APIs, parsing, web services, crypto/trading tools, deployment and support.",
   keywords: [
-    "Рамиль Канеев",
+    "Ramil Kaneev",
     "mchomak",
-    "AI разработчик",
-    "backend разработка",
+    "AI developer",
+    "backend development",
     "Telegram бот",
     "Telegram Mini App",
     "FastAPI",
-    "AI интеграции",
-    "парсинг",
+    "AI integrations",
+    "parsing",
     "crypto bot",
   ],
   openGraph: {
-    title: "Рамиль Канеев - AI, backend и Telegram-разработка",
+    title: "Ramil Kaneev - AI, backend and Telegram development",
     description:
-      "Telegram-боты, Mini Apps, AI-модули, backend-системы, парсеры и интеграции от MVP до production.",
+      "Telegram bots, Mini Apps, AI modules, backend systems, parsers and integrations from MVP to production.",
     type: "website",
     images: ["/images/engineering-command-center.png"],
   },
@@ -47,14 +49,17 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerLocale = (await headers()).get("x-site-locale");
+  const locale = isLocale(headerLocale) ? headerLocale : defaultLocale;
+
   return (
     <html
-      lang="ru"
+      lang={locale}
       className={`${manrope.variable} ${jetbrains.variable} scroll-smooth`}
     >
       <body>{children}</body>

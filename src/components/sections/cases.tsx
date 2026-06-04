@@ -16,15 +16,28 @@ import {
   type CSSProperties,
   type PointerEvent,
 } from "react";
-import { cases } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
+import type { Locale, SiteData } from "@/data/site";
 
-const showcaseCases = cases;
-const angleStep = 360 / showcaseCases.length;
 const dragThreshold = 78;
 
-export function Cases() {
+const stopCarouselDrag = (event: PointerEvent<HTMLElement>) => {
+  event.stopPropagation();
+};
+
+type CasesData = Pick<SiteData, "cases" | "ui">;
+
+export function Cases({
+  data,
+  locale,
+}: {
+  data: CasesData;
+  locale: Locale;
+}) {
+  const showcaseCases = data.cases;
+  const copy = data.ui.cases;
+  const angleStep = 360 / showcaseCases.length;
   const [activeIndex, setActiveIndex] = useState(0);
   const [holderRotation, setHolderRotation] = useState(0);
   const dragStartX = useRef<number | null>(null);
@@ -33,7 +46,7 @@ export function Cases() {
 
   const carouselCards = useMemo(() => {
     return showcaseCases.map((item, index) => {
-      const offset = getCircularOffset(index, activeIndex);
+      const offset = getCircularOffset(index, activeIndex, showcaseCases.length);
       const angle = offset * angleStep;
       const radians = (angle * Math.PI) / 180;
       const side = Math.sin(radians);
@@ -55,7 +68,7 @@ export function Cases() {
         visualFilter: "brightness(1) saturate(1)",
       };
     });
-  }, [activeIndex]);
+  }, [activeIndex, angleStep, showcaseCases]);
 
   const rotateBy = (steps: number) => {
     if (steps === 0) return;
@@ -71,7 +84,7 @@ export function Cases() {
   };
 
   const goTo = (index: number) => {
-    const offset = getCircularOffset(index, activeIndex);
+    const offset = getCircularOffset(index, activeIndex, showcaseCases.length);
     if (offset === 0) return;
 
     rotateBy(offset);
@@ -121,20 +134,19 @@ export function Cases() {
     <section id="cases" className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Кейсы"
-          title="Витрина реальных проектов: быстро понять тип задачи и результат"
-          description="На главной — короткая подборка из разных типов работ: Telegram, AI, crypto, backend, Mini App и web. Подробности, схемы и технические решения вынесены на отдельную страницу."
+          eyebrow={copy.eyebrow}
+          title={copy.title}
+          description={copy.description}
         />
 
         <Reveal>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-2xl text-sm leading-6 text-zinc-400">
-              Карточка показывает задачу, собранные модули и итоговые outcomes.
-              Для подробной доказательной базы откройте кейс целиком.
+              {copy.intro}
             </p>
-            <Link href="/cases" className="case-showcase-library-link">
+            <Link href={`/${locale}/cases`} className="case-showcase-library-link">
               <Layers3 size={16} />
-              Все кейсы
+              {copy.allCases}
             </Link>
           </div>
         </Reveal>
@@ -144,7 +156,7 @@ export function Cases() {
             <div
               className="case-showcase-stage"
               role="region"
-              aria-label="Карусель кейсов. Карточки можно вращать мышью или кнопками навигации."
+              aria-label={copy.carouselAria}
               onPointerDown={handleDragStart}
               onPointerMove={handleDragMove}
               onPointerUp={handleDragEnd}
@@ -220,7 +232,11 @@ export function Cases() {
                       <span className="case-wheel-card-line" aria-hidden="true" />
                       <span className="case-wheel-card-pin" aria-hidden="true" />
                       {isActive ? (
-                        <CaseCardContent item={item} />
+                        <CaseCardContent
+                          copy={copy}
+                          item={item}
+                          locale={locale}
+                        />
                       ) : (
                         <span className="case-wheel-card-ghost" aria-hidden="true">
                           <span />
@@ -235,12 +251,12 @@ export function Cases() {
               </div>
             </div>
 
-            <div className="case-showcase-controls" aria-label="Навигация кейсов">
+            <div className="case-showcase-controls" aria-label={copy.controlsAria}>
               <button
                 type="button"
                 onClick={() => go(-1)}
                 className="case-showcase-control-button"
-                aria-label="Предыдущий кейс"
+                aria-label={copy.previous}
               >
                 <ArrowLeft size={18} />
               </button>
@@ -259,7 +275,7 @@ export function Cases() {
                       className={`case-showcase-dot ${
                         index === activeIndex ? "case-showcase-dot-active" : ""
                       }`}
-                      aria-label={`Открыть кейс ${index + 1}: ${item.title}`}
+                      aria-label={`${copy.openCase} ${index + 1}: ${item.title}`}
                       aria-current={index === activeIndex ? "true" : undefined}
                     />
                   ))}
@@ -270,7 +286,7 @@ export function Cases() {
                 type="button"
                 onClick={() => go(1)}
                 className="case-showcase-control-button"
-                aria-label="Следующий кейс"
+                aria-label={copy.next}
               >
                 <ArrowRight size={18} />
               </button>
@@ -283,9 +299,13 @@ export function Cases() {
 }
 
 function CaseCardContent({
+  copy,
   item,
+  locale,
 }: {
-  item: (typeof showcaseCases)[number];
+  copy: SiteData["ui"]["cases"];
+  item: SiteData["cases"][number];
+  locale: Locale;
 }) {
   return (
     <div
@@ -300,7 +320,7 @@ function CaseCardContent({
 
         <p className="case-wheel-card-summary">{item.shortSummary}</p>
 
-        <div className="case-wheel-outcomes" aria-label="Ключевые модули">
+        <div className="case-wheel-outcomes" aria-label={copy.outcomesAria}>
           {item.outcomes.slice(0, 4).map((outcome) => (
             <span key={outcome} className="case-wheel-outcome">
               {outcome}
@@ -309,16 +329,21 @@ function CaseCardContent({
         </div>
 
         <div className="case-wheel-card-actions">
-          <Link href={`/cases#${item.slug}`} className="case-wheel-card-action">
+          <Link
+            href={`/${locale}/cases#${item.slug}`}
+            className="case-wheel-card-action"
+            onPointerDown={stopCarouselDrag}
+          >
             <FileText size={16} />
-            Подробнее
+            {copy.details}
           </Link>
           <Link
-            href="/#estimator"
+            href={buildLocalizedEstimatorHref(locale, item)}
             className="case-wheel-card-action case-wheel-card-action-secondary"
+            onPointerDown={stopCarouselDrag}
           >
             <Calculator size={16} />
-            Хочу похожий проект
+            {copy.similar}
           </Link>
         </div>
       </div>
@@ -331,7 +356,7 @@ function CaseCardContent({
 function CasePreview({
   item,
 }: {
-  item: (typeof showcaseCases)[number];
+  item: SiteData["cases"][number];
 }) {
   if (item.coverImage) {
     return (
@@ -447,9 +472,20 @@ function PreviewHeader({ title, stats }: { title: string; stats: string[] }) {
   );
 }
 
-function getCircularOffset(index: number, activeIndex: number) {
+function buildLocalizedEstimatorHref(locale: Locale, item: SiteData["cases"][number]) {
+  const params = new URLSearchParams({
+    estimateType: item.estimatorPreset.type,
+    estimateComplexity: item.estimatorPreset.complexity,
+    estimateModules: item.estimatorPreset.modules.join(","),
+    estimateCase: item.slug,
+  });
+
+  return `/${locale}/?${params.toString()}#estimator`;
+}
+
+function getCircularOffset(index: number, activeIndex: number, total: number) {
   let offset = index - activeIndex;
-  if (offset > showcaseCases.length / 2) offset -= showcaseCases.length;
-  if (offset < -showcaseCases.length / 2) offset += showcaseCases.length;
+  if (offset > total / 2) offset -= total;
+  if (offset < -total / 2) offset += total;
   return offset;
 }

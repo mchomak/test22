@@ -1,17 +1,19 @@
 import { ArrowRight, Info, LifeBuoy, WalletCards } from "lucide-react";
-import { budgetGuides, retainer } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button-link";
+import type { SiteData } from "@/data/site";
 
-export function Services() {
+export function Services({ site }: { site: SiteData }) {
+  const { budgetGuides, retainer, ui } = site;
+
   return (
     <section id="budget" className="section-shell bg-[#090a0a]">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Ориентиры по бюджету"
-          title="Короткая рамка цен без конкуренции с калькулятором"
-          description="Эти суммы помогают понять порядок бюджета. Точную вилку лучше считать через конфигуратор выше, потому что модули, сроки и интеграции сильно меняют объём."
+          eyebrow={ui.services.eyebrow}
+          title={ui.services.title}
+          description={ui.services.description}
         />
 
         <div className="grid gap-5 lg:grid-cols-3">
@@ -23,7 +25,7 @@ export function Services() {
                     <WalletCards size={22} />
                   </span>
                   <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-600">
-                    budget 0{index + 1}
+                    {ui.services.budgetLabel} 0{index + 1}
                   </span>
                 </div>
                 <h3 className="text-2xl font-semibold leading-tight text-white">
@@ -46,18 +48,16 @@ export function Services() {
               <Info size={22} className="mt-1 shrink-0 text-emerald-300" />
               <div>
                 <h3 className="text-xl font-semibold text-white">
-                  Финальная стоимость зависит от деталей
+                  {ui.services.finalTitle}
                 </h3>
                 <p className="mt-3 max-w-4xl text-sm leading-6 text-zinc-400">
-                  Финальная стоимость зависит от сценариев, дизайна,
-                  интеграций, платежей, объёма данных и сроков. После запуска
-                  можно отдельно подключить поддержку: {retainer.price}.
+                  {ui.services.finalDescription} {retainer.price}.
                 </p>
               </div>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
               <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
-                Рассчитать проект
+                {ui.services.estimateCta}
               </ButtonLink>
               <div className="flex items-center gap-2 text-sm text-zinc-400 lg:justify-end">
                 <LifeBuoy size={17} className="text-emerald-300" />

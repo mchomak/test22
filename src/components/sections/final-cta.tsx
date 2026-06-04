@@ -1,9 +1,11 @@
 import { Code2, Mail, MessageCircle, Send } from "lucide-react";
-import { contacts } from "@/data/site";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/reveal";
+import type { SiteData } from "@/data/site";
 
-export function FinalCTA() {
+export function FinalCTA({ site }: { site: SiteData }) {
+  const { contacts, ui } = site;
+
   return (
     <section id="contact" className="section-shell bg-[#0b0d0c]">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
@@ -13,15 +15,13 @@ export function FinalCTA() {
             <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
-                  Next step
+                  {ui.finalCta.eyebrow}
                 </p>
                 <h2 className="mt-4 max-w-4xl text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl">
-                  Опишите задачу — я вернусь с архитектурой, сроками и вилкой бюджета.
+                  {ui.finalCta.title}
                 </h2>
                 <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300">
-                  Быстрее всего начать с конфигуратора: он соберёт тип проекта,
-                  модули, сроки и контакт в одну заявку. Если вводных мало,
-                  можно сразу написать в Telegram.
+                  {ui.finalCta.description}
                 </p>
               </div>
 
@@ -30,7 +30,7 @@ export function FinalCTA() {
                   href="#estimator"
                   icon={<Send size={18} />}
                 >
-                  Рассчитать проект
+                  {ui.finalCta.estimateCta}
                 </ButtonLink>
                 <ButtonLink
                   href={contacts.telegramUrl}
@@ -39,7 +39,7 @@ export function FinalCTA() {
                   variant="secondary"
                   icon={<MessageCircle size={18} />}
                 >
-                  Написать в Telegram
+                  {ui.finalCta.telegramCta}
                 </ButtonLink>
               </div>
             </div>
@@ -78,12 +78,14 @@ export function FinalCTA() {
   );
 }
 
-export function Footer() {
+export function Footer({ site }: { site: SiteData }) {
+  const { ui } = site;
+
   return (
     <footer className="border-t border-white/10 bg-[#050607]">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-zinc-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-        <p>© 2026 Рамиль Канеев / mchomak</p>
-        <p>Python, Telegram bots, AI integrations, backend services.</p>
+        <p>© 2026 {ui.brandName} / mchomak</p>
+        <p>{ui.finalCta.footer}</p>
       </div>
     </footer>
   );

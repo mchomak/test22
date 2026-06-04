@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-export function HeroHeadline() {
+export function HeroHeadline({ lines }: { lines: string[] }) {
   return (
     <h1 className="max-w-5xl text-balance text-5xl font-semibold leading-[0.96] text-white sm:text-6xl md:text-7xl xl:text-8xl">
       <span className="block overflow-hidden pb-1">
@@ -12,7 +12,7 @@ export function HeroHeadline() {
           animate={{ y: 0, rotateX: 0 }}
           transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
         >
-          AI, backend и
+          {lines[0]}
         </motion.span>
       </span>
       <span className="block overflow-hidden pb-2">
@@ -22,7 +22,7 @@ export function HeroHeadline() {
           animate={{ y: 0, rotateX: 0 }}
           transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.24 }}
         >
-          Telegram-разработка
+          {lines[1]}
         </motion.span>
       </span>
       <motion.span
@@ -31,7 +31,7 @@ export function HeroHeadline() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1], delay: 0.48 }}
       >
-        под ключ
+        {lines[2]}
         <motion.span
           aria-hidden
           className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-transparent via-white/35 to-transparent"

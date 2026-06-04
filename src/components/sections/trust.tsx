@@ -1,10 +1,12 @@
 import { BadgeCheck, Bot, Brain, CandlestickChart, ServerCog } from "lucide-react";
-import { proofItems } from "@/data/site";
 import { Reveal } from "@/components/reveal";
+import type { SiteData } from "@/data/site";
 
 const icons = [Bot, Brain, CandlestickChart, ServerCog];
 
-export function Trust() {
+export function Trust({ site }: { site: SiteData }) {
+  const { proofItems, ui } = site;
+
   return (
     <section className="section-shell bg-[#070908]">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -13,16 +15,14 @@ export function Trust() {
             <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
-                  Уже в работе
+                  {ui.trust.eyebrow}
                 </p>
                 <h2 className="mt-3 max-w-3xl text-balance text-2xl font-semibold leading-tight text-white sm:text-3xl">
-                  Перед расчётом — быстрый срез задач, которые уже похожи на
-                  реальные production-проекты
+                  {ui.trust.title}
                 </h2>
               </div>
               <p className="max-w-md text-sm leading-6 text-zinc-400">
-                Это не витрина всех кейсов, а короткое подтверждение опыта по
-                типам решений, которые чаще всего приходят в заявку.
+                {ui.trust.description}
               </p>
             </div>
 
@@ -40,7 +40,7 @@ export function Trust() {
                         <Icon size={21} />
                       </span>
                       <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-600">
-                        proof 0{index + 1}
+                        {ui.trust.proofLabel} 0{index + 1}
                       </span>
                     </div>
                     <h3 className="text-lg font-semibold text-white">
