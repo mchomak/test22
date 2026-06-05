@@ -11,6 +11,7 @@ import { Services } from "@/components/sections/services";
 import { SiteHeader } from "@/components/sections/site-header";
 import { Specialization } from "@/components/sections/specialization";
 import { Trust } from "@/components/sections/trust";
+import { localizeCaseImages } from "@/data/case-images";
 import { getLocaleFromParams, getSiteData } from "@/data/site";
 import { notFound } from "next/navigation";
 
@@ -25,7 +26,7 @@ export default async function Home({
 
   const site = getSiteData(locale);
   const casesData = {
-    cases: site.cases,
+    cases: localizeCaseImages(locale, site.cases),
     ui: site.ui,
   };
 

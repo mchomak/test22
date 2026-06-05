@@ -31,8 +31,8 @@ type ProjectEstimatorData = Pick<
   "projectTypes" | "complexityLevels" | "urgencyOptions" | "projectModules" | "ui"
 >;
 
-const roundBudget = (value: number) =>
-  Math.max(15000, Math.round(value / 5000) * 5000);
+const roundBudget = (value: number, step: number, min: number) =>
+  Math.max(min, Math.round(value / step) * step);
 
 const isProjectTypeId = (
   value: string | null,
@@ -143,8 +143,11 @@ function ProjectEstimatorForm({
     [copy.moneyLocale],
   );
   const formatMoney = useCallback(
-    (value: number) => `${money.format(value)} ${copy.currency}`,
-    [copy.currency, money],
+    (value: number) =>
+      copy.currencyPosition === "prefix"
+        ? `${copy.currency}${money.format(value)}`
+        : `${money.format(value)} ${copy.currency}`,
+    [copy.currency, copy.currencyPosition, money],
   );
   const [selectedTypeId, setSelectedTypeId] = useState<ProjectTypeId>(
     initialState.selectedTypeId,
@@ -197,10 +200,18 @@ function ProjectEstimatorForm({
     const priceFactor =
       activeComplexity.priceFactor * activeUrgency.priceFactor;
     const daysFactor = activeComplexity.daysFactor * activeUrgency.daysFactor;
-    const low = roundBudget((activeType.baseLow + moduleLow) * priceFactor);
+    const low = roundBudget(
+      (activeType.baseLow + moduleLow) * priceFactor,
+      copy.budgetStep,
+      copy.budgetMin,
+    );
     const high = Math.max(
-      low + 10000,
-      roundBudget((activeType.baseHigh + moduleHigh) * priceFactor),
+      low + copy.budgetGap,
+      roundBudget(
+        (activeType.baseHigh + moduleHigh) * priceFactor,
+        copy.budgetStep,
+        copy.budgetMin,
+      ),
     );
     const daysLow = Math.max(
       3,
@@ -219,7 +230,17 @@ function ProjectEstimatorForm({
       budget: `${formatMoney(low)} - ${formatMoney(high)}`,
       timeline: `${daysLow}-${daysHigh} ${copy.timelineSuffix}`,
     };
-  }, [activeComplexity, activeType, activeUrgency, copy.timelineSuffix, formatMoney, selectedModuleDetails]);
+  }, [
+    activeComplexity,
+    activeType,
+    activeUrgency,
+    copy.budgetGap,
+    copy.budgetMin,
+    copy.budgetStep,
+    copy.timelineSuffix,
+    formatMoney,
+    selectedModuleDetails,
+  ]);
 
   const chooseType = (typeId: ProjectTypeId) => {
     const nextType = projectTypes.find((item) => item.id === typeId);

@@ -159,6 +159,17 @@ export type ProjectEstimatorPreset = {
   modules: string[];
 };
 
+const priceDiscountFactor = 0.7;
+const rubFormatter = new Intl.NumberFormat("ru-RU");
+
+function discountRubPrice(value: number) {
+  return Math.round(value * priceDiscountFactor);
+}
+
+function formatDiscountedRubPrice(value: number) {
+  return `${rubFormatter.format(discountRubPrice(value))} ₽`;
+}
+
 export const projectTypes: Array<{
   id: ProjectTypeId;
   label: string;
@@ -372,6 +383,22 @@ export const projectModules: Record<ProjectTypeId, ProjectModule[]> = {
     { id: "prototype", label: "Прототип сценариев", description: "Быстрый кликабельный или текстовый контур решения.", price: 16000, days: 3 },
   ],
 };
+
+const discountedProjectTypes = projectTypes.map((item) => ({
+  ...item,
+  baseHigh: discountRubPrice(item.baseHigh),
+  baseLow: discountRubPrice(item.baseLow),
+})) satisfies typeof projectTypes;
+
+const discountedProjectModules = Object.fromEntries(
+  Object.entries(projectModules).map(([type, modules]) => [
+    type,
+    modules.map((module) => ({
+      ...module,
+      price: discountRubPrice(module.price),
+    })),
+  ]),
+) as typeof projectModules;
 
 export type CaseStudy = {
   slug: string;
@@ -1054,8 +1081,8 @@ export const packages = [
   {
     title: "Базовый",
     subtitle: "Небольшой Telegram-бот, MVP или одна интеграция.",
-    price: "от 48 000 ₽",
-    firstProjectPrice: "первый проект от 38 400 ₽",
+    price: `от ${formatDiscountedRubPrice(48000)}`,
+    firstProjectPrice: `первый проект от ${formatDiscountedRubPrice(38400)}`,
     term: "1-2 недели",
     includes: [
       "диагностика задачи и короткое ТЗ",
@@ -1070,8 +1097,8 @@ export const packages = [
   {
     title: "Стандарт",
     subtitle: "Полноценный бот/backend-сервис с оплатами, базой, админкой и деплоем.",
-    price: "от 112 000 ₽",
-    firstProjectPrice: "первый проект от 89 600 ₽",
+    price: `от ${formatDiscountedRubPrice(112000)}`,
+    firstProjectPrice: `первый проект от ${formatDiscountedRubPrice(89600)}`,
     term: "3-5 недель",
     includes: [
       "техническая схема и архитектура",
@@ -1086,8 +1113,8 @@ export const packages = [
   {
     title: "Премиум",
     subtitle: "Сложная система: AI, интеграции, платежи, очереди, мониторинг и поддержка запуска.",
-    price: "от 224 000 ₽",
-    firstProjectPrice: "первый проект от 179 200 ₽",
+    price: `от ${formatDiscountedRubPrice(224000)}`,
+    firstProjectPrice: `первый проект от ${formatDiscountedRubPrice(179200)}`,
     term: "6-10 недель",
     includes: [
       "детальная архитектура и ограничения проекта",
@@ -1103,24 +1130,24 @@ export const packages = [
 
 export const retainer = {
   title: "Поддержка и развитие",
-  price: "от 10 000 ₽ / месяц",
+  price: `от ${formatDiscountedRubPrice(10000)} / месяц`,
   description: "Фикс багов, небольшие доработки, обновление интеграций, контроль ошибок, помощь после релиза и планирование следующих итераций.",
 };
 
 export const budgetGuides = [
   {
     title: "Небольшой бот / скрипт",
-    price: "от 15 000 ₽",
+    price: `от ${formatDiscountedRubPrice(15000)}`,
     description: "Простая автоматизация, уведомления, базовая логика.",
   },
   {
     title: "Бизнес-бот / парсер / backend-модуль",
-    price: "от 40 000 ₽",
+    price: `от ${formatDiscountedRubPrice(40000)}`,
     description: "База данных, роли, интеграции, API, регулярные задачи.",
   },
   {
     title: "Mini App / AI-сервис / система под ключ",
-    price: "от 100 000 ₽",
+    price: `от ${formatDiscountedRubPrice(100000)}`,
     description: "Frontend, backend, админка, платежи, аналитика, AI-модули.",
   },
 ];
@@ -1341,6 +1368,10 @@ export const ui = {
     ],
     moneyLocale: "ru-RU",
     currency: "₽",
+    currencyPosition: "suffix",
+    budgetStep: 5000,
+    budgetMin: 15000,
+    budgetGap: 10000,
     dayShort: "дн.",
     timelineSuffix: "рабочих дней",
     kicker: "Project config",
@@ -1510,10 +1541,10 @@ export const ruSiteData = {
   stack,
   specializations,
   proofItems,
-  projectTypes,
+  projectTypes: discountedProjectTypes,
   complexityLevels,
   urgencyOptions,
-  projectModules,
+  projectModules: discountedProjectModules,
   cases,
   packages,
   retainer,

@@ -1,26 +1,34 @@
-# Портфолио Рамиля Канеева
+# Portfolio Ramil Kaneev
 
-Production-style сайт-портфолио Python-разработчика: Telegram-боты, AI/LLM-интеграции, backend-сервисы, платежи, crypto automation, деплой и поддержка.
+Production-style portfolio site for AI, backend and Telegram development: bots, Mini Apps, AI integrations, backend services, parsing, crypto automation, deployment and support.
 
-## Запуск
+## Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Локально сайт откроется на `http://127.0.0.1:3000` или `http://localhost:3000`.
+The development server opens at `http://localhost:3000`.
 
-## Проверка
+## Production Check
 
 ```bash
 npm run lint
 npm run build
+npm start
 ```
 
-## Docker / деплой на сервер
+The project uses Next.js standalone output. After `npm run build`, `npm start` prepares standalone static assets and runs `.next/standalone/server.js`.
 
-Production-образ собирается через standalone output Next.js:
+To choose a custom port in PowerShell:
+
+```powershell
+$env:PORT = "3100"
+npm start
+```
+
+## Docker Deploy
 
 ```bash
 docker build \
@@ -29,30 +37,35 @@ docker build \
   -t test22-portfolio:latest .
 ```
 
-Локальная проверка образа:
+Local image check:
 
 ```bash
 docker run --rm -p 3000:3000 test22-portfolio:latest
 ```
 
-Для сервера удобнее использовать compose:
+Server deploy with Compose:
 
 ```bash
 cp .env.example .env
-# отредактируйте NEXT_PUBLIC_SITE_URL, DEPLOYMENT_VERSION и APP_PORT
+# edit NEXT_PUBLIC_SITE_URL, DEPLOYMENT_VERSION, APP_PORT and Telegram env values
 docker compose up -d --build
 ```
 
-Пример reverse proxy для nginx лежит в `deploy/nginx.conf.example`. На сервере замените `example.com` на домен, настройте HTTPS и проксируйте трафик на `127.0.0.1:3000` или другой `APP_PORT`.
+`deploy/nginx.conf.example` contains a reverse proxy example. Replace `example.com`, enable HTTPS, and proxy traffic to `127.0.0.1:${APP_PORT}`.
 
-## Основная структура
+## Environment
 
-- `src/app/page.tsx` - сборка всех секций главной страницы.
-- `src/data/site.ts` - тексты, кейсы, пакеты, FAQ, контакты и стек.
-- `src/components/sections/` - hero, интерактивная системная схема, специализация, кейсы, услуги, процесс, доверие, отзывы, FAQ и финальный CTA.
-- `src/components/effects/` - boot-интро, cursor crosshair и scroll-orb.
-- `src/components/interactive/` - WebGL-сцена, live telemetry, hero headline и estimator бюджета.
-- `src/components/ui/` - базовые UI-компоненты.
-- `public/images/engineering-command-center.png` - hero visual asset.
+- `NEXT_PUBLIC_SITE_URL` - public site URL used for metadata, robots and sitemap.
+- `DEPLOYMENT_VERSION` - deployment identifier used by Next.js version skew protection.
+- `APP_PORT` - host port for Docker Compose.
+- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` - optional Telegram delivery for project requests. Without them the API returns a stub response and logs the request server-side.
 
-Для production-деплоя можно указать `NEXT_PUBLIC_SITE_URL`, чтобы OpenGraph-ссылки собирались с реальным доменом.
+## Project Structure
+
+- `src/app/[lang]/page.tsx` - localized homepage.
+- `src/app/[lang]/cases/page.tsx` - localized case archive.
+- `src/app/api/project-leads/route.ts` - project request endpoint.
+- `src/data/site.*.ts` - localized copy, cases, packages, FAQ and estimator data.
+- `src/components/sections/` - page sections.
+- `src/components/interactive/` - interactive WebGL and estimator components.
+- `public/cases/` - production case images used by the site.

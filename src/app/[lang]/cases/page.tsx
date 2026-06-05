@@ -1,5 +1,3 @@
-import { existsSync, readdirSync } from "node:fs";
-import path from "node:path";
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,11 +8,16 @@ import {
   PlayCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { CaseGallery, type CaseGalleryImage } from "@/components/case-gallery";
+import { CaseGallery } from "@/components/case-gallery";
 import { HashScroller } from "@/components/hash-scroller";
 import { Footer } from "@/components/sections/final-cta";
 import { SiteHeader } from "@/components/sections/site-header";
 import { ButtonLink } from "@/components/ui/button-link";
+import {
+  getCaseGalleryImages,
+  localizeCaseImages,
+  type LocalizedCaseGalleryImage,
+} from "@/data/case-images";
 import {
   getLocaleFromParams,
   getSiteData,
@@ -23,8 +26,6 @@ import {
   type SiteData,
 } from "@/data/site";
 import { notFound } from "next/navigation";
-
-const caseImageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
 
 export default async function CasesPage({
   params,
@@ -36,7 +37,8 @@ export default async function CasesPage({
   if (!locale) notFound();
 
   const site = getSiteData(locale);
-  const { cases, ui } = site;
+  const cases = localizeCaseImages(locale, site.cases);
+  const { ui } = site;
 
   return (
     <>
@@ -105,7 +107,7 @@ export default async function CasesPage({
                 index={index}
                 locale={locale}
                 site={site}
-                galleryImages={getCaseGalleryImages(item)}
+                galleryImages={getCaseGalleryImages(locale, item)}
               />
             ))}
           </div>
@@ -116,59 +118,6 @@ export default async function CasesPage({
   );
 }
 
-function getCaseGalleryImages(item: CaseStudy): CaseGalleryImage[] {
-  const directory = path.join(process.cwd(), "public", "cases", item.slug);
-
-  if (!existsSync(directory)) {
-    return [{ src: item.coverImage, alt: item.coverAlt, label: "preview_sq" }];
-  }
-
-  const files = readdirSync(directory).filter((file) => {
-    return caseImageExtensions.has(path.extname(file).toLowerCase());
-  });
-
-  const fileByBaseName = new Map(
-    files.map((file) => [path.basename(file, path.extname(file)).toLowerCase(), file]),
-  );
-
-  const galleryFiles: Array<{ file: string; label: string }> = [];
-  const previewRec = fileByBaseName.get("preview_rec");
-
-  if (previewRec) {
-    galleryFiles.push({ file: previewRec, label: "preview_rec" });
-  }
-
-  files
-    .map((file) => {
-      const baseName = path.basename(file, path.extname(file));
-      return /^\d+$/.test(baseName)
-        ? { file, label: baseName, order: Number(baseName) }
-        : null;
-    })
-    .filter((file): file is { file: string; label: string; order: number } =>
-      Boolean(file),
-    )
-    .sort((left, right) => left.order - right.order)
-    .forEach(({ file, label }) => galleryFiles.push({ file, label }));
-
-  if (galleryFiles.length === 0) {
-    const previewSq = fileByBaseName.get("preview_sq");
-    if (previewSq) {
-      galleryFiles.push({ file: previewSq, label: "preview_sq" });
-    }
-  }
-
-  if (galleryFiles.length === 0) {
-    return [{ src: item.coverImage, alt: item.coverAlt, label: "preview_sq" }];
-  }
-
-  return galleryFiles.map(({ file, label }) => ({
-    src: `/cases/${item.slug}/${file}`,
-    alt: `${item.coverAlt} - ${label}`,
-    label,
-  }));
-}
-
 function CaseArticle({
   galleryImages,
   item,
@@ -176,7 +125,7 @@ function CaseArticle({
   locale,
   site,
 }: {
-  galleryImages: CaseGalleryImage[];
+  galleryImages: LocalizedCaseGalleryImage[];
   item: CaseStudy;
   index: number;
   locale: Locale;

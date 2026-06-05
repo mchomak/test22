@@ -52,7 +52,7 @@ const modes = [
   {
     id: "pay",
     title: "Payment integration core",
-    label: "Платежи",
+    label: "Платежи картой",
     icon: CreditCard,
     accent: "amber",
     input: "invoice / webhook / refund",

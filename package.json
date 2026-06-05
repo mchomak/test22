@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync:case-images": "node scripts/sync-case-images.mjs",
+    "predev": "npm run sync:case-images",
     "dev": "next dev",
+    "prebuild": "npm run sync:case-images",
     "build": "next build",
-    "start": "next start",
+    "prestart": "node scripts/prepare-standalone.mjs",
+    "start": "node .next/standalone/server.js",
     "lint": "eslint"
   },
   "dependencies": {
@@ -26,5 +30,8 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "8.5.15"
   }
 }

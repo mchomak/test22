@@ -1,10 +1,31 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { JetBrains_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
 import {
   getLocaleFromParams,
   getSiteData,
   locales,
 } from "@/data/site";
+import "../globals.css";
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  themeColor: "#050607",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+};
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -22,6 +43,7 @@ export async function generateMetadata({
   const site = getSiteData(locale);
 
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
     title: site.meta.title,
     description: site.meta.description,
     keywords: site.meta.keywords,
@@ -53,5 +75,12 @@ export default async function LocaleLayout({
 
   if (!locale) notFound();
 
-  return children;
+  return (
+    <html
+      lang={locale}
+      className={`${manrope.variable} ${jetbrains.variable} scroll-smooth`}
+    >
+      <body>{children}</body>
+    </html>
+  );
 }

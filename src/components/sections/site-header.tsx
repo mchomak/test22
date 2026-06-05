@@ -1,4 +1,5 @@
 import { Code2 } from "lucide-react";
+import { Suspense } from "react";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ButtonLink } from "@/components/ui/button-link";
 import { getLocalizedHref, type Locale, type SiteData } from "@/data/site";
@@ -46,11 +47,13 @@ export function SiteHeader({
         </nav>
 
         <div className="flex items-center gap-2">
-          <LocaleSwitcher
-            ariaLabel={ui.header.languageAria}
-            labels={ui.header.languageNames}
-            locale={locale}
-          />
+          <Suspense fallback={<LocaleSwitcherFallback locale={locale} />}>
+            <LocaleSwitcher
+              ariaLabel={ui.header.languageAria}
+              labels={ui.header.languageNames}
+              locale={locale}
+            />
+          </Suspense>
           <ButtonLink
             href={contacts.telegramUrl}
             target="_blank"
@@ -63,5 +66,15 @@ export function SiteHeader({
         </div>
       </div>
     </header>
+  );
+}
+
+function LocaleSwitcherFallback({ locale }: { locale: Locale }) {
+  return (
+    <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] p-1">
+      <span className="min-h-8 rounded-full bg-emerald-300 px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-950">
+        {locale}
+      </span>
+    </div>
   );
 }

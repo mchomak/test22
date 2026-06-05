@@ -7,6 +7,18 @@ import {
 
 type SiteData = typeof import("@/data/site.ru").ruSiteData;
 
+const priceDiscountFactor = 0.7;
+const rubToUsdRate = 100;
+const usdFormatter = new Intl.NumberFormat("en-US");
+
+function discountUsdPrice(value: number) {
+  return Math.round((value * priceDiscountFactor) / rubToUsdRate);
+}
+
+function formatDiscountedUsdPrice(value: number) {
+  return `$${usdFormatter.format(discountUsdPrice(value))}`;
+}
+
 const navItems: SiteData["navItems"] = [
   { label: "Work", href: "/#specialization" },
   { label: "Estimator", href: "/#estimator" },
@@ -340,6 +352,22 @@ const projectModules: SiteData["projectModules"] = {
     { id: "prototype", label: "Scenario prototype", description: "Fast clickable or text outline of the solution.", price: 16000, days: 3 },
   ],
 };
+
+const discountedUsdProjectTypes = projectTypes.map((item) => ({
+  ...item,
+  baseHigh: discountUsdPrice(item.baseHigh),
+  baseLow: discountUsdPrice(item.baseLow),
+})) satisfies SiteData["projectTypes"];
+
+const discountedUsdProjectModules = Object.fromEntries(
+  Object.entries(projectModules).map(([type, modules]) => [
+    type,
+    modules.map((module) => ({
+      ...module,
+      price: discountUsdPrice(module.price),
+    })),
+  ]),
+) as SiteData["projectModules"];
 
 type CaseTranslation = Omit<Partial<CaseStudy>, "preview"> & {
   preview?: Partial<CaseStudy["preview"]>;
@@ -807,8 +835,8 @@ const packages: SiteData["packages"] = [
   {
     title: "Basic",
     subtitle: "Small Telegram bot, MVP or one integration.",
-    price: "from 48,000 ₽",
-    firstProjectPrice: "first project from 38,400 ₽",
+    price: `from ${formatDiscountedUsdPrice(48000)}`,
+    firstProjectPrice: `first project from ${formatDiscountedUsdPrice(38400)}`,
     term: "1-2 weeks",
     includes: [
       "task diagnostics and a short technical brief",
@@ -824,8 +852,8 @@ const packages: SiteData["packages"] = [
     title: "Standard",
     subtitle:
       "Full bot/backend service with payments, database, admin panel and deployment.",
-    price: "from 112,000 ₽",
-    firstProjectPrice: "first project from 89,600 ₽",
+    price: `from ${formatDiscountedUsdPrice(112000)}`,
+    firstProjectPrice: `first project from ${formatDiscountedUsdPrice(89600)}`,
     term: "3-5 weeks",
     includes: [
       "technical scheme and architecture",
@@ -841,8 +869,8 @@ const packages: SiteData["packages"] = [
     title: "Premium",
     subtitle:
       "Complex system: AI, integrations, payments, queues, monitoring and launch support.",
-    price: "from 224,000 ₽",
-    firstProjectPrice: "first project from 179,200 ₽",
+    price: `from ${formatDiscountedUsdPrice(224000)}`,
+    firstProjectPrice: `first project from ${formatDiscountedUsdPrice(179200)}`,
     term: "6-10 weeks",
     includes: [
       "detailed architecture and project constraints",
@@ -858,7 +886,7 @@ const packages: SiteData["packages"] = [
 
 const retainer: SiteData["retainer"] = {
   title: "Support and development",
-  price: "from 10,000 ₽ / month",
+  price: `from ${formatDiscountedUsdPrice(10000)} / month`,
   description:
     "Bug fixes, small improvements, integration updates, error control, post-release help and planning for next iterations.",
 };
@@ -866,19 +894,19 @@ const retainer: SiteData["retainer"] = {
 const budgetGuides: SiteData["budgetGuides"] = [
   {
     title: "Small bot / script",
-    price: "from 15,000 ₽",
+    price: `from ${formatDiscountedUsdPrice(15000)}`,
     description:
       "Simple automation, notifications and basic logic.",
   },
   {
     title: "Business bot / parser / backend module",
-    price: "from 40,000 ₽",
+    price: `from ${formatDiscountedUsdPrice(40000)}`,
     description:
       "Database, roles, integrations, API and scheduled jobs.",
   },
   {
     title: "Mini App / AI service / turnkey system",
-    price: "from 100,000 ₽",
+    price: `from ${formatDiscountedUsdPrice(100000)}`,
     description:
       "Frontend, backend, admin panel, payments, analytics and AI modules.",
   },
@@ -1115,7 +1143,11 @@ const ui: SiteData["ui"] = {
       "Submit",
     ],
     moneyLocale: "en-US",
-    currency: "₽",
+    currency: "$",
+    currencyPosition: "prefix",
+    budgetStep: 50,
+    budgetMin: 150,
+    budgetGap: 100,
     dayShort: "d",
     timelineSuffix: "business days",
     kicker: "Project config",
@@ -1284,10 +1316,10 @@ export const enSiteData: SiteData = {
   stack,
   specializations,
   proofItems,
-  projectTypes,
+  projectTypes: discountedUsdProjectTypes,
   complexityLevels,
   urgencyOptions,
-  projectModules,
+  projectModules: discountedUsdProjectModules,
   cases,
   packages,
   retainer,
