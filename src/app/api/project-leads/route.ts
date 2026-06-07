@@ -1,3 +1,12 @@
+import {
+  insertProjectLead,
+  updateLeadTelegramStatus,
+  type ProjectLeadRecord,
+} from "@/lib/database";
+import { sendTelegramMessage } from "@/lib/telegram";
+
+export const runtime = "nodejs";
+
 type LeadPayload = {
   category?: unknown;
   complexity?: unknown;
@@ -17,11 +26,14 @@ type LeadPayload = {
 };
 
 const asText = (value: unknown) =>
-  typeof value === "string" ? value.trim() : "";
+  typeof value === "string" ? value.trim().slice(0, 4000) : "";
 
 const asTextList = (value: unknown) =>
   Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === "string")
+    ? value
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim().slice(0, 400))
+        .filter(Boolean)
     : [];
 
 export async function POST(request: Request) {
@@ -50,56 +62,117 @@ export async function POST(request: Request) {
 
   if (!category || !complexity || !telegram || !comment || !budget || !timeline) {
     return Response.json(
-      { ok: false, error: "Заполните Telegram, описание задачи и конфигурацию." },
+      {
+        ok: false,
+        error: "Заполните Telegram, описание задачи и конфигурацию.",
+      },
       { status: 400 },
     );
   }
 
-  const message = [
-    "Новая заявка с сайта",
-    "",
-    `Категория: ${category}`,
-    `Сложность: ${complexity}`,
-    urgency ? `Сроки: ${urgency}` : "",
-    "Опции:",
-    ...(options.length ? options.map((option) => `* ${option}`) : ["* базовая разработка"]),
-    "",
-    `Оценка: ${budget}`,
-    `Срок: ${timeline}`,
-    "",
-    `Контакт: ${telegram}`,
-    name ? `Имя: ${name}` : "",
-    email ? `Email: ${email}` : "",
-    fileUrl ? `ТЗ / файл: ${fileUrl}` : "",
-    `Комментарий: ${comment}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const lead: ProjectLeadRecord = {
+    category,
+    complexity,
+    urgency,
+    options,
+    budget,
+    timeline,
+    contactName: name,
+    contactTelegram: telegram,
+    contactEmail: email,
+    comment,
+    fileUrl,
+    payload: payload as Record<string, unknown>,
+  };
+  const message = formatLeadMessage(lead);
+  let stored = false;
+  let leadId: number | null = null;
 
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-
-  if (!token || !chatId) {
-    console.info("[project-lead:stub]\n%s", message);
-    return Response.json({ ok: true, delivered: false });
+  try {
+    leadId = await insertProjectLead(lead);
+    stored = Boolean(leadId);
+  } catch (error) {
+    console.error("[project-lead:db-insert]", error);
   }
 
-  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: message,
-      disable_web_page_preview: true,
-    }),
-  });
+  try {
+    const telegramResult = await sendTelegramMessage(message);
 
-  if (!response.ok) {
+    if (leadId) {
+      await updateLeadTelegramStatus(
+        leadId,
+        telegramResult.delivered,
+        telegramResult.ok ? "" : telegramResult.error,
+      ).catch((error) => {
+        console.error("[project-lead:db-status]", error);
+      });
+    }
+
+    if (!telegramResult.ok) {
+      return Response.json(
+        {
+          ok: false,
+          stored,
+          delivered: false,
+          error: telegramResult.error,
+        },
+        { status: 502 },
+      );
+    }
+
+    return Response.json({
+      ok: true,
+      stored,
+      delivered: telegramResult.delivered,
+      telegramProxyUsed: telegramResult.proxyUsed,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Telegram delivery failed.";
+
+    if (leadId) {
+      await updateLeadTelegramStatus(leadId, false, message).catch(
+        (statusError) => {
+          console.error("[project-lead:db-status]", statusError);
+        },
+      );
+    }
+
     return Response.json(
-      { ok: false, error: "Telegram Bot API не принял заявку." },
+      {
+        ok: false,
+        stored,
+        delivered: false,
+        error: message,
+      },
       { status: 502 },
     );
   }
+}
 
-  return Response.json({ ok: true, delivered: true });
+function formatLeadMessage(lead: ProjectLeadRecord) {
+  return [
+    "Новая заявка с сайта",
+    "",
+    `Категория: ${lead.category}`,
+    `Сложность: ${lead.complexity}`,
+    lead.urgency ? `Сроки: ${lead.urgency}` : "",
+    "Опции:",
+    ...(lead.options.length
+      ? lead.options.map((option) => `- ${option}`)
+      : ["- базовая разработка"]),
+    "",
+    `Оценка: ${lead.budget}`,
+    `Срок: ${lead.timeline}`,
+    "",
+    `Контакт: ${lead.contactTelegram}`,
+    lead.contactName ? `Имя: ${lead.contactName}` : "",
+    lead.contactEmail ? `Email: ${lead.contactEmail}` : "",
+    lead.fileUrl ? `ТЗ / файл: ${lead.fileUrl}` : "",
+    `Комментарий: ${lead.comment}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }

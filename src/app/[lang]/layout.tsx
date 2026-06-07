@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   getLocaleFromParams,
   getSiteData,
   locales,
 } from "@/data/site";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "../globals.css";
 
 const manrope = Manrope({
@@ -80,7 +82,12 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${manrope.variable} ${jetbrains.variable} scroll-smooth`}
     >
-      <body>{children}</body>
+      <body>
+        <Suspense fallback={null}>
+          <AnalyticsTracker locale={locale} />
+        </Suspense>
+        {children}
+      </body>
     </html>
   );
 }

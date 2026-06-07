@@ -6,6 +6,7 @@ build
 coverage
 .checks
 .vercel
+public/cases
 ready
 AGENTS.md
 CLAUDE.md

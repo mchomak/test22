@@ -1,7 +1,8 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
 
 const locales = ["ru", "en"];
+const imageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
 const caseImageSources = [
   ["subscription-bot", "vpn_bot"],
   ["sapsanex-mini-app", "mini_app"],
@@ -20,19 +21,52 @@ const sourceRoot = path.join(root, "img");
 const targetRoot = path.join(root, "public", "cases");
 
 for (const locale of locales) {
-  const localeSource = path.join(sourceRoot, locale);
   const localeTarget = path.join(targetRoot, locale);
 
   rmSync(localeTarget, { recursive: true, force: true });
 
-  if (!existsSync(localeSource)) continue;
-
   for (const [slug, sourceFolder] of caseImageSources) {
-    const source = path.join(localeSource, sourceFolder);
-    if (!existsSync(source)) continue;
+    const source = getCaseImageSource(sourceFolder, locale);
+    if (!source) continue;
 
     const target = path.join(localeTarget, slug);
-    mkdirSync(path.dirname(target), { recursive: true });
-    cpSync(source, target, { recursive: true });
+    copyImageFiles(source, target);
+  }
+}
+
+function getCaseImageSource(sourceFolder, locale) {
+  const candidates = [
+    path.join(sourceRoot, sourceFolder, locale),
+    path.join(sourceRoot, sourceFolder),
+    path.join(sourceRoot, locale, sourceFolder),
+  ];
+
+  return candidates.find(hasImageFiles) ?? null;
+}
+
+function hasImageFiles(directory) {
+  if (!existsSync(directory) || !statSync(directory).isDirectory()) {
+    return false;
+  }
+
+  return readdirSync(directory).some((file) => {
+    const filePath = path.join(directory, file);
+    return (
+      statSync(filePath).isFile() &&
+      imageExtensions.has(path.extname(file).toLowerCase())
+    );
+  });
+}
+
+function copyImageFiles(source, target) {
+  rmSync(target, { recursive: true, force: true });
+  mkdirSync(target, { recursive: true });
+
+  for (const file of readdirSync(source)) {
+    const sourceFile = path.join(source, file);
+    if (!statSync(sourceFile).isFile()) continue;
+    if (!imageExtensions.has(path.extname(file).toLowerCase())) continue;
+
+    copyFileSync(sourceFile, path.join(target, file));
   }
 }

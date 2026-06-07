@@ -18,6 +18,8 @@
 /out/
 /public/cases/en/
 /public/cases/ru/
+/img/en/
+/img/ru/
 
 # production
 /build
