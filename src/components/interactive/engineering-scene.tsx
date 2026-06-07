@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import {
+  getThreeScenePerformanceProfile,
+  scheduleSceneStartup,
+  type ThreeScenePerformanceProfile,
+} from "@/lib/three-scene-performance";
 
 type ThreeModule = typeof import("three");
 export type EngineeringSceneMode = "network" | "sphere" | "helix" | "radial";
@@ -309,38 +314,44 @@ export function EngineeringScene({
 
     let cleanup: (() => void) | undefined;
     let cancelled = false;
+    const performanceProfile = getThreeScenePerformanceProfile("hero");
 
-    const loadTimeout = window.setTimeout(() => {
+    const cancelStartup = scheduleSceneStartup(() => {
       void import("three")
         .then((THREE) => {
           if (cancelled || !mount.isConnected) return;
-          cleanup = setupEngineeringScene(THREE, mount, {
-            showCore,
-            mode,
-            motionStyle,
-            palette,
-            surface,
-            scale,
-            bulge,
-            curveBend,
-            breathAmount,
-            nodeScale,
-            coreScale,
-            particleDensity,
-            orbitScale,
-            lineOpacity,
-            rotationSpeed,
-            pulseSpeed,
-            cameraDistance,
-            preserveDrawingBuffer,
-          });
+          cleanup = setupEngineeringScene(
+            THREE,
+            mount,
+            {
+              showCore,
+              mode,
+              motionStyle,
+              palette,
+              surface,
+              scale,
+              bulge,
+              curveBend,
+              breathAmount,
+              nodeScale,
+              coreScale,
+              particleDensity,
+              orbitScale,
+              lineOpacity,
+              rotationSpeed,
+              pulseSpeed,
+              cameraDistance,
+              preserveDrawingBuffer,
+            },
+            performanceProfile,
+          );
         })
         .catch(() => {});
-    }, 80);
+    }, performanceProfile.startupDelayMs);
 
     return () => {
       cancelled = true;
-      window.clearTimeout(loadTimeout);
+      cancelStartup?.();
       cleanup?.();
     };
   }, [
@@ -377,6 +388,7 @@ function setupEngineeringScene(
   THREE: ThreeModule,
   mount: HTMLDivElement,
   config: EngineeringSceneConfig,
+  performanceProfile: ThreeScenePerformanceProfile,
 ) {
   let width = Math.max(mount.clientWidth, 1);
   let height = Math.max(mount.clientHeight, 1);
@@ -399,7 +411,9 @@ function setupEngineeringScene(
     powerPreference: "low-power",
     preserveDrawingBuffer: config.preserveDrawingBuffer,
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, performanceProfile.maxPixelRatio),
+  );
   renderer.setSize(width, height);
   renderer.domElement.className = "h-full w-full";
   mount.appendChild(renderer.domElement);
@@ -412,7 +426,9 @@ function setupEngineeringScene(
   const palette = paletteMap[config.palette];
 
   const particleGeometry = track(new THREE.BufferGeometry());
-  const particleCount = Math.round(620 * config.particleDensity);
+  const particleCount = Math.round(
+    620 * config.particleDensity * performanceProfile.particleScale,
+  );
   const particlePositions = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount; i += 1) {
     particlePositions[i * 3] = (Math.random() - 0.5) * 9 * config.scale;
@@ -469,7 +485,7 @@ function setupEngineeringScene(
       );
     const curve = new THREE.CatmullRomCurve3([start, middle, end]);
     curves.push(curve);
-    const points = curve.getPoints(48);
+    const points = curve.getPoints(performanceProfile.curveSegments);
     const geometry = track(new THREE.BufferGeometry().setFromPoints(points));
     const line = new THREE.Line(
       geometry,
@@ -479,11 +495,19 @@ function setupEngineeringScene(
   });
 
   const nodeGeometry = track(
-    new THREE.SphereGeometry(0.085 * config.nodeScale, 28, 28),
+    new THREE.SphereGeometry(
+      0.085 * config.nodeScale,
+      performanceProfile.nodeSegments,
+      performanceProfile.nodeSegments,
+    ),
   );
   const coreGeometry = track(
     config.surface === "halo"
-      ? new THREE.SphereGeometry(0.34 * config.coreScale, 28, 18)
+      ? new THREE.SphereGeometry(
+          0.34 * config.coreScale,
+          performanceProfile.nodeSegments,
+          Math.max(10, Math.round(performanceProfile.nodeSegments * 0.7)),
+        )
       : new THREE.IcosahedronGeometry(0.34 * config.coreScale, 1),
   );
   const nodeMaterial = track(
@@ -536,7 +560,7 @@ function setupEngineeringScene(
         new THREE.RingGeometry(
           index === layout.coreIndex ? 0.52 * config.coreScale : 0.17 * config.nodeScale,
           index === layout.coreIndex ? 0.54 * config.coreScale : 0.18 * config.nodeScale,
-          48,
+          performanceProfile.ringSegments,
         ),
       ),
       ringMaterial,
@@ -553,7 +577,11 @@ function setupEngineeringScene(
   }
 
   const pulseGeometry = track(
-    new THREE.SphereGeometry(0.04 * config.nodeScale, 18, 18),
+    new THREE.SphereGeometry(
+      0.04 * config.nodeScale,
+      performanceProfile.pulseSegments,
+      performanceProfile.pulseSegments,
+    ),
   );
   const pulseMaterial = track(
     new THREE.MeshBasicMaterial({
@@ -574,7 +602,12 @@ function setupEngineeringScene(
   });
 
   const orbitGeometry = track(
-    new THREE.TorusGeometry(1.12 * config.orbitScale * config.scale, 0.006, 10, 120),
+    new THREE.TorusGeometry(
+      1.12 * config.orbitScale * config.scale,
+      0.006,
+      8,
+      performanceProfile.orbitSegments,
+    ),
   );
   const orbitMaterial = track(
     new THREE.MeshBasicMaterial({
@@ -601,6 +634,7 @@ function setupEngineeringScene(
   let frameId = 0;
   let isVisible = true;
   let isDisposed = false;
+  let lastFrameAt = 0;
   const startedAt = performance.now();
 
   const render = (now = performance.now()) => {
@@ -739,7 +773,11 @@ function setupEngineeringScene(
       return;
     }
 
-    render(now);
+    if (now - lastFrameAt >= performanceProfile.frameIntervalMs) {
+      render(now);
+      lastFrameAt = now;
+    }
+
     frameId = window.requestAnimationFrame(loop);
   };
 

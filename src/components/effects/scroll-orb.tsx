@@ -7,6 +7,11 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useMemo, useRef } from "react";
+import {
+  getThreeScenePerformanceProfile,
+  scheduleSceneStartup,
+  type ThreeScenePerformanceProfile,
+} from "@/lib/three-scene-performance";
 
 type ThreeModule = typeof import("three");
 
@@ -183,19 +188,26 @@ export function ScrollOrbCanvas({
 
     let cleanup: (() => void) | undefined;
     let cancelled = false;
+    const performanceProfile = getThreeScenePerformanceProfile("ambient");
 
-    const loadTimeout = window.setTimeout(() => {
+    const cancelStartup = scheduleSceneStartup(() => {
       void import("three")
         .then((THREE) => {
           if (cancelled || !mount.isConnected) return;
-          cleanup = setupScrollOrb(THREE, mount, configRef, reduceMotion);
+          cleanup = setupScrollOrb(
+            THREE,
+            mount,
+            configRef,
+            reduceMotion,
+            performanceProfile,
+          );
         })
         .catch(() => {});
-    }, 120);
+    }, performanceProfile.startupDelayMs);
 
     return () => {
       cancelled = true;
-      window.clearTimeout(loadTimeout);
+      cancelStartup?.();
       cleanup?.();
     };
   }, [reduceMotion]);
@@ -208,6 +220,7 @@ function setupScrollOrb(
   mount: HTMLDivElement,
   configRef: { current: ScrollOrbConfig },
   reduceMotion: boolean,
+  performanceProfile: ThreeScenePerformanceProfile,
 ) {
   const initialConfig = configRef.current;
   let width = Math.max(mount.clientWidth, 1);
@@ -223,12 +236,17 @@ function setupScrollOrb(
     powerPreference: "low-power",
     preserveDrawingBuffer: initialConfig.preserveDrawingBuffer,
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, performanceProfile.maxPixelRatio),
+  );
   renderer.setSize(width, height);
   renderer.domElement.className = "h-full w-full";
   mount.appendChild(renderer.domElement);
 
-  const geometry = new THREE.IcosahedronGeometry(0.34, 3);
+  const geometry = new THREE.IcosahedronGeometry(
+    0.34,
+    performanceProfile.orbDetail,
+  );
   const positionAttribute = geometry.getAttribute(
     "position",
   ) as import("three").BufferAttribute;
@@ -268,6 +286,7 @@ function setupScrollOrb(
 
   let frameId = 0;
   let running = false;
+  let lastFrameAt = 0;
   const startedAt = performance.now();
 
   const deformOrb = (
@@ -373,9 +392,14 @@ function setupScrollOrb(
     renderer.render(scene, camera);
   };
 
-  const loop = () => {
+  const loop = (now: number) => {
     if (!running) return;
-    render();
+
+    if (now - lastFrameAt >= performanceProfile.frameIntervalMs) {
+      render();
+      lastFrameAt = now;
+    }
+
     frameId = window.requestAnimationFrame(loop);
   };
 

@@ -8,7 +8,11 @@ export type LocalizedCaseGalleryImage = {
   label: string;
 };
 
-const caseImageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
+const caseImageExtensionPreference = [".avif", ".webp", ".jpg", ".jpeg", ".png"];
+const caseImageExtensions = new Set(caseImageExtensionPreference);
+const caseImageExtensionRank = new Map(
+  caseImageExtensionPreference.map((extension, index) => [extension, index]),
+);
 
 type CaseImageLocation = {
   directory: string;
@@ -33,13 +37,7 @@ export function getCaseGalleryImages(
     return [{ src: fallbackCover, alt: item.coverAlt, label: "preview_sq" }];
   }
 
-  const files = readdirSync(location.directory).filter((file) => {
-    return caseImageExtensions.has(path.extname(file).toLowerCase());
-  });
-
-  const fileByBaseName = new Map(
-    files.map((file) => [path.basename(file, path.extname(file)).toLowerCase(), file]),
-  );
+  const fileByBaseName = getPreferredImageFilesByBaseName(location.directory);
 
   const galleryFiles: Array<{ file: string; label: string }> = [];
   const previewRec = fileByBaseName.get("preview_rec");
@@ -48,7 +46,7 @@ export function getCaseGalleryImages(
     galleryFiles.push({ file: previewRec, label: "preview_rec" });
   }
 
-  files
+  Array.from(fileByBaseName.values())
     .map((file) => {
       const baseName = path.basename(file, path.extname(file));
       return /^\d+$/.test(baseName)
@@ -117,12 +115,43 @@ function getCaseImageLocationCandidate(
 
 function getImageByBaseName(location: CaseImageLocation, baseName: string) {
   const lowerBaseName = baseName.toLowerCase();
-  const file = readdirSync(location.directory).find((item) => {
-    return (
-      path.basename(item, path.extname(item)).toLowerCase() === lowerBaseName &&
-      caseImageExtensions.has(path.extname(item).toLowerCase())
-    );
-  });
+  const file = getPreferredImageFilesByBaseName(location.directory).get(
+    lowerBaseName,
+  );
 
   return file ? `${location.publicPath}/${file}` : null;
+}
+
+function getPreferredImageFilesByBaseName(directory: string) {
+  const files = readdirSync(directory).filter((file) => {
+    return caseImageExtensions.has(path.extname(file).toLowerCase());
+  });
+
+  const fileByBaseName = new Map<string, string>();
+
+  for (const file of files) {
+    const baseName = path.basename(file, path.extname(file)).toLowerCase();
+    const current = fileByBaseName.get(baseName);
+
+    if (!current || compareImagePreference(file, current) < 0) {
+      fileByBaseName.set(baseName, file);
+    }
+  }
+
+  return fileByBaseName;
+}
+
+function compareImagePreference(left: string, right: string) {
+  const leftRank =
+    caseImageExtensionRank.get(path.extname(left).toLowerCase()) ??
+    caseImageExtensionPreference.length;
+  const rightRank =
+    caseImageExtensionRank.get(path.extname(right).toLowerCase()) ??
+    caseImageExtensionPreference.length;
+
+  if (leftRank !== rightRank) {
+    return leftRank - rightRank;
+  }
+
+  return left.localeCompare(right);
 }

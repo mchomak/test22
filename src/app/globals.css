@@ -149,6 +149,10 @@ summary::-webkit-details-marker {
   backdrop-filter: blur(14px);
 }
 
+.case-showcase-shell-deferred {
+  min-height: 756px;
+}
+
 .case-showcase-stage {
   position: relative;
   isolation: isolate;
@@ -211,6 +215,7 @@ summary::-webkit-details-marker {
   position: absolute;
   inset: 0;
   transform-origin: 50% 50%;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   -webkit-mask-image: linear-gradient(180deg, transparent 0 46%, #000 58% 100%);
   mask-image: linear-gradient(180deg, transparent 0 46%, #000 58% 100%);
 }
@@ -286,6 +291,11 @@ summary::-webkit-details-marker {
   touch-action: pan-y;
   user-select: none;
   backdrop-filter: blur(14px);
+  transition:
+    transform 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    filter 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
 }
 
 .case-wheel-card-muted {
@@ -1466,6 +1476,10 @@ summary::-webkit-details-marker {
     min-height: 930px;
   }
 
+  .case-showcase-shell-deferred {
+    min-height: 1026px;
+  }
+
   .case-wheel-deck {
     min-height: 780px;
   }
@@ -1492,6 +1506,10 @@ summary::-webkit-details-marker {
   .case-showcase-stage {
     min-height: 1020px;
     padding-top: 74px;
+  }
+
+  .case-showcase-shell-deferred {
+    min-height: 1114px;
   }
 
   .case-wheel-deck {

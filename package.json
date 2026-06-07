@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "sync:case-images": "node scripts/sync-case-images.mjs",
+    "optimize:case-images": "node scripts/optimize-case-images.mjs",
     "predev": "npm run sync:case-images",
     "dev": "next dev",
     "prebuild": "npm run sync:case-images",
