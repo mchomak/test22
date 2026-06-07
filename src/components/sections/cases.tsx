@@ -365,7 +365,8 @@ function CasePreview({
         <img
           src={item.coverImage}
           alt=""
-          loading="eager"
+          loading="lazy"
+          fetchPriority="low"
           decoding="async"
           className="case-preview-image"
         />
