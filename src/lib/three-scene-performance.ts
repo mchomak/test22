@@ -30,33 +30,30 @@ export function getThreeScenePerformanceProfile(
   const connection = navigatorHints.connection;
   const deviceMemory = navigatorHints.deviceMemory ?? 8;
   const cpuCores = navigator.hardwareConcurrency ?? 8;
-  const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-  const isSmallViewport = window.innerWidth < 768;
-  const isVerySmallViewport = window.innerWidth < 480;
   const saveData = Boolean(connection?.saveData);
   const slowNetwork =
     connection?.effectiveType === "slow-2g" ||
     connection?.effectiveType === "2g";
 
+  // Tier purely on real capability hints (CPU/memory/network/save-data).
+  // A touch screen or a narrow viewport is NOT treated as "weak" — modern
+  // phones run the full scene at 60fps; only genuinely low-end devices degrade.
   const constrained =
     saveData ||
     slowNetwork ||
-    isCoarsePointer ||
-    isSmallViewport ||
-    deviceMemory <= 4 ||
+    deviceMemory <= 3 ||
     cpuCores <= 4;
 
   const veryConstrained =
     saveData ||
     slowNetwork ||
-    isVerySmallViewport ||
     deviceMemory <= 2 ||
     cpuCores <= 2;
 
   if (kind === "ambient") {
     return {
-      startupDelayMs: veryConstrained ? 5800 : constrained ? 5200 : 4600,
-      maxPixelRatio: veryConstrained ? 0.75 : constrained ? 0.85 : 1,
+      startupDelayMs: veryConstrained ? 2800 : constrained ? 1800 : 1200,
+      maxPixelRatio: veryConstrained ? 0.75 : constrained ? 1 : 1.25,
       particleScale: 1,
       curveSegments: 0,
       nodeSegments: 0,
@@ -64,21 +61,21 @@ export function getThreeScenePerformanceProfile(
       orbitSegments: 0,
       pulseSegments: 0,
       orbDetail: veryConstrained ? 2 : constrained ? 2 : 3,
-      frameIntervalMs: veryConstrained ? 1000 / 20 : constrained ? 1000 / 24 : 1000 / 30,
+      frameIntervalMs: veryConstrained ? 1000 / 24 : constrained ? 1000 / 36 : 1000 / 60,
     };
   }
 
   return {
-    startupDelayMs: veryConstrained ? 3900 : constrained ? 3400 : 3000,
-    maxPixelRatio: veryConstrained ? 0.85 : constrained ? 0.95 : 1.1,
-    particleScale: veryConstrained ? 0.48 : constrained ? 0.62 : 0.82,
-    curveSegments: veryConstrained ? 24 : constrained ? 30 : 40,
-    nodeSegments: veryConstrained ? 14 : constrained ? 18 : 22,
-    ringSegments: veryConstrained ? 26 : constrained ? 32 : 40,
-    orbitSegments: veryConstrained ? 56 : constrained ? 72 : 96,
-    pulseSegments: veryConstrained ? 10 : constrained ? 12 : 14,
+    startupDelayMs: veryConstrained ? 1600 : constrained ? 900 : 500,
+    maxPixelRatio: veryConstrained ? 0.85 : constrained ? 1 : 1.25,
+    particleScale: veryConstrained ? 0.5 : constrained ? 0.75 : 1,
+    curveSegments: veryConstrained ? 24 : constrained ? 36 : 48,
+    nodeSegments: veryConstrained ? 14 : constrained ? 20 : 28,
+    ringSegments: veryConstrained ? 26 : constrained ? 36 : 48,
+    orbitSegments: veryConstrained ? 56 : constrained ? 84 : 120,
+    pulseSegments: veryConstrained ? 10 : constrained ? 14 : 18,
     orbDetail: 0,
-    frameIntervalMs: veryConstrained ? 1000 / 24 : constrained ? 1000 / 30 : 1000 / 45,
+    frameIntervalMs: veryConstrained ? 1000 / 30 : constrained ? 1000 / 45 : 1000 / 60,
   };
 }
 
