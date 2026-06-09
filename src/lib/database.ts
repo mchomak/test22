@@ -152,6 +152,8 @@ async function ensureSchema(pool: Pool) {
         ON site_visits (path);
       CREATE INDEX IF NOT EXISTS site_visits_visitor_id_idx
         ON site_visits (visitor_id);
+
+      ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS telegram_retry_count INT NOT NULL DEFAULT 0;
     `).then(() => undefined);
   }
 
@@ -224,12 +226,78 @@ export async function updateLeadTelegramStatus(
       `
         UPDATE project_leads
         SET telegram_delivered = $2,
-            telegram_error = $3
+            telegram_error = $3,
+            telegram_retry_count = telegram_retry_count + 1
         WHERE id = $1
       `,
       [id, delivered, error || null],
     ),
   );
+}
+
+export type UndeliveredLead = {
+  id: number;
+  category: string;
+  complexity: string;
+  urgency: string;
+  options: string[];
+  budget: string;
+  timeline: string;
+  contactName: string;
+  contactTelegram: string;
+  contactEmail: string;
+  comment: string;
+  fileUrl: string;
+};
+
+export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
+  const result = await withDatabase((pool) =>
+    pool.query<{
+      id: string;
+      category: string;
+      complexity: string;
+      urgency: string | null;
+      options: unknown;
+      budget: string;
+      timeline: string;
+      contact_name: string | null;
+      contact_telegram: string;
+      contact_email: string | null;
+      comment: string;
+      file_url: string | null;
+    }>(
+      `
+        SELECT id, category, complexity, urgency, options, budget, timeline,
+               contact_name, contact_telegram, contact_email, comment, file_url
+        FROM project_leads
+        WHERE telegram_delivered = false
+          AND telegram_retry_count < 10
+          AND created_at < NOW() - INTERVAL '2 minutes'
+          AND created_at > NOW() - INTERVAL '24 hours'
+        ORDER BY created_at ASC
+        LIMIT 5
+      `,
+    ),
+  );
+
+  if (!result) return [];
+
+  return result.rows.map((row) => ({
+    id: Number(row.id),
+    category: row.category,
+    complexity: row.complexity,
+    urgency: row.urgency ?? "",
+    options: Array.isArray(row.options)
+      ? (row.options as unknown[]).filter((item): item is string => typeof item === "string")
+      : [],
+    budget: row.budget,
+    timeline: row.timeline,
+    contactName: row.contact_name ?? "",
+    contactTelegram: row.contact_telegram,
+    contactEmail: row.contact_email ?? "",
+    comment: row.comment,
+    fileUrl: row.file_url ?? "",
+  }));
 }
 
 export async function insertSiteVisit(visit: SiteVisitRecord) {

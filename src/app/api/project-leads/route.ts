@@ -3,6 +3,7 @@ import {
   updateLeadTelegramStatus,
   type ProjectLeadRecord,
 } from "@/lib/database";
+import { formatLeadMessage } from "@/lib/lead-message";
 import { sendTelegramMessage } from "@/lib/telegram";
 
 export const runtime = "nodejs";
@@ -84,95 +85,40 @@ export async function POST(request: Request) {
     fileUrl,
     payload: payload as Record<string, unknown>,
   };
-  const message = formatLeadMessage(lead);
-  let stored = false;
+
   let leadId: number | null = null;
 
   try {
     leadId = await insertProjectLead(lead);
-    stored = Boolean(leadId);
   } catch (error) {
     console.error("[project-lead:db-insert]", error);
   }
 
-  try {
-    const telegramResult = await sendTelegramMessage(message);
+  // Respond immediately — Telegram delivery happens in the background.
+  // The retry scheduler (instrumentation.ts) handles re-delivery on failure.
+  const message = formatLeadMessage(lead);
+  void deliverViaTelegram(leadId, message);
 
-    if (leadId) {
-      await updateLeadTelegramStatus(
-        leadId,
-        telegramResult.delivered,
-        telegramResult.ok ? "" : telegramResult.error,
-      ).catch((error) => {
-        console.error("[project-lead:db-status]", error);
-      });
-    }
-
-    if (!telegramResult.ok) {
-      return Response.json(
-        {
-          ok: false,
-          stored,
-          delivered: false,
-          error: telegramResult.error,
-        },
-        { status: 502 },
-      );
-    }
-
-    return Response.json({
-      ok: true,
-      stored,
-      delivered: telegramResult.delivered,
-      telegramProxyUsed: telegramResult.proxyUsed,
-    });
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Telegram delivery failed.";
-
-    if (leadId) {
-      await updateLeadTelegramStatus(leadId, false, message).catch(
-        (statusError) => {
-          console.error("[project-lead:db-status]", statusError);
-        },
-      );
-    }
-
-    return Response.json(
-      {
-        ok: false,
-        stored,
-        delivered: false,
-        error: message,
-      },
-      { status: 502 },
-    );
-  }
+  return Response.json({ ok: true, stored: Boolean(leadId) });
 }
 
-function formatLeadMessage(lead: ProjectLeadRecord) {
-  return [
-    "Новая заявка с сайта",
-    "",
-    `Категория: ${lead.category}`,
-    `Сложность: ${lead.complexity}`,
-    lead.urgency ? `Сроки: ${lead.urgency}` : "",
-    "Опции:",
-    ...(lead.options.length
-      ? lead.options.map((option) => `- ${option}`)
-      : ["- базовая разработка"]),
-    "",
-    `Оценка: ${lead.budget}`,
-    `Срок: ${lead.timeline}`,
-    "",
-    `Контакт: ${lead.contactTelegram}`,
-    lead.contactName ? `Имя: ${lead.contactName}` : "",
-    lead.contactEmail ? `Email: ${lead.contactEmail}` : "",
-    lead.fileUrl ? `ТЗ / файл: ${lead.fileUrl}` : "",
-    `Комментарий: ${lead.comment}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+async function deliverViaTelegram(leadId: number | null, message: string) {
+  try {
+    const result = await sendTelegramMessage(message);
+
+    if (!result.skipped && leadId) {
+      const error = result.ok ? "" : result.error;
+      await updateLeadTelegramStatus(leadId, result.delivered, error).catch((err) =>
+        console.error("[project-lead:db-status]", err),
+      );
+    }
+  } catch (err) {
+    console.error("[project-lead:telegram]", err);
+    if (leadId) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      await updateLeadTelegramStatus(leadId, false, errMsg).catch((dbErr) =>
+        console.error("[project-lead:db-status]", dbErr),
+      );
+    }
+  }
 }
