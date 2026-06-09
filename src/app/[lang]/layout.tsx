@@ -8,6 +8,7 @@ import {
   locales,
 } from "@/data/site";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { YandexMetrika } from "@/components/yandex-metrika";
 import "../globals.css";
 
 const manrope = Manrope({
@@ -83,6 +84,7 @@ export default async function LocaleLayout({
       className={`${manrope.variable} ${jetbrains.variable} scroll-smooth`}
     >
       <body>
+        <YandexMetrika />
         <Suspense fallback={null}>
           <AnalyticsTracker locale={locale} />
         </Suspense>
