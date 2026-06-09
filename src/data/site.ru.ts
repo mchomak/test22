@@ -1406,6 +1406,7 @@ export const ui = {
     note:
       "Калькулятор показывает ориентир. Финальная стоимость фиксируется после короткого обсуждения задачи, интеграций, дизайна и сроков.",
     submit: "Отправить конфигурацию",
+    sendAnother: "Отправить ещё",
     validationError: "Укажите Telegram и коротко опишите задачу.",
     fallbackSubmitError: "Не удалось отправить заявку.",
     unknownSubmitError:
@@ -1413,7 +1414,7 @@ export const ui = {
     successDelivered:
       "Заявка отправлена в Telegram. Я вернусь с уточнениями.",
     successStub:
-      "Заявка собрана и отправлена в API-заглушку. Telegram-получателя можно подключить через env.",
+      "Заявка принята. Напишу в Telegram в ближайшее время.",
     estimateLabel: "Предварительная оценка",
     timelineLabel: "Срок:",
     summaryLabels: {

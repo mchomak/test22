@@ -242,6 +242,12 @@ function ProjectEstimatorForm({
     selectedModuleDetails,
   ]);
 
+  const resetForm = () => {
+    setContact({ name: "", telegram: "", email: "", comment: "", fileUrl: "" });
+    setSubmitState("idle");
+    setSubmitMessage("");
+  };
+
   const chooseType = (typeId: ProjectTypeId) => {
     const nextType = projectTypes.find((item) => item.id === typeId);
     if (!nextType) return;
@@ -312,6 +318,7 @@ function ProjectEstimatorForm({
         throw new Error(data?.error ?? copy.fallbackSubmitError);
       }
 
+      setContact({ name: "", telegram: "", email: "", comment: "", fileUrl: "" });
       setSubmitState("success");
       setSubmitMessage(
         data?.delivered
@@ -580,31 +587,57 @@ function ProjectEstimatorForm({
         </ConfigBlock>
 
         <div className="rounded-3xl border border-emerald-300/20 bg-emerald-300/10 p-4 sm:p-5">
-          <p className="text-sm leading-6 text-emerald-50/90">
-            {copy.note}
-          </p>
-          <button
-            type="submit"
-            disabled={submitState === "sending"}
-            className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-zinc-950 transition duration-300 hover:bg-emerald-200 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
-          >
-            {submitState === "sending" ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <Send size={18} />
-            )}
-            {copy.submit}
-          </button>
-          {submitMessage ? (
-            <p
-              className={`mt-3 text-sm leading-6 ${
-                submitState === "error" ? "text-red-200" : "text-emerald-100"
-              }`}
-              aria-live="polite"
+          {submitState === "success" ? (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="flex flex-col gap-4"
             >
-              {submitMessage}
-            </p>
-          ) : null}
+              <div className="flex items-center gap-3">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-300 text-zinc-950">
+                  <Check size={22} />
+                </span>
+                <p className="text-sm font-semibold leading-6 text-emerald-100">
+                  {submitMessage}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="inline-flex items-center gap-1.5 text-sm text-emerald-300/70 transition hover:text-emerald-300"
+              >
+                <Send size={13} />
+                {copy.sendAnother}
+              </button>
+            </motion.div>
+          ) : (
+            <>
+              <p className="text-sm leading-6 text-emerald-50/90">
+                {copy.note}
+              </p>
+              <button
+                type="submit"
+                disabled={submitState === "sending"}
+                className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-zinc-950 transition duration-300 hover:bg-emerald-200 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+              >
+                {submitState === "sending" ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Send size={18} />
+                )}
+                {copy.submit}
+              </button>
+              {submitMessage ? (
+                <p
+                  className="mt-3 text-sm leading-6 text-red-200"
+                  aria-live="polite"
+                >
+                  {submitMessage}
+                </p>
+              ) : null}
+            </>
+          )}
         </div>
       </form>
 

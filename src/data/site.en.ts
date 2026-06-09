@@ -1182,6 +1182,7 @@ const ui: SiteData["ui"] = {
     note:
       "The calculator shows an orientation point. Final cost is fixed after a short discussion of the task, integrations, design and timeline.",
     submit: "Send configuration",
+    sendAnother: "Send another",
     validationError: "Please add Telegram and briefly describe the task.",
     fallbackSubmitError: "Could not submit the request.",
     unknownSubmitError:
@@ -1189,7 +1190,7 @@ const ui: SiteData["ui"] = {
     successDelivered:
       "The request was sent to Telegram. I will come back with clarifying questions.",
     successStub:
-      "The request was collected and sent to the API stub. A Telegram recipient can be connected through env.",
+      "Request received. I'll message you on Telegram shortly.",
     estimateLabel: "Preliminary estimate",
     timelineLabel: "Timeline:",
     summaryLabels: {
