@@ -7,12 +7,12 @@ export const contacts = {
 };
 
 export const navItems = [
-  { label: "Задачи", href: "/#specialization" },
-  { label: "Конфигуратор", href: "/#estimator" },
-  { label: "Процесс", href: "/#process" },
-  { label: "Кейсы", href: "/#cases" },
-  { label: "Бюджет", href: "/#budget" },
-  { label: "FAQ", href: "/#faq" },
+  { label: "Задачи", href: "#specialization" },
+  { label: "Конфигуратор", href: "#estimator" },
+  { label: "Процесс", href: "#process" },
+  { label: "Кейсы", href: "#cases" },
+  { label: "Бюджет", href: "#budget" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 export const heroMetrics = [

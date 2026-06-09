@@ -20,12 +20,12 @@ function formatDiscountedUsdPrice(value: number) {
 }
 
 const navItems: SiteData["navItems"] = [
-  { label: "Work", href: "/#specialization" },
-  { label: "Estimator", href: "/#estimator" },
-  { label: "Process", href: "/#process" },
-  { label: "Cases", href: "/#cases" },
-  { label: "Budget", href: "/#budget" },
-  { label: "FAQ", href: "/#faq" },
+  { label: "Work", href: "#specialization" },
+  { label: "Estimator", href: "#estimator" },
+  { label: "Process", href: "#process" },
+  { label: "Cases", href: "#cases" },
+  { label: "Budget", href: "#budget" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 const heroMetrics: SiteData["heroMetrics"] = [
