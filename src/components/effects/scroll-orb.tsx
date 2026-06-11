@@ -7,6 +7,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useMemo, useRef } from "react";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import {
   getThreeScenePerformanceProfile,
   scheduleSceneStartup,
@@ -133,6 +134,7 @@ const animationPresets: Record<ScrollOrbAnimation, AnimationPreset> = {
 export function ScrollOrb() {
   const { scrollYProgress } = useScroll();
   const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   const x = useTransform(
     scrollYProgress,
@@ -154,6 +156,10 @@ export function ScrollOrb() {
     [0, 0.08, 0.5, 0.9, 1],
     [0.12, 0.1, 0.085, 0.1, 0.06],
   );
+
+  // Mobile (<=768px): don't mount the ambient WebGL orb at all — ScrollOrbCanvas
+  // never renders, so the `three` chunk is never imported on phones.
+  if (isMobile !== false) return null;
 
   return (
     <motion.div

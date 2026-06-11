@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import {
   getThreeScenePerformanceProfile,
   scheduleSceneStartup,
@@ -307,8 +308,11 @@ export function EngineeringScene({
   preserveDrawingBuffer = defaultConfig.preserveDrawingBuffer,
 }: EngineeringSceneProps) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile !== false) return;
+
     const mount = mountRef.current;
     if (!mount) return;
 
@@ -360,6 +364,7 @@ export function EngineeringScene({
     bulge,
     curveBend,
     coreScale,
+    isMobile,
     lineOpacity,
     mode,
     motionStyle,
@@ -374,6 +379,10 @@ export function EngineeringScene({
     showCore,
     surface,
   ]);
+
+  // Mobile (<=768px): skip the WebGL scene entirely — the `three` chunk is
+  // never imported (see the effect guard above) and nothing is rendered.
+  if (isMobile !== false) return null;
 
   return (
     <div
