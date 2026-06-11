@@ -6,6 +6,7 @@ import {
   Calculator,
   FileText,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   useMemo,
@@ -317,13 +318,12 @@ function CasePreview({
   if (item.coverImage) {
     return (
       <div className="case-preview case-preview-image-card" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={item.coverImage}
           alt=""
+          fill
           loading="lazy"
-          fetchPriority="low"
-          decoding="async"
+          sizes="(max-width: 768px) 90vw, 840px"
           className="case-preview-image"
         />
       </div>
