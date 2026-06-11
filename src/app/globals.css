@@ -1653,3 +1653,40 @@ summary::-webkit-details-marker {
     transform: translateX(calc(760%));
   }
 }
+
+/* Mobile render-quiet pass (stage-03): kill per-frame scroll work on <=768px.
+   Overrides earlier rules by source-order at equal specificity. Desktop untouched. */
+@media (max-width: 768px) {
+  .hero-grid {
+    animation: none;
+  }
+
+  .case-scan {
+    animation: none;
+  }
+
+  .process-flow::after {
+    animation: none;
+  }
+
+  .section-shell::after {
+    display: none;
+  }
+
+  [class*="backdrop-blur"],
+  .case-showcase-shell,
+  .case-wheel-card,
+  .case-showcase-control-button,
+  .case-showcase-pagination {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .case-wheel-card-muted::after {
+    backdrop-filter: none;
+  }
+
+  body::before {
+    display: none;
+  }
+}
