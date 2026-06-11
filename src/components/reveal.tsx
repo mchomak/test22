@@ -13,7 +13,7 @@ export function Reveal({ children, delay = 0, className, id }: RevealProps) {
   return (
     <motion.div
       id={id}
-      className={className}
+      className={["reveal", className].filter(Boolean).join(" ")}
       initial={{ opacity: 0.18, y: 44, scale: 0.985, filter: "blur(12px)" }}
       whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-80px" }}

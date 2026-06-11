@@ -1689,4 +1689,12 @@ summary::-webkit-details-marker {
   body::before {
     display: none;
   }
+
+  /* stage-04: kill framer-driven blur on Reveal wrappers (scroll-jank source).
+     !important overrides the inline filter framer sets/animates. Cheap
+     opacity/y/scale transitions still run; only the rasterizing blur is dropped. */
+  .reveal {
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
 }

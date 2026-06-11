@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { RadioTower, ShieldCheck, TerminalSquare } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { SiteData } from "@/data/site";
+import { useIsMobile } from "@/lib/use-is-mobile";
 
 export function LiveTelemetry({
   copy,
@@ -12,15 +13,20 @@ export function LiveTelemetry({
 }) {
   const [active, setActive] = useState(0);
   const [latency, setLatency] = useState(18);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile !== false) {
+      return;
+    }
+
     const interval = window.setInterval(() => {
       setActive((current) => (current + 1) % copy.events.length);
       setLatency(14 + Math.round(Math.random() * 12));
     }, 1900);
 
     return () => window.clearInterval(interval);
-  }, [copy.events.length]);
+  }, [copy.events.length, isMobile]);
 
   const currentEvent = useMemo(() => copy.events[active], [active, copy.events]);
 
