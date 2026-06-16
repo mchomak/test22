@@ -1,27 +1,24 @@
 "use client";
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  Calculator,
-  FileText,
-} from "lucide-react";
+import { ArrowUpRight, Calculator } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-  type PointerEvent,
-} from "react";
+import type { CSSProperties } from "react";
 import type { Locale, SiteData } from "@/data/site";
 
-const dragThreshold = 78;
+type CaseShowcaseCopy = Pick<
+  SiteData["ui"]["cases"],
+  "details" | "openCase" | "outcomesAria" | "similar"
+>;
 
-const stopCarouselDrag = (event: PointerEvent<HTMLElement>) => {
-  event.stopPropagation();
-};
+const showcaseCaseSlugs = [
+  "sapsanex-mini-app",
+  "subscription-bot",
+  "seedream-tryon",
+  "ai-reply-assistant",
+  "bybit-trading-bot",
+  "skillup",
+];
 
 export function CaseShowcase({
   cases,
@@ -29,404 +26,164 @@ export function CaseShowcase({
   locale,
 }: {
   cases: SiteData["cases"];
-  copy: SiteData["ui"]["cases"];
+  copy: CaseShowcaseCopy;
   locale: Locale;
 }) {
-  const showcaseCases = cases;
-  const angleStep = showcaseCases.length > 0 ? 360 / showcaseCases.length : 0;
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [holderRotation, setHolderRotation] = useState(0);
-  const dragStartX = useRef<number | null>(null);
-  const dragPointerId = useRef<number | null>(null);
-  const didDrag = useRef(false);
+  const showcaseCases = getShowcaseCases(cases);
 
-  const carouselCards = useMemo(() => {
-    return showcaseCases.map((item, index) => {
-      const offset = getCircularOffset(index, activeIndex, showcaseCases.length);
-      const angle = offset * angleStep;
-      const radians = (angle * Math.PI) / 180;
-      const side = Math.sin(radians);
-      const depth = Math.cos(radians);
-      const depthRatio = (depth + 1) / 2;
-      const isActive = offset === 0;
-
-      return {
-        item,
-        isActive,
-        x: side * 440,
-        y: isActive ? 10 : 56 + (1 - depth) * 62,
-        scale: isActive ? 1 : 0.58 + depthRatio * 0.16,
-        opacity: isActive ? 1 : 0,
-        rotate: side * 1.8,
-        rotateY: side * -8,
-        zIndex: isActive ? 140 : Math.round(depthRatio * 36),
-        visualFilter: "brightness(1) saturate(1)",
-      };
-    });
-  }, [activeIndex, angleStep, showcaseCases]);
-
-  const rotateBy = (steps: number) => {
-    if (steps === 0 || showcaseCases.length === 0) return;
-
-    setHolderRotation((current) => current - steps * angleStep);
-    setActiveIndex(
-      (current) => (current + steps + showcaseCases.length) % showcaseCases.length,
-    );
-  };
-
-  const go = (direction: -1 | 1) => {
-    rotateBy(direction);
-  };
-
-  const goTo = (index: number) => {
-    const offset = getCircularOffset(index, activeIndex, showcaseCases.length);
-    if (offset === 0) return;
-
-    rotateBy(offset);
-  };
-
-  const handleDragStart = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-
-    dragStartX.current = event.clientX;
-    dragPointerId.current = event.pointerId;
-    didDrag.current = false;
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const handleDragMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (dragPointerId.current !== event.pointerId || dragStartX.current === null) {
-      return;
-    }
-
-    const delta = event.clientX - dragStartX.current;
-    if (Math.abs(delta) < dragThreshold) return;
-
-    event.preventDefault();
-    didDrag.current = true;
-    rotateBy(delta < 0 ? 1 : -1);
-    dragStartX.current = event.clientX;
-  };
-
-  const handleDragEnd = (event: PointerEvent<HTMLDivElement>) => {
-    if (dragPointerId.current !== event.pointerId) return;
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-
-    dragStartX.current = null;
-    dragPointerId.current = null;
-
-    if (didDrag.current) {
-      window.setTimeout(() => {
-        didDrag.current = false;
-      }, 0);
-    }
-  };
-
-  if (showcaseCases.length === 0) {
+  if (!showcaseCases.length) {
     return null;
   }
 
   return (
-    <div className="case-showcase-shell">
-      <div
-        className="case-showcase-stage"
-        role="region"
-        aria-label={copy.carouselAria}
-        onPointerDown={handleDragStart}
-        onPointerMove={handleDragMove}
-        onPointerUp={handleDragEnd}
-        onPointerCancel={handleDragEnd}
-      >
-        <div className="case-wheel-holder" aria-hidden="true">
-          <span className="case-wheel-holder-plane">
-            <span className="case-wheel-holder-ring" />
-            <span
-              className="case-wheel-holder-rotor"
-              style={{ transform: `rotate(${holderRotation}deg)` }}
-            >
-              {showcaseCases.map((item, index) => (
-                <span
-                  key={item.title}
-                  className="case-wheel-holder-node"
-                  style={{
-                    transform: `rotate(${
-                      index * angleStep + 90
-                    }deg) translateX(var(--case-wheel-node-radius))`,
-                  }}
-                />
-              ))}
-            </span>
-          </span>
-        </div>
-
-        <div className="case-wheel-deck">
-          {carouselCards.map(
-            ({
-              item,
-              isActive,
-              x,
-              y,
-              scale,
-              opacity,
-              rotate,
-              rotateY,
-              zIndex,
-              visualFilter,
-            }) => (
-              <article
-                key={item.title}
-                className={`case-wheel-card ${
-                  isActive ? "case-wheel-card-active" : "case-wheel-card-muted"
-                }`}
-                aria-label={item.title}
-                aria-hidden={isActive ? undefined : true}
-                aria-current={isActive ? "true" : undefined}
-                tabIndex={isActive ? 0 : -1}
-                style={{
-                  zIndex,
-                  pointerEvents: isActive ? "auto" : "none",
-                  opacity,
-                  filter: visualFilter,
-                  transform: `translate3d(${x}px, ${y}px, 0) scale(${scale}) rotate(${rotate}deg) rotateY(${rotateY}deg)`,
-                }}
-              >
-                <span className="case-wheel-card-line" aria-hidden="true" />
-                <span className="case-wheel-card-pin" aria-hidden="true" />
-                {isActive ? (
-                  <CaseCardContent copy={copy} item={item} locale={locale} />
-                ) : (
-                  <span className="case-wheel-card-ghost" aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                    <span />
-                  </span>
-                )}
-              </article>
-            ),
-          )}
-        </div>
-      </div>
-
-      <div className="case-showcase-controls" aria-label={copy.controlsAria}>
-        <button
-          type="button"
-          onClick={() => go(-1)}
-          className="case-showcase-control-button"
-          aria-label={copy.previous}
-        >
-          <ArrowLeft size={18} />
-        </button>
-
-        <div className="case-showcase-pagination" aria-live="polite">
-          <span className="case-showcase-pagination-count">
-            {String(activeIndex + 1).padStart(2, "0")} /{" "}
-            {String(showcaseCases.length).padStart(2, "0")}
-          </span>
-          <span className="case-showcase-dots">
-            {showcaseCases.map((item, index) => (
-              <button
-                key={item.title}
-                type="button"
-                onClick={() => goTo(index)}
-                className={`case-showcase-dot ${
-                  index === activeIndex ? "case-showcase-dot-active" : ""
-                }`}
-                aria-label={`${copy.openCase} ${index + 1}: ${item.title}`}
-                aria-current={index === activeIndex ? "true" : undefined}
-              />
-            ))}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => go(1)}
-          className="case-showcase-control-button"
-          aria-label={copy.next}
-        >
-          <ArrowRight size={18} />
-        </button>
+    <div className="case-showcase-shell case-editorial-showcase">
+      <div className="case-lane-grid">
+        {showcaseCases.map((item, index) => (
+          <CaseTile
+            key={item.slug}
+            copy={copy}
+            index={index + 1}
+            item={item}
+            locale={locale}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-function CaseCardContent({
+function CaseTile({
   copy,
+  index,
   item,
   locale,
 }: {
-  copy: SiteData["ui"]["cases"];
+  copy: CaseShowcaseCopy;
+  index: number;
   item: SiteData["cases"][number];
   locale: Locale;
 }) {
   return (
-    <div
-      className="case-wheel-card-content"
+    <article
+      className="case-tile"
       style={{ "--case-accent": item.preview.accent } as CSSProperties}
     >
-      <div className="case-showcase-copy">
-        <div className="case-wheel-card-title-group">
-          <span className="case-wheel-card-type">{item.category}</span>
-          <h3 className="case-wheel-card-title">{item.title}</h3>
-        </div>
+      <Link
+        href={`/${locale}/cases#${item.slug}`}
+        className="case-tile-media"
+        style={{ "--case-image": `url("${item.coverImage}")` } as CSSProperties}
+        aria-label={`${copy.openCase}: ${item.title}`}
+      >
+        <Image
+          src={item.coverImage}
+          alt={item.coverAlt}
+          fill
+          sizes="(max-width: 680px) 94vw, (max-width: 1200px) 48vw, (min-width: 1600px) 840px, 46vw"
+          className="case-tile-image"
+        />
+        <CaseGlitchLayers />
+        <span className="case-media-sheen" aria-hidden="true" />
+        <CaseAssetOverlay item={item} />
+      </Link>
 
-        <p className="case-wheel-card-summary">{item.shortSummary}</p>
-
-        <div className="case-wheel-outcomes" aria-label={copy.outcomesAria}>
-          {item.outcomes.slice(0, 4).map((outcome) => (
-            <span key={outcome} className="case-wheel-outcome">
-              {outcome}
-            </span>
-          ))}
+      <div className="case-tile-copy">
+        <div className="case-card-kicker">
+          <span>{String(index).padStart(2, "0")}</span>
+          <span>{item.type}</span>
         </div>
-
-        <div className="case-wheel-card-actions">
-          <Link
-            href={`/${locale}/cases#${item.slug}`}
-            className="case-wheel-card-action"
-            onPointerDown={stopCarouselDrag}
-          >
-            <FileText size={16} />
-            {copy.details}
-          </Link>
-          <Link
-            href={buildLocalizedEstimatorHref(locale, item)}
-            className="case-wheel-card-action case-wheel-card-action-secondary"
-            onPointerDown={stopCarouselDrag}
-          >
-            <Calculator size={16} />
-            {copy.similar}
-          </Link>
-        </div>
+        <h3 className="case-tile-title">{item.title}</h3>
+        <p className="case-tile-result">{item.keyResult}</p>
+        <Tags ariaLabel={copy.outcomesAria} tags={item.outcomes.slice(0, 3)} />
       </div>
 
-      <CasePreview item={item} />
-    </div>
+      <div className="case-tile-footer">
+        <Link
+          href={`/${locale}/cases#${item.slug}`}
+          className="case-tile-link"
+        >
+          {copy.details}
+          <ArrowUpRight size={15} />
+        </Link>
+        <Link
+          href={buildLocalizedEstimatorHref(locale, item)}
+          className="case-tile-link case-tile-link-muted"
+        >
+          <Calculator size={15} />
+          {copy.similar}
+        </Link>
+      </div>
+    </article>
   );
 }
 
-function CasePreview({
+function CaseGlitchLayers() {
+  return (
+    <>
+      <span
+        className="case-glitch-layer case-glitch-layer-cyan"
+        aria-hidden="true"
+      />
+      <span
+        className="case-glitch-layer case-glitch-layer-warm"
+        aria-hidden="true"
+      />
+      <span className="case-glitch-scan" aria-hidden="true" />
+    </>
+  );
+}
+
+function CaseAssetOverlay({
   item,
 }: {
   item: SiteData["cases"][number];
 }) {
-  if (item.coverImage) {
-    return (
-      <div className="case-preview case-preview-image-card" aria-hidden="true">
-        <Image
-          src={item.coverImage}
-          alt=""
-          fill
-          loading="lazy"
-          sizes="(max-width: 768px) 90vw, 840px"
-          className="case-preview-image"
-        />
-      </div>
-    );
-  }
-
-  const title = item.preview.label;
-
-  if (item.preview.kind === "chart") {
-    return (
-      <div className="case-preview case-preview-chart" aria-hidden="true">
-        <PreviewHeader title={title} stats={item.preview.stats} />
-        <span className="case-preview-chart-grid">
-          <span className="case-preview-candle case-preview-candle-a" />
-          <span className="case-preview-candle case-preview-candle-b" />
-          <span className="case-preview-candle case-preview-candle-c" />
-          <span className="case-preview-candle case-preview-candle-d" />
-          <span className="case-preview-signal" />
-        </span>
-      </div>
-    );
-  }
-
-  if (item.preview.kind === "tree") {
-    return (
-      <div className="case-preview case-preview-tree" aria-hidden="true">
-        <PreviewHeader title={title} stats={item.preview.stats} />
-        <span className="case-preview-tree-canvas">
-          <span className="case-preview-branch case-preview-branch-a" />
-          <span className="case-preview-branch case-preview-branch-b" />
-          <span className="case-preview-branch case-preview-branch-c" />
-          <span className="case-preview-node case-preview-node-a" />
-          <span className="case-preview-node case-preview-node-b" />
-          <span className="case-preview-node case-preview-node-c" />
-          <span className="case-preview-node case-preview-node-d" />
-        </span>
-      </div>
-    );
-  }
-
-  if (item.preview.kind === "web" || item.preview.kind === "dashboard") {
-    return (
-      <div className="case-preview case-preview-web" aria-hidden="true">
-        <PreviewHeader title={title} stats={item.preview.stats} />
-        <span className="case-preview-browser">
-          <span className="case-preview-browser-bar">
-            <span />
-            <span />
-            <span />
-          </span>
-          <span className="case-preview-browser-body">
-            <span className="case-preview-browser-hero" />
-            <span className="case-preview-browser-row" />
-            <span className="case-preview-browser-row case-preview-browser-row-short" />
-            <span className="case-preview-browser-table">
-              <span />
-              <span />
-              <span />
-            </span>
-          </span>
-        </span>
-      </div>
-    );
-  }
+  const stats = item.preview.stats.slice(0, 1);
 
   return (
-    <div className="case-preview case-preview-device" aria-hidden="true">
-      <PreviewHeader title={title} stats={item.preview.stats} />
-      <span className="case-preview-device-grid">
-        <span className="case-preview-phone">
-          <span className="case-preview-phone-notch" />
-          <span className="case-preview-bubble case-preview-bubble-in" />
-          <span className="case-preview-bubble case-preview-bubble-out" />
-          <span className="case-preview-bubble case-preview-bubble-in case-preview-bubble-short" />
-          <span className="case-preview-paid" />
-        </span>
-        <span className="case-preview-panel">
-          <span className="case-preview-panel-title" />
-          <span className="case-preview-panel-row" />
-          <span className="case-preview-panel-row" />
-          <span className="case-preview-panel-row case-preview-panel-row-active" />
-          <span className="case-preview-panel-chart">
-            <span />
-            <span />
-            <span />
-          </span>
-        </span>
-      </span>
-    </div>
-  );
-}
-
-function PreviewHeader({ title, stats }: { title: string; stats: string[] }) {
-  return (
-    <span className="case-preview-header">
-      <span className="case-preview-label">{title}</span>
-      <span className="case-preview-stats">
+    <span className="case-asset-overlay">
+      <span className="case-asset-label">{item.preview.label}</span>
+      <span className="case-asset-stats">
         {stats.map((stat) => (
           <span key={stat}>{stat}</span>
         ))}
       </span>
     </span>
   );
+}
+
+function Tags({
+  ariaLabel,
+  tags,
+}: {
+  ariaLabel: string;
+  tags: string[];
+}) {
+  return (
+    <div className="case-editorial-tags" aria-label={ariaLabel}>
+      {tags.map((tag) => (
+        <span key={tag} className="case-editorial-tag">
+          {tag}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function getShowcaseCases(cases: SiteData["cases"]) {
+  const bySlug = new Map(cases.map((item) => [item.slug, item]));
+  const preferredCases = showcaseCaseSlugs
+    .map((slug) => bySlug.get(slug))
+    .filter((item): item is SiteData["cases"][number] => Boolean(item));
+
+  if (preferredCases.length >= 6) {
+    return preferredCases;
+  }
+
+  const fallbackCases = cases.filter(
+    (item) => !preferredCases.some((preferred) => preferred.slug === item.slug),
+  );
+
+  return [...preferredCases, ...fallbackCases].slice(0, 6);
 }
 
 function buildLocalizedEstimatorHref(
@@ -441,11 +198,4 @@ function buildLocalizedEstimatorHref(
   });
 
   return `/${locale}/?${params.toString()}#estimator`;
-}
-
-function getCircularOffset(index: number, activeIndex: number, total: number) {
-  let offset = index - activeIndex;
-  if (offset > total / 2) offset -= total;
-  if (offset < -total / 2) offset += total;
-  return offset;
 }

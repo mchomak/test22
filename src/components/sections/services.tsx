@@ -1,6 +1,5 @@
 import { ArrowRight, Info, LifeBuoy, WalletCards } from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button-link";
 import type { SiteData } from "@/data/site";
 
@@ -8,64 +7,57 @@ export function Services({ site }: { site: SiteData }) {
   const { budgetGuides, retainer, ui } = site;
 
   return (
-    <section id="budget" className="section-shell bg-[#090a0a]">
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow={ui.services.eyebrow}
-          title={ui.services.title}
-          description={ui.services.description}
-        />
+    <section id="budget" className="section-shell section-soft">
+      <div className="mx-auto max-w-[1680px] px-4 py-20 sm:px-6 lg:px-10 2xl:px-12">
+        <div className="budget-story">
+          <Reveal>
+            <div className="budget-lead">
+              <p className="eyebrow">{ui.services.eyebrow}</p>
+              <h2 className="section-title mt-4">{ui.services.title}</h2>
+              <p className="section-copy mt-5">{ui.services.description}</p>
 
-        <div className="grid gap-5 lg:grid-cols-3">
-          {budgetGuides.map((item, index) => (
-            <Reveal key={item.title} delay={index * 0.08}>
-              <article className="group h-full rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-emerald-300/35 hover:bg-[#101715]/78">
-                <div className="mb-6 flex items-start justify-between gap-4">
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
-                    <WalletCards size={22} />
-                  </span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-600">
-                    {ui.services.budgetLabel} 0{index + 1}
-                  </span>
+              <div className="budget-note">
+                <Info size={22} className="accent-signal" />
+                <div>
+                  <h3>{ui.services.finalTitle}</h3>
+                  <p>
+                    {ui.services.finalDescription} {retainer.price}.
+                  </p>
                 </div>
-                <h3 className="text-2xl font-semibold leading-tight text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-5 text-3xl font-semibold text-emerald-100">
-                  {item.price}
-                </p>
-                <p className="mt-4 text-sm leading-6 text-zinc-400">
-                  {item.description}
-                </p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+              </div>
 
-        <Reveal delay={0.12}>
-          <div className="mt-5 grid gap-5 rounded-3xl border border-white/10 bg-[#101311]/68 p-6 backdrop-blur-md lg:grid-cols-[1fr_auto] lg:items-center">
-            <div className="flex gap-4">
-              <Info size={22} className="mt-1 shrink-0 text-emerald-300" />
-              <div>
-                <h3 className="text-xl font-semibold text-white">
-                  {ui.services.finalTitle}
-                </h3>
-                <p className="mt-3 max-w-4xl text-sm leading-6 text-zinc-400">
-                  {ui.services.finalDescription} {retainer.price}.
-                </p>
+              <div className="budget-actions">
+                <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
+                  {ui.services.estimateCta}
+                </ButtonLink>
+                <span>
+                  <LifeBuoy size={17} className="accent-logic" />
+                  {retainer.title.toLowerCase()}
+                </span>
               </div>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
-                {ui.services.estimateCta}
-              </ButtonLink>
-              <div className="flex items-center gap-2 text-sm text-zinc-400 lg:justify-end">
-                <LifeBuoy size={17} className="text-emerald-300" />
-                {retainer.title.toLowerCase()}
-              </div>
-            </div>
+          </Reveal>
+
+          <div className="budget-guides">
+            {budgetGuides.map((item, index) => (
+              <Reveal key={item.title} delay={index * 0.07}>
+                <article className="budget-guide">
+                  <div className="budget-guide-icon">
+                    <WalletCards size={22} />
+                  </div>
+                  <div>
+                    <span className="number-pill">
+                      {ui.services.budgetLabel} 0{index + 1}
+                    </span>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                  <strong>{item.price}</strong>
+                </article>
+              </Reveal>
+            ))}
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

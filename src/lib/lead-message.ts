@@ -5,6 +5,7 @@ export type LeadMessageFields = {
   options: string[];
   budget: string;
   timeline: string;
+  sourceCase?: string;
   contactName: string;
   contactTelegram: string;
   contactEmail: string;
@@ -19,6 +20,7 @@ export function formatLeadMessage(lead: LeadMessageFields): string {
     `Категория: ${lead.category}`,
     `Сложность: ${lead.complexity}`,
     lead.urgency ? `Сроки: ${lead.urgency}` : "",
+    lead.sourceCase ? `Кейс-ориентир: ${lead.sourceCase}` : "",
     "Опции:",
     ...(lead.options.length
       ? lead.options.map((option) => `- ${option}`)

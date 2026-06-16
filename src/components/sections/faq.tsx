@@ -1,48 +1,46 @@
 import { CircleHelp } from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { SectionHeading } from "@/components/ui/section-heading";
 import type { SiteData } from "@/data/site";
 
 export function FAQ({ site }: { site: SiteData }) {
   const { faqs, ui } = site;
 
   return (
-    <section id="faq" className="section-shell bg-[#090a0a]">
-      <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow={ui.faq.eyebrow}
-          title={ui.faq.title}
-          description={ui.faq.description}
-          align="center"
-        />
+    <section id="faq" className="section-shell section-deep">
+      <div className="site-container py-24">
+        <div className="faq-split">
+          <Reveal>
+            <aside className="faq-copy">
+              <p className="eyebrow">{ui.faq.eyebrow}</p>
+              <h2 className="section-title mt-4">{ui.faq.title}</h2>
+              <p className="section-copy mt-5">{ui.faq.description}</p>
+            </aside>
+          </Reveal>
 
-        <Reveal>
-          <div className="divide-y divide-white/10 rounded-3xl border border-white/10 bg-[#101311]/68 backdrop-blur-md">
-            {faqs.map((item, index) => (
-              <details
-                key={item.question}
-                className="group px-5 py-5 open:bg-white/[0.025] sm:px-7"
-                open={index === 0}
-              >
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-left text-base font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-300 sm:text-lg">
-                  <span className="flex gap-3">
-                    <CircleHelp
-                      size={20}
-                      className="mt-0.5 shrink-0 text-emerald-300"
-                    />
-                    {item.question}
-                  </span>
-                  <span className="mt-1 h-5 w-5 shrink-0 rounded-full border border-white/20 text-center text-sm leading-[18px] text-zinc-400 transition group-open:rotate-45 group-open:border-emerald-300/40 group-open:text-emerald-200">
-                    +
-                  </span>
-                </summary>
-                <p className="ml-8 mt-4 max-w-3xl text-sm leading-7 text-zinc-400 sm:text-base">
-                  {item.answer}
-                </p>
-              </details>
-            ))}
-          </div>
-        </Reveal>
+          <Reveal>
+            <div className="faq-list">
+              {faqs.map((item, index) => (
+                <details
+                  key={item.question}
+                  className="faq-item group"
+                  open={index === 0}
+                >
+                  <summary>
+                    <span>
+                      <CircleHelp
+                        size={20}
+                        className="accent-signal mt-0.5 shrink-0"
+                      />
+                      {item.question}
+                    </span>
+                    <span className="faq-toggle">+</span>
+                  </summary>
+                  <p>{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

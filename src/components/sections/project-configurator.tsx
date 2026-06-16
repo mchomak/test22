@@ -1,11 +1,18 @@
 import { Suspense } from "react";
 import { ProjectEstimator } from "@/components/interactive/project-estimator";
-import { SectionHeading } from "@/components/ui/section-heading";
 import type { SiteData } from "@/data/site";
 
 export function ProjectConfigurator({ site }: { site: SiteData }) {
   const { ui } = site;
   const estimatorData = {
+    contacts: site.contacts,
+    casePresets: site.cases.map((item) => ({
+      estimatorPreset: item.estimatorPreset,
+      keyResult: item.keyResult,
+      slug: item.slug,
+      title: item.title,
+      type: item.type,
+    })),
     projectTypes: site.projectTypes,
     complexityLevels: site.complexityLevels,
     urgencyOptions: site.urgencyOptions,
@@ -14,17 +21,35 @@ export function ProjectConfigurator({ site }: { site: SiteData }) {
   };
 
   return (
-    <section id="estimator" className="section-shell estimator-section bg-[#0b0d0c]">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow={ui.configurator.eyebrow}
-          title={ui.configurator.title}
-          description={ui.configurator.description}
-        />
+    <section id="estimator" className="section-shell estimator-section section-soft">
+      <div className="site-container py-24">
+        <div className="estimator-section-head">
+          <div>
+            <p className="eyebrow mb-4">{ui.configurator.eyebrow}</p>
+            <h2 className="section-title">
+              {ui.configurator.title}
+            </h2>
+            <p className="section-copy mt-5 max-w-4xl">
+              {ui.configurator.description}
+            </p>
+          </div>
+
+          <div
+            className="estimator-section-steps"
+            aria-label={ui.estimator.kicker}
+          >
+            {ui.estimator.steps.slice(0, 4).map((step, index) => (
+              <span key={step}>
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                {step}
+              </span>
+            ))}
+          </div>
+        </div>
 
         <Suspense
           fallback={
-            <div className="min-h-[680px] rounded-[2rem] border border-white/10 bg-[#101311]/68" />
+            <div className="estimator-workbench min-h-[680px]" />
           }
         >
           <ProjectEstimator data={estimatorData} />

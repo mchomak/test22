@@ -43,7 +43,7 @@ export function LocaleSwitcher({
 
   return (
     <div
-      className="inline-flex rounded-full border border-white/10 bg-white/[0.04] p-1"
+      className="inline-flex rounded-full border border-[var(--stroke-subtle)] bg-white/[0.04] p-1"
       aria-label={ariaLabel}
       role="group"
     >
@@ -59,8 +59,8 @@ export function LocaleSwitcher({
             title={labels[option]}
             className={`min-h-8 rounded-full px-3 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] transition ${
               isActive
-                ? "bg-emerald-300 text-zinc-950"
-                : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
+                ? "bg-[var(--accent-primary)] text-[var(--accent-primary-contrast)]"
+                : "text-[var(--text-muted)] hover:bg-white/[0.06] hover:text-[var(--text-primary)]"
             }`}
           >
             {option}

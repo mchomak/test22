@@ -3,18 +3,52 @@
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  BadgeQuestionMark,
+  Bell,
+  Bot,
+  Boxes,
+  BrainCircuit,
   Calculator,
+  ChartCandlestick,
+  ChartNoAxesCombined,
   Check,
   Clock3,
+  Code2,
+  CreditCard,
+  Database,
+  FileSearch,
+  FileSpreadsheet,
   FileText,
   Gauge,
+  Globe2,
+  KeyRound,
+  LayoutDashboard,
   Link as LinkIcon,
   Loader2,
+  LockKeyhole,
   Mail,
   MessageCircle,
+  MessagesSquare,
+  Network,
+  Plug,
+  Repeat,
+  Rocket,
+  SearchCode,
   Send,
+  ServerCog,
+  Shield,
   SlidersHorizontal,
+  Smartphone,
+  Sparkles,
+  Star,
+  TableProperties,
+  TriangleAlert,
   User,
+  UserRound,
+  UsersRound,
+  WalletCards,
+  Workflow,
+  type LucideIcon,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, type FormEvent, type ReactNode } from "react";
@@ -28,8 +62,12 @@ type SubmitState = "idle" | "sending" | "success" | "error";
 
 type ProjectEstimatorData = Pick<
   SiteData,
-  "projectTypes" | "complexityLevels" | "urgencyOptions" | "projectModules" | "ui"
->;
+  "contacts" | "projectTypes" | "complexityLevels" | "urgencyOptions" | "projectModules" | "ui"
+> & {
+  casePresets: Array<
+    Pick<SiteData["cases"][number], "estimatorPreset" | "keyResult" | "slug" | "title" | "type">
+  >;
+};
 
 const roundBudget = (value: number, step: number, min: number) =>
   Math.max(min, Math.round(value / step) * step);
@@ -73,6 +111,7 @@ type EstimatorInitialState = {
   selectedModules: string[];
   complexityId: ProjectComplexityId;
   urgencyId: string;
+  presetCaseSlug: string;
 };
 
 const getEstimatorInitialState = (
@@ -81,36 +120,109 @@ const getEstimatorInitialState = (
 ): EstimatorInitialState => {
   const params = new URLSearchParams(query);
   const typeParam = params.get("estimateType");
-  const { complexityLevels, projectTypes, urgencyOptions } = data;
+  const { casePresets, complexityLevels, projectTypes, urgencyOptions } = data;
+  const caseParam = params.get("estimateCase");
+  const presetCase = caseParam
+    ? casePresets.find((item) => item.slug === caseParam)
+    : undefined;
+  const fallbackType = presetCase?.estimatorPreset.type;
+  const selectedTypeId = isProjectTypeId(typeParam, projectTypes)
+    ? typeParam
+    : fallbackType;
 
-  if (!isProjectTypeId(typeParam, projectTypes)) {
+  if (!selectedTypeId) {
     return {
       key: "default",
       selectedTypeId: projectTypes[0].id,
       selectedModules: projectTypes[0].defaultModules,
       complexityId: "business",
       urgencyId: urgencyOptions[1].id,
+      presetCaseSlug: "",
     };
   }
 
   const complexityParam = params.get("estimateComplexity");
+  const rawModules =
+    params.get("estimateModules") ??
+    presetCase?.estimatorPreset.modules.join(",") ??
+    null;
   const selectedModules = getEstimatorPresetModules(
-    typeParam,
-    params.get("estimateModules"),
+    selectedTypeId,
+    rawModules,
     data,
   );
   const complexityId = isProjectComplexityId(complexityParam, complexityLevels)
     ? complexityParam
-    : "business";
+    : presetCase?.estimatorPreset.complexity ?? "business";
 
   return {
-    key: `preset:${typeParam}:${complexityId}:${selectedModules.join(",")}`,
-    selectedTypeId: typeParam,
+    key: `preset:${presetCase?.slug ?? "query"}:${selectedTypeId}:${complexityId}:${selectedModules.join(",")}`,
+    selectedTypeId,
     selectedModules,
     complexityId,
     urgencyId: "standard",
+    presetCaseSlug: presetCase?.slug ?? "",
   };
 };
+
+const projectTypeIcons = {
+  "telegram-bot": Bot,
+  "telegram-mini-app": Smartphone,
+  "ai-integration": BrainCircuit,
+  "parser-automation": SearchCode,
+  "web-service": LayoutDashboard,
+  "crypto-trading-bot": ChartCandlestick,
+  "not-sure": MessagesSquare,
+} satisfies Record<ProjectTypeId, LucideIcon>;
+
+const moduleIcons: Record<string, LucideIcon> = {
+  "admin": LayoutDashboard,
+  "admin-ai": LayoutDashboard,
+  "ai-assistant": BrainCircuit,
+  "analytics": ChartNoAxesCombined,
+  "architecture": Workflow,
+  "auth": KeyRound,
+  "backend-api": ServerCog,
+  "captcha": Shield,
+  "classification": FileSearch,
+  "content-generation": Sparkles,
+  "crypto-payments": WalletCards,
+  "dashboard": ChartNoAxesCombined,
+  "database": Database,
+  "database-web": Database,
+  "deploy": Rocket,
+  "dex": Network,
+  "discovery": BadgeQuestionMark,
+  "documents": FileSpreadsheet,
+  "exchange-api": Plug,
+  "existing-product": Plug,
+  "export": FileSpreadsheet,
+  "external-api": Plug,
+  "external-integrations": Plug,
+  "frontend": Code2,
+  "history-logs": FileText,
+  "llm-api": BrainCircuit,
+  "mvp-scope": TableProperties,
+  "multi-site": Globe2,
+  "notifications": Bell,
+  "payments": CreditCard,
+  "price-monitoring": ChartNoAxesCombined,
+  "profile": UserRound,
+  "prototype": Sparkles,
+  "proxies": Shield,
+  "rag": BrainCircuit,
+  "referral": UsersRound,
+  "regular-run": Repeat,
+  "risk-limits": TriangleAlert,
+  "roles": LockKeyhole,
+  "signals": ChartNoAxesCombined,
+  "single-site": SearchCode,
+  "telegram-alerts": Bell,
+  "telegram-stars": Star,
+  "trade-logs": FileText,
+};
+
+const getModuleIcon = (moduleId: string) => moduleIcons[moduleId] ?? Boxes;
 
 export function ProjectEstimator({ data }: { data: ProjectEstimatorData }) {
   const searchParams = useSearchParams();
@@ -160,6 +272,9 @@ function ProjectEstimatorForm({
   const [urgencyId, setUrgencyId] = useState(initialState.urgencyId);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [activePresetCaseSlug, setActivePresetCaseSlug] = useState(
+    initialState.presetCaseSlug,
+  );
   const [contact, setContact] = useState({
     name: "",
     telegram: "",
@@ -182,6 +297,13 @@ function ProjectEstimatorForm({
   const selectedModuleDetails = useMemo(
     () => modules.filter((item) => selectedModules.includes(item.id)),
     [modules, selectedModules],
+  );
+  const activePresetCase = useMemo(
+    () =>
+      activePresetCaseSlug
+        ? data.casePresets.find((item) => item.slug === activePresetCaseSlug)
+        : undefined,
+    [activePresetCaseSlug, data.casePresets],
   );
 
   const estimate = useMemo(() => {
@@ -248,12 +370,17 @@ function ProjectEstimatorForm({
     setSubmitMessage("");
   };
 
+  const clearPresetContext = () => {
+    setActivePresetCaseSlug("");
+  };
+
   const chooseType = (typeId: ProjectTypeId) => {
     const nextType = projectTypes.find((item) => item.id === typeId);
     if (!nextType) return;
 
     setSelectedTypeId(typeId);
     setSelectedModules(nextType.defaultModules);
+    clearPresetContext();
     setSubmitState("idle");
     setSubmitMessage("");
   };
@@ -264,6 +391,7 @@ function ProjectEstimatorForm({
         ? current.filter((item) => item !== moduleId)
         : [...current, moduleId],
     );
+    clearPresetContext();
     setSubmitState("idle");
     setSubmitMessage("");
   };
@@ -295,6 +423,7 @@ function ProjectEstimatorForm({
         budget: estimate.budget,
         timeline: estimate.timeline,
       },
+      sourceCase: activePresetCase?.title ?? "",
       contact: {
         name: contact.name.trim(),
         telegram: contact.telegram.trim(),
@@ -336,38 +465,53 @@ function ProjectEstimatorForm({
   };
 
   return (
-    <div className="grid gap-5 rounded-[2rem] border border-white/10 bg-[#101311]/68 p-4 backdrop-blur-md sm:p-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <form onSubmit={handleSubmit} className="grid gap-6">
-        <div className="rounded-3xl border border-white/10 bg-black/18 p-4 sm:p-5">
+    <div className="estimator-workbench">
+      <form onSubmit={handleSubmit} className="estimator-form">
+        <div className="estimator-command-bar">
           <div className="mb-5 flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
+            <span className="icon-tile h-11 w-11">
               <SlidersHorizontal size={20} />
             </span>
             <div>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
+              <p className="eyebrow">
                 {copy.kicker}
               </p>
-              <h3 className="text-xl font-semibold text-white">
+              <h3 className="text-xl font-semibold text-[var(--text-primary)]">
                 {copy.title}
               </h3>
             </div>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="estimator-step-rail">
             {copy.steps.map((step, index) => (
-              <div
+              <span
                 key={step}
-                className="rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-2"
+                className="estimator-step-token"
               >
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-300/70">
+                <small>
                   {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="mt-1 block text-xs font-medium text-zinc-300">
-                  {step}
-                </span>
-              </div>
+                </small>
+                {step}
+              </span>
             ))}
           </div>
+
+          {activePresetCase ? (
+            <div className="estimator-preset-banner mt-5">
+              <div>
+                <p className="eyebrow-muted">{copy.presetLabel}</p>
+                <p className="mt-1 text-sm font-semibold text-[var(--text-primary)]">
+                  {activePresetCase.title}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+                  {activePresetCase.keyResult}
+                </p>
+              </div>
+              <span className="tag-pill tag-pill-logic">
+                {activePresetCase.type}
+              </span>
+            </div>
+          ) : null}
         </div>
 
         <ConfigBlock
@@ -379,6 +523,7 @@ function ProjectEstimatorForm({
           <div className="grid gap-3 md:grid-cols-2">
             {projectTypes.map((type) => {
               const isActive = type.id === selectedTypeId;
+              const TypeIcon = projectTypeIcons[type.id];
 
               return (
                 <button
@@ -386,27 +531,28 @@ function ProjectEstimatorForm({
                   type="button"
                   onClick={() => chooseType(type.id)}
                   aria-pressed={isActive}
-                  className={`min-h-32 rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                  className={`choice-card estimator-choice-card min-h-32 p-4 ${
                     isActive
-                      ? "border-emerald-300/50 bg-emerald-300/10"
-                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                      ? "choice-card-active choice-card-active-logic"
+                      : ""
                   }`}
                 >
                   <span className="flex items-start justify-between gap-3">
-                    <span>
-                      <span className="block text-base font-semibold text-white">
-                        {type.label}
+                    <span className="estimator-choice-content">
+                      <span className="estimator-choice-icon" aria-hidden="true">
+                        <TypeIcon size={18} />
                       </span>
-                      <span className="mt-2 block text-sm leading-6 text-zinc-400">
-                        {type.description}
+                      <span className="min-w-0">
+                        <span className="block text-base font-semibold text-[var(--text-primary)]">
+                          {type.label}
+                        </span>
+                        <span className="body-copy mt-2 block text-sm">
+                          {type.description}
+                        </span>
                       </span>
                     </span>
                     <span
-                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border ${
-                        isActive
-                          ? "border-emerald-300 bg-emerald-300 text-zinc-950"
-                          : "border-white/15 text-transparent"
-                      }`}
+                      className="check-token h-7 w-7 shrink-0"
                     >
                       <Check size={15} />
                     </span>
@@ -431,16 +577,19 @@ function ProjectEstimatorForm({
                 <button
                   key={level.id}
                   type="button"
-                  onClick={() => setComplexityId(level.id)}
+                  onClick={() => {
+                    setComplexityId(level.id);
+                    clearPresetContext();
+                  }}
                   aria-pressed={isActive}
-                  className={`rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                  className={`choice-card estimator-choice-card p-4 ${
                     isActive
-                      ? "border-cyan-200/45 bg-cyan-200/10"
-                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                      ? "choice-card-active choice-card-active-signal"
+                      : ""
                   }`}
                 >
-                  <span className="font-semibold text-white">{level.label}</span>
-                  <span className="mt-2 block text-sm leading-6 text-zinc-400">
+                  <span className="font-semibold text-[var(--text-primary)]">{level.label}</span>
+                  <span className="body-copy mt-2 block text-sm">
                     {level.description}
                   </span>
                 </button>
@@ -458,6 +607,7 @@ function ProjectEstimatorForm({
           <div className="grid gap-3 md:grid-cols-2">
             {modules.map((module) => {
               const isActive = selectedModules.includes(module.id);
+              const ModuleIcon = getModuleIcon(module.id);
 
               return (
                 <button
@@ -465,32 +615,33 @@ function ProjectEstimatorForm({
                   type="button"
                   onClick={() => toggleModule(module.id)}
                   aria-pressed={isActive}
-                  className={`min-h-28 rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                  className={`choice-card estimator-choice-card min-h-28 p-4 ${
                     isActive
-                      ? "border-emerald-300/45 bg-emerald-300/10"
-                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                      ? "choice-card-active choice-card-active-logic"
+                      : ""
                   }`}
                 >
-                  <span className="flex items-start gap-3">
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="estimator-choice-content">
+                      <span className="estimator-choice-icon estimator-choice-icon-sm" aria-hidden="true">
+                        <ModuleIcon size={17} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-semibold text-[var(--text-primary)]">
+                          {module.label}
+                        </span>
+                        <span className="mt-1 block text-xs leading-5 text-[var(--text-secondary)]">
+                          {module.description}
+                        </span>
+                        <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-faint)]">
+                          + {formatMoney(module.price)} / +{module.days} {copy.dayShort}
+                        </span>
+                      </span>
+                    </span>
                     <span
-                      className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border ${
-                        isActive
-                          ? "border-emerald-300 bg-emerald-300 text-zinc-950"
-                          : "border-white/15 text-transparent"
-                      }`}
+                      className="check-token h-6 w-6 shrink-0"
                     >
                       <Check size={14} />
-                    </span>
-                    <span>
-                      <span className="block text-sm font-semibold text-white">
-                        {module.label}
-                      </span>
-                      <span className="mt-1 block text-xs leading-5 text-zinc-400">
-                        {module.description}
-                      </span>
-                      <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">
-                        + {formatMoney(module.price)} / +{module.days} {copy.dayShort}
-                      </span>
                     </span>
                   </span>
                 </button>
@@ -513,16 +664,19 @@ function ProjectEstimatorForm({
                 <button
                   key={option.id}
                   type="button"
-                  onClick={() => setUrgencyId(option.id)}
+                  onClick={() => {
+                    setUrgencyId(option.id);
+                    clearPresetContext();
+                  }}
                   aria-pressed={isActive}
-                  className={`rounded-2xl border p-4 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                  className={`choice-card estimator-choice-card p-4 ${
                     isActive
-                      ? "border-amber-200/45 bg-amber-200/10"
-                      : "border-white/10 bg-white/[0.035] hover:border-white/20 hover:bg-white/[0.06]"
+                      ? "choice-card-active choice-card-active-warm"
+                      : ""
                   }`}
                 >
-                  <span className="font-semibold text-white">{option.label}</span>
-                  <span className="mt-2 block text-sm leading-6 text-zinc-400">
+                  <span className="font-semibold text-[var(--text-primary)]">{option.label}</span>
+                  <span className="body-copy mt-2 block text-sm">
                     {option.description}
                   </span>
                 </button>
@@ -571,8 +725,8 @@ function ProjectEstimatorForm({
           </div>
 
           <label className="mt-3 block">
-            <span className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-300">
-              <FileText size={16} className="text-emerald-300" />
+            <span className="mb-2 flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)]">
+              <FileText size={16} className="accent-signal" />
               {copy.fields.comment}
             </span>
             <textarea
@@ -581,12 +735,12 @@ function ProjectEstimatorForm({
               value={contact.comment}
               onChange={(event) => updateContact("comment", event.target.value)}
               placeholder={copy.fields.commentPlaceholder}
-              className="min-h-32 w-full resize-y rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-zinc-600 focus:border-emerald-300/55"
+              className="field-control min-h-32 w-full resize-y px-4 py-3 text-sm leading-6"
             />
           </label>
         </ConfigBlock>
 
-        <div className="rounded-3xl border border-emerald-300/20 bg-emerald-300/10 p-4 sm:p-5">
+        <div className="estimator-submit-panel">
           {submitState === "success" ? (
             <motion.div
               initial={{ opacity: 0, y: 6 }}
@@ -595,31 +749,40 @@ function ProjectEstimatorForm({
               className="flex flex-col gap-4"
             >
               <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-300 text-zinc-950">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--accent-logic)] text-[var(--accent-primary-contrast)]">
                   <Check size={22} />
                 </span>
-                <p className="text-sm font-semibold leading-6 text-emerald-100">
+                <p className="text-sm font-semibold leading-6 text-[var(--text-primary)]">
                   {submitMessage}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={resetForm}
-                className="inline-flex items-center gap-1.5 text-sm text-emerald-300/70 transition hover:text-emerald-300"
+                className="inline-flex items-center gap-1.5 text-sm text-[var(--accent-signal)] transition hover:text-[var(--text-primary)]"
               >
                 <Send size={13} />
                 {copy.sendAnother}
               </button>
+              <a
+                href={data.contacts.telegramUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+              >
+                <MessageCircle size={13} />
+                {copy.telegramFallback}
+              </a>
             </motion.div>
           ) : (
             <>
-              <p className="text-sm leading-6 text-emerald-50/90">
+              <p className="body-copy text-sm">
                 {copy.note}
               </p>
               <button
                 type="submit"
                 disabled={submitState === "sending"}
-                className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-zinc-950 transition duration-300 hover:bg-emerald-200 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+                className="btn-link btn-link-primary mt-5 w-full disabled:cursor-wait disabled:opacity-70 sm:w-auto"
               >
                 {submitState === "sending" ? (
                   <Loader2 size={18} className="animate-spin" />
@@ -629,28 +792,32 @@ function ProjectEstimatorForm({
                 {copy.submit}
               </button>
               {submitMessage ? (
-                <p
-                  className="mt-3 text-sm leading-6 text-red-200"
-                  aria-live="polite"
-                >
-                  {submitMessage}
-                </p>
+                <div aria-live="polite" className="mt-3 grid gap-2">
+                  <p className="text-sm leading-6 text-red-200">
+                    {submitMessage}
+                  </p>
+                  {submitState === "error" ? (
+                    <a
+                      href={data.contacts.telegramUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm text-[var(--accent-signal)] transition hover:text-[var(--text-primary)]"
+                    >
+                      <MessageCircle size={13} />
+                      {copy.telegramFallback}
+                    </a>
+                  ) : null}
+                </div>
               ) : null}
             </>
           )}
         </div>
       </form>
 
-      <aside className="relative overflow-hidden rounded-3xl border border-emerald-300/25 bg-[#0b1712]/72 p-5 backdrop-blur-md lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-        <motion.div
-          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent"
-          animate={{ x: ["-100%", "100%"] }}
-          transition={{ duration: 2.8, repeat: Infinity, ease: "linear" }}
-        />
-
-        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/80">
+      <aside className="estimator-summary-panel">
+        <div className="eyebrow flex items-center gap-2">
           <Calculator size={16} />
-          live estimate
+          {copy.estimateLabel}
         </div>
 
         <motion.div
@@ -659,26 +826,32 @@ function ProjectEstimatorForm({
           animate={{ opacity: 1, y: 0 }}
           className="mt-5"
         >
-          <p className="text-sm text-zinc-500">{copy.estimateLabel}</p>
-          <p className="mt-2 text-3xl font-semibold leading-tight text-white">
+          <p className="text-sm text-[var(--text-muted)]">{copy.kicker}</p>
+          <p className="mt-2 text-3xl font-semibold leading-tight text-[var(--text-primary)]">
             {estimate.budget}
           </p>
-          <p className="mt-5 flex items-center gap-2 text-sm text-zinc-400">
-            <Clock3 size={16} className="text-amber-200" />
+          <p className="mt-5 flex items-center gap-2 text-sm text-[var(--text-muted)]">
+            <Clock3 size={16} className="accent-warm" />
             {copy.timelineLabel}{" "}
-            <span className="font-mono text-white">{estimate.timeline}</span>
+            <span className="font-mono text-[var(--text-primary)]">{estimate.timeline}</span>
           </p>
         </motion.div>
 
-        <div className="mt-6 grid gap-3 border-t border-white/10 pt-5">
+        <div className="mt-6 grid gap-3 border-t border-[var(--stroke-subtle)] pt-5">
+          {activePresetCase ? (
+            <SummaryLine
+              label={copy.summaryLabels.source}
+              value={activePresetCase.title}
+            />
+          ) : null}
           <SummaryLine label={copy.summaryLabels.category} value={activeType.label} />
           <SummaryLine label={copy.summaryLabels.complexity} value={activeComplexity.label} />
           <SummaryLine label={copy.summaryLabels.urgency} value={activeUrgency.label} />
         </div>
 
         <div className="mt-6">
-          <p className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-            <Gauge size={15} className="text-cyan-200" />
+          <p className="eyebrow-muted mb-3 flex items-center gap-2">
+            <Gauge size={15} className="accent-signal" />
             {copy.selectedModules}
           </p>
           {selectedModuleDetails.length ? (
@@ -686,27 +859,27 @@ function ProjectEstimatorForm({
               {selectedModuleDetails.map((module) => (
                 <span
                   key={module.id}
-                  className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100"
+                  className="tag-pill tag-pill-logic"
                 >
                   {module.label}
                 </span>
               ))}
             </div>
           ) : (
-            <p className="text-sm leading-6 text-zinc-500">
+            <p className="text-sm leading-6 text-[var(--text-muted)]">
               {copy.noModules}
             </p>
           )}
         </div>
 
-        <div className="mt-6 rounded-2xl border border-white/10 bg-black/24 p-4">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
+        <div className="estimator-request-preview">
+          <p className="eyebrow-muted">
             {copy.requestFormat}
           </p>
-          <p className="mt-3 whitespace-pre-line text-xs leading-6 text-zinc-400">
+          <p className="mt-3 whitespace-pre-line text-xs leading-6 text-[var(--text-muted)]">
             {`${copy.requestTitle}
 
-${copy.summaryLabels.category}: ${activeType.label}
+${activePresetCase ? `${copy.summaryLabels.source}: ${activePresetCase.title}\n` : ""}${copy.summaryLabels.category}: ${activeType.label}
 ${copy.summaryLabels.complexity}: ${activeComplexity.label.toLowerCase()}
 ${copy.requestOptions}: ${selectedModuleDetails.length ? selectedModuleDetails.map((item) => item.label).join(", ") : copy.baseDevelopment}
 ${copy.requestEstimate}: ${estimate.budget}
@@ -716,10 +889,19 @@ ${copy.timelineLabel} ${estimate.timeline}`}
 
         <a
           href="#cases"
-          className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.07]"
+          className="btn-link btn-link-secondary mt-5 w-full"
         >
           {copy.viewCases}
           <ArrowRight size={16} />
+        </a>
+        <a
+          href={data.contacts.telegramUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="estimator-telegram-link mt-3"
+        >
+          <MessageCircle size={16} />
+          <span>{copy.telegramFallback}</span>
         </a>
       </aside>
     </div>
@@ -740,14 +922,16 @@ function ConfigBlock({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-black/18 p-4 sm:p-5">
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+    <section className="estimator-step-block">
+      <div className="estimator-step-block-head">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/75">
+          <p className="estimator-step-label">
             {copy.stepPrefix} {label}
           </p>
-          <h3 className="mt-2 text-xl font-semibold text-white">{title}</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+          <h3 className="mt-2 text-xl font-semibold text-[var(--text-primary)]">
+            {title}
+          </h3>
+          <p className="body-copy mt-2 max-w-3xl text-sm">
             {description}
           </p>
         </div>
@@ -776,10 +960,10 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-300">
-        <span className="text-emerald-300">{icon}</span>
+      <span className="mb-2 flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)]">
+        <span className="accent-signal">{icon}</span>
         {label}
-        {required ? <span className="text-emerald-300">*</span> : null}
+        {required ? <span className="accent-warm">*</span> : null}
       </span>
       <input
         type={type}
@@ -787,7 +971,7 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="h-12 w-full rounded-2xl border border-white/10 bg-black/25 px-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-emerald-300/55"
+        className="field-control h-12 w-full px-4 text-sm"
       />
     </label>
   );
@@ -795,9 +979,9 @@ function Field({
 
 function SummaryLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
-      <span className="text-sm text-zinc-500">{label}</span>
-      <span className="text-right text-sm font-medium text-white">{value}</span>
+    <div className="flex items-start justify-between gap-4 border-b border-[var(--stroke-subtle)] pb-3 last:border-b-0 last:pb-0">
+      <span className="shrink-0 text-sm text-[var(--text-muted)]">{label}</span>
+      <span className="min-w-0 break-words text-right text-sm font-medium text-[var(--text-primary)]">{value}</span>
     </div>
   );
 }

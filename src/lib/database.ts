@@ -9,6 +9,7 @@ export type ProjectLeadRecord = {
   options: string[];
   budget: string;
   timeline: string;
+  sourceCase?: string;
   contactName: string;
   contactTelegram: string;
   contactEmail: string;

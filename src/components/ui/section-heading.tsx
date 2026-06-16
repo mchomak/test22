@@ -17,14 +17,14 @@ export function SectionHeading({
         align === "center" ? "text-center" : "text-left"
       }`}
     >
-      <p className="mb-3 font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
+      <p className="eyebrow mb-4">
         {eyebrow}
       </p>
-      <h2 className="text-balance text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-5xl">
+      <h2 className="section-title">
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 text-pretty text-base leading-7 text-zinc-400 sm:text-lg">
+        <p className="section-copy mt-5">
           {description}
         </p>
       ) : null}

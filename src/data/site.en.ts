@@ -21,40 +21,39 @@ function formatDiscountedUsdPrice(value: number) {
 
 const navItems: SiteData["navItems"] = [
   { label: "Work", href: "#specialization" },
-  { label: "Estimator", href: "#estimator" },
-  { label: "Process", href: "#process" },
   { label: "Cases", href: "#cases" },
-  { label: "Budget", href: "#budget" },
+  { label: "Process", href: "#process" },
+  { label: "Estimator", href: "#estimator" },
   { label: "FAQ", href: "#faq" },
 ];
 
 const heroMetrics: SiteData["heroMetrics"] = [
   { value: "5 yrs", label: "production engineering" },
   { value: "30+", label: "bots, services and integrations" },
-  { value: "6 lanes", label: "Telegram / AI / Backend / Web / Parsing / Crypto" },
+  { value: "4 lanes", label: "Telegram / AI / Backend / Data" },
 ];
 
 const specializations: SiteData["specializations"] = [
   {
-    title: "Telegram bots and Mini Apps",
+    title: "Telegram products, Mini Apps and payments",
     audience:
       "For businesses that need a familiar Telegram interface for leads, sales, subscriptions, personal accounts and user support.",
     includes: [
-      "bots for leads, stores, subscriptions and payments",
-      "Mini Apps with catalog, account area and referral mechanics",
+      "bots and Mini Apps with catalog, roles and account areas",
+      "YooKassa, CryptoBot, Telegram Stars, subscriptions and statuses",
       "admin panel, notifications, analytics and exports",
     ],
     tech: "aiogram 3, Telegram Bot API, Telegram Web Apps, PostgreSQL, Redis",
     result:
-      "You get a working funnel inside Telegram: the user reaches payment, a lead or another target action without a manual operator in the middle.",
+      "The user reaches a lead, payment or subscription inside Telegram, while the team sees statuses, payments and operational actions.",
   },
   {
-    title: "AI / ML / neural modules",
+    title: "AI modules and operational assistants",
     audience:
       "For teams that need AI inside a product, support flow, education product, document processing or internal operations.",
     includes: [
-      "AI assistants and workflows on OpenAI / Claude APIs",
-      "RAG knowledge bases, document processing and classification",
+      "AI assistants, RAG knowledge bases and support workflows",
+      "document, image, response processing and classification",
       "history, roles, limits, logs and response control",
     ],
     tech: "OpenAI SDK, Anthropic SDK, PyTorch, FastAPI, PostgreSQL",
@@ -62,46 +61,7 @@ const specializations: SiteData["specializations"] = [
       "AI becomes part of the process: it answers using your data, speeds up routine work and avoids manual copying between services.",
   },
   {
-    title: "Parsing and automation",
-    audience:
-      "For projects that need scheduled data collection, change tracking, table updates, alerts or removal of manual operations.",
-    includes: [
-      "data collection from one or several websites",
-      "scheduled runs, proxies, authorization and anti-bot risk handling",
-      "export to CSV / Excel / Google Sheets or a database",
-    ],
-    tech: "Python asyncio, Playwright, requests/httpx, PostgreSQL, cron/workers",
-    result:
-      "Data arrives on schedule and in the right format, while the team stops spending hours on copying, checking and manual notifications.",
-  },
-  {
-    title: "Web services and admin panels",
-    audience:
-      "For teams that need a working web interface: account area, dashboard, lead form, admin panel or internal tool.",
-    includes: [
-      "frontend, backend API and user roles",
-      "forms, tables, statuses, dashboards and analytics",
-      "payments, integrations, notifications and deployment",
-    ],
-    tech: "Next.js, React, FastAPI, PostgreSQL, Docker, Nginx",
-    result:
-      "The result is a clear work surface for users, managers or operators, not a pile of disconnected scripts.",
-  },
-  {
-    title: "Crypto / trading / blockchain integrations",
-    audience:
-      "For crypto products, exchangers and trading teams that need exchange APIs, monitoring, signals, payments or on-chain data.",
-    includes: [
-      "Bybit / Binance / OKX APIs, DEX and crypto payments",
-      "price monitoring, trading signals and Telegram alerts",
-      "trade logging, risk limits and dry-run modes",
-    ],
-    tech: "Bybit API, Binance API, Solana / Ethereum, PostgreSQL, Telegram Bot API",
-    result:
-      "Automation watches the market, captures events and helps react faster without constant manual monitoring.",
-  },
-  {
-    title: "Backend APIs and databases",
+    title: "Backend, data and integrations",
     audience:
       "For products that need reliable server-side logic: APIs, data models, queues, statuses, integrations and maintainable deployment.",
     includes: [
@@ -111,34 +71,59 @@ const specializations: SiteData["specializations"] = [
     ],
     tech: "FastAPI, SQLAlchemy 2.0 async, PostgreSQL, Redis, Docker",
     result:
-      "The server side survives real operations: stores state, handles errors and stays understandable for future development.",
+      "The server side stores state, handles errors and stays understandable for future iterations after the first launch.",
+  },
+  {
+    title: "Web tools, parsers and crypto automation",
+    audience:
+      "For teams that need a working web interface, data collection, market monitoring, signals or internal automation without manual routine.",
+    includes: [
+      "admin panels, forms, tables, statuses and analytics",
+      "Playwright/httpx parsers, scheduled jobs and alerts",
+      "exchange APIs, monitoring, signals and risk limits",
+    ],
+    tech: "Next.js, React, Playwright, Bybit API, PostgreSQL, Docker",
+    result:
+      "Operations become a working tool: data arrives on schedule, interfaces are clear and events are captured.",
   },
 ];
 
 const proofItems: SiteData["proofItems"] = [
   {
-    title: "Telegram Mini App",
+    title: "Payments",
     summary:
-      "Catalog, payments, referrals, admin panel and authorization through Telegram.",
-    tags: ["Mini App", "payments", "admin"],
+      "YooKassa, CryptoBot, Telegram Stars, statuses, webhooks and subscriptions.",
+    tags: ["payments", "webhooks", "status"],
   },
   {
-    title: "AI service",
+    title: "Admin panels",
     summary:
-      "Structure generation, tests, data processing and product integration.",
-    tags: ["OpenAI / Claude", "RAG", "logs"],
+      "Roles, tables, requests, manual actions, filters and operational logs.",
+    tags: ["roles", "tables", "logs"],
   },
   {
-    title: "Crypto bot",
+    title: "AI modules",
     summary:
-      "Monitoring, signals, exchange APIs, risk limits and Telegram alerts.",
-    tags: ["Bybit API", "signals", "alerts"],
+      "Assistants, RAG, document processing, limits and response control.",
+    tags: ["OpenAI", "RAG", "limits"],
   },
   {
-    title: "Backend system",
+    title: "Parsers",
     summary:
-      "Database, roles, API, admin panel, statuses and production deployment.",
-    tags: ["FastAPI", "PostgreSQL", "Docker"],
+      "Playwright/httpx, schedules, proxy risks, exports and alerts.",
+    tags: ["data", "workers", "alerts"],
+  },
+  {
+    title: "Deploy",
+    summary:
+      "Docker, Nginx, environments, logs, healthchecks and clear launch flow.",
+    tags: ["Docker", "Nginx", "ops"],
+  },
+  {
+    title: "Support",
+    summary:
+      "Bug fixes, small iterations, stabilization and post-release development.",
+    tags: ["support", "iterations", "release"],
   },
 ];
 
@@ -914,34 +899,29 @@ const budgetGuides: SiteData["budgetGuides"] = [
 
 const processSteps: SiteData["processSteps"] = [
   {
-    title: "You send the configuration",
+    title: "Scope",
     text:
-      "You choose the solution type, complexity, modules and leave a contact. At this stage the site already shows an initial budget and timeline range.",
+      "We lock scenarios, roles, data, constraints and first-launch risks.",
   },
   {
-    title: "I clarify the details",
+    title: "Architecture",
     text:
-      "I quickly review scenarios, integrations, payments, data, existing materials and risks that may affect the estimate.",
+      "I map the system, integrations, states, acceptance criteria and MVP boundary.",
   },
   {
-    title: "We fix the MVP and work boundaries",
+    title: "Build",
     text:
-      "We define what goes into the first version, which scenarios are critical and what can wait for the next stage.",
+      "I build the backend, bot, Mini App, frontend, AI, parser or payment modules.",
   },
   {
-    title: "Final estimate and timeline",
+    title: "Launch",
     text:
-      "After clarification I provide a clear estimate, stages, acceptance criteria and start conditions for the actual scope.",
+      "I prepare Docker, env, logs, webhooks, smoke checks and the production launch.",
   },
   {
-    title: "Development, testing, launch",
+    title: "Support",
     text:
-      "I assemble a working product: backend, bot or interface, integrations, scenario checks, deployment and launch.",
-  },
-  {
-    title: "Post-release support",
-    text:
-      "After launch we can add support: bug fixes, small improvements, error control and next-version development.",
+      "After release we fix bugs, stabilize scenarios and plan the next iterations.",
   },
 ];
 
@@ -1111,20 +1091,20 @@ const ui: SiteData["ui"] = {
   specialization: {
     eyebrow: "What I help with",
     title:
-      "Product work without chaos: Telegram, AI, backend, web, parsing and crypto",
+      "Four production lanes instead of a long strip of identical services",
     description:
-      "Each direction is framed around a business result: leads, payments, data, automation, interfaces, integrations and launch.",
+      "Each lane is built around an outcome: leads, payments, data, automation, interfaces, integrations and launch.",
     taskLabel: "task",
     audienceLabel: "Business task:",
     includesLabel: "What can be built",
     techLabel: "Stack / integrations",
   },
   trust: {
-    eyebrow: "Already in practice",
+    eyebrow: "Production proof",
     title:
-      "Before the estimate - a quick slice of tasks already close to real production projects",
+      "Production modules I keep under control",
     description:
-      "This is not the full case archive, but a compact proof of experience across the solution types that most often arrive as requests.",
+      "Payments, admin panels, AI, parsers, deploy and support stay inside the same delivery flow instead of a separate proof strip.",
     proofLabel: "proof",
   },
   configurator: {
@@ -1152,6 +1132,7 @@ const ui: SiteData["ui"] = {
     timelineSuffix: "business days",
     kicker: "Project config",
     title: "Project type -> modules -> request",
+    presetLabel: "Preset from case",
     stepPrefix: "step",
     typeTitle: "Choose solution type",
     typeDescription:
@@ -1183,6 +1164,7 @@ const ui: SiteData["ui"] = {
       "The calculator shows an orientation point. Final cost is fixed after a short discussion of the task, integrations, design and timeline.",
     submit: "Send configuration",
     sendAnother: "Send another",
+    telegramFallback: "Write directly in Telegram",
     validationError: "Please add Telegram and briefly describe the task.",
     fallbackSubmitError: "Could not submit the request.",
     unknownSubmitError:
@@ -1194,6 +1176,7 @@ const ui: SiteData["ui"] = {
     estimateLabel: "Preliminary estimate",
     timelineLabel: "Timeline:",
     summaryLabels: {
+      source: "Source",
       category: "Category",
       complexity: "Complexity",
       urgency: "Pace",
@@ -1209,26 +1192,26 @@ const ui: SiteData["ui"] = {
     viewCases: "View cases",
   },
   process: {
-    eyebrow: "How the work goes",
-    title: "After the request, the next steps are clear",
+    eyebrow: "Scope -> launch",
+    title: "How a project moves from scope to launch",
     description:
-      "The process reduces uncertainty: configuration and clarification first, then MVP boundaries, final estimate, development, launch and support.",
+      "One section shows both the workflow and the production surface: what is fixed before code, what gets built, how it launches and what stays monitored.",
     metrics: [
-      { label: "Architecture", value: "scheme before code" },
-      { label: "Delivery", value: "iterations and checks" },
-      { label: "Launch", value: "deployment and stabilization" },
+      { label: "Scope", value: "scenarios and boundary" },
+      { label: "Build", value: "modules and integrations" },
+      { label: "Launch", value: "deploy and smoke checks" },
     ],
   },
   cases: {
     eyebrow: "Cases",
-    title: "Real project showcase: quickly understand the task type and result",
+    title: "Cases that show the working result",
     description:
-      "The homepage contains a compact selection across work types: Telegram, AI, crypto, backend, Mini App and web. Details, flows and technical decisions live on a separate page.",
+      "The homepage highlights one large project and a short selection across Telegram, AI, crypto, backend, Mini App and web work. Details, flows and technical decisions live on a separate page.",
     intro:
-      "Each card shows the task, assembled modules and final outcomes. Open the full case for the detailed proof base.",
+      "Each case shows the task, assembled modules and final result. Open the full project for the detailed proof base.",
     allCases: "All cases",
     carouselAria:
-      "Case carousel. Cards can be rotated with the mouse or navigation buttons.",
+      "Selected case showcase with large covers and links to details.",
     controlsAria: "Case navigation",
     previous: "Previous case",
     next: "Next case",
@@ -1236,6 +1219,9 @@ const ui: SiteData["ui"] = {
     outcomesAria: "Key modules",
     details: "Details",
     similar: "I want a similar project",
+    nextStepTitle: "Turn a case into your first scope",
+    estimateCta: "Build my scope",
+    telegramCta: "Discuss in Telegram",
   },
   casesPage: {
     backHome: "Back home",
@@ -1270,9 +1256,9 @@ const ui: SiteData["ui"] = {
   },
   services: {
     eyebrow: "Budget guide",
-    title: "A short price frame without competing with the estimator",
+    title: "Budget guide before the estimator",
     description:
-      "These amounts help understand the budget order. The exact range is better calculated through the configurator above, because modules, timeline and integrations change the scope a lot.",
+      "These amounts help understand the budget order. The exact range is better calculated in the configurator: modules, timeline and integrations change the scope a lot.",
     budgetLabel: "budget",
     finalTitle: "Final cost depends on the details",
     finalDescription:
@@ -1297,7 +1283,7 @@ const ui: SiteData["ui"] = {
       "Describe the task - I will return with architecture, timeline and budget range.",
     description:
       "The fastest way to start is the estimator: it collects project type, modules, timeline and contact into one request. If you have little input, you can write directly in Telegram.",
-    estimateCta: "Estimate a project",
+    estimateCta: "Build the scope",
     telegramCta: "Write in Telegram",
     footer: "Python, Telegram bots, AI integrations, backend services.",
   },

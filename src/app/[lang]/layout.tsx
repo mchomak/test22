@@ -7,6 +7,7 @@ import {
   getSiteData,
   locales,
 } from "@/data/site";
+import { getSiteUrl } from "@/lib/site-url";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
 import { YandexMetrika } from "@/components/yandex-metrika";
 import "../globals.css";
@@ -46,7 +47,7 @@ export async function generateMetadata({
   const site = getSiteData(locale);
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(getSiteUrl()),
     title: site.meta.title,
     description: site.meta.description,
     keywords: site.meta.keywords,
@@ -62,6 +63,19 @@ export async function generateMetadata({
       description: site.meta.openGraphDescription,
       type: "website",
       locale: locale === "ru" ? "ru_RU" : "en_US",
+      images: [
+        {
+          url: "/images/engineering-command-center.png",
+          width: 1200,
+          height: 630,
+          alt: site.meta.openGraphTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: site.meta.openGraphTitle,
+      description: site.meta.openGraphDescription,
       images: ["/images/engineering-command-center.png"],
     },
   };

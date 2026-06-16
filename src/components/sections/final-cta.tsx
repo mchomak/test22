@@ -1,73 +1,81 @@
-import { Code2, Mail, MessageCircle, Send } from "lucide-react";
+import { ArrowRight, Code2, Mail, MessageCircle, Send } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/reveal";
 import type { SiteData } from "@/data/site";
 
 export function FinalCTA({ site }: { site: SiteData }) {
-  const { contacts, ui } = site;
+  const { contacts, heroMetrics, ui } = site;
 
   return (
-    <section id="contact" className="section-shell bg-[#0b0d0c]">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/25 bg-[#0d1713]/72 p-6 backdrop-blur-md sm:p-10 lg:p-12">
-            <div className="cta-grid absolute inset-0 opacity-50" />
-            <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
-                  {ui.finalCta.eyebrow}
-                </p>
-                <h2 className="mt-4 max-w-4xl text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl">
-                  {ui.finalCta.title}
-                </h2>
-                <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300">
-                  {ui.finalCta.description}
-                </p>
-              </div>
+    <section id="contact" className="final-cta-section section-shell section-deep">
+      <div className="final-cta-map" aria-hidden="true">
+        <div className="final-cta-map-line final-cta-map-line-a" />
+        <div className="final-cta-map-line final-cta-map-line-b" />
+        <div className="final-cta-map-line final-cta-map-line-c" />
+        <div className="final-cta-map-core" />
+      </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <ButtonLink
-                  href="#estimator"
-                  icon={<Send size={18} />}
-                >
-                  {ui.finalCta.estimateCta}
-                </ButtonLink>
-                <ButtonLink
-                  href={contacts.telegramUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="secondary"
-                  icon={<MessageCircle size={18} />}
-                >
-                  {ui.finalCta.telegramCta}
-                </ButtonLink>
-              </div>
+      <div className="site-container py-24 lg:py-32">
+        <Reveal>
+          <div className="final-cta-layout">
+            <div className="final-cta-copy">
+              <p className="eyebrow">{ui.finalCta.eyebrow}</p>
+              <h2 className="final-cta-title">
+                {ui.finalCta.title}
+              </h2>
+              <p className="final-cta-description">
+                {ui.finalCta.description}
+              </p>
             </div>
 
-            <div className="relative z-10 mt-10 grid gap-3 border-t border-white/10 pt-6 text-sm text-zinc-400 md:grid-cols-3">
+            <div className="final-cta-actions">
+              <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
+                {ui.finalCta.estimateCta}
+              </ButtonLink>
+              <ButtonLink
+                href={contacts.telegramUrl}
+                target="_blank"
+                rel="noreferrer"
+                variant="secondary"
+                icon={<MessageCircle size={18} />}
+              >
+                {ui.finalCta.telegramCta}
+              </ButtonLink>
+            </div>
+
+            <div className="final-cta-proof-grid">
+              {heroMetrics.map((metric) => (
+                <div key={metric.label} className="final-cta-proof-item">
+                  <strong>{metric.value}</strong>
+                  <span>{metric.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="final-cta-contact-row">
               <a
                 href={contacts.telegramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 transition hover:text-white"
+                className="final-cta-contact-link"
               >
-                <Send size={16} className="text-emerald-300" />
+                <Send size={16} className="accent-signal" />
                 {contacts.telegram}
               </a>
               <a
                 href={`mailto:${contacts.email}`}
-                className="inline-flex items-center gap-2 transition hover:text-white"
+                className="final-cta-contact-link"
               >
-                <Mail size={16} className="text-emerald-300" />
+                <Mail size={16} className="accent-warm" />
                 {contacts.email}
               </a>
               <a
                 href={contacts.githubUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 transition hover:text-white"
+                className="final-cta-contact-link"
               >
-                <Code2 size={16} className="text-emerald-300" />
+                <Code2 size={16} className="accent-logic" />
                 {contacts.github}
               </a>
             </div>
@@ -82,8 +90,8 @@ export function Footer({ site }: { site: SiteData }) {
   const { ui } = site;
 
   return (
-    <footer className="border-t border-white/10 bg-[#050607]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-zinc-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+    <footer className="site-footer">
+      <div className="site-container flex flex-col gap-3 py-7 text-sm text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
         <p>© 2026 {ui.brandName} / mchomak</p>
         <p>{ui.finalCta.footer}</p>
       </div>

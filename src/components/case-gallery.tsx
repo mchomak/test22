@@ -32,8 +32,8 @@ export function CaseGallery({
   };
 
   return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-black/35 p-2 shadow-2xl shadow-black/30">
-      <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#030505]">
+    <div className="surface-panel mt-8 overflow-hidden p-2">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-bg-deep)]">
         <Image
           key={activeImage.src}
           src={activeImage.src}
@@ -51,7 +51,7 @@ export function CaseGallery({
             <button
               type="button"
               onClick={() => go(-1)}
-              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-300 transition hover:border-emerald-300/35 hover:text-white"
+              className="grid h-9 w-9 place-items-center rounded-full border border-[var(--stroke-subtle)] bg-white/[0.04] text-[var(--text-secondary)] transition hover:border-[var(--stroke-strong)] hover:text-[var(--text-primary)]"
               aria-label={copy.previous}
             >
               <ArrowLeft size={17} />
@@ -59,15 +59,15 @@ export function CaseGallery({
             <button
               type="button"
               onClick={() => go(1)}
-              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-300 transition hover:border-emerald-300/35 hover:text-white"
+              className="grid h-9 w-9 place-items-center rounded-full border border-[var(--stroke-subtle)] bg-white/[0.04] text-[var(--text-secondary)] transition hover:border-[var(--stroke-strong)] hover:text-[var(--text-primary)]"
               aria-label={copy.next}
             >
               <ArrowRight size={17} />
             </button>
           </div>
 
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2">
-            <span className="font-mono text-[11px] text-emerald-200">
+          <div className="tag-pill tag-pill-signal gap-2 px-3 py-2">
+            <span className="font-mono text-[11px]">
               {String(activeIndex + 1).padStart(2, "0")} /{" "}
               {String(images.length).padStart(2, "0")}
             </span>
@@ -79,7 +79,7 @@ export function CaseGallery({
                   onClick={() => setActiveIndex(index)}
                   className={`h-1.5 rounded-full transition ${
                     index === activeIndex
-                      ? "w-5 bg-emerald-300"
+                      ? "w-5 bg-[var(--accent-signal)]"
                       : "w-1.5 bg-white/20 hover:bg-white/45"
                   }`}
                   aria-label={`${copy.open} ${index + 1}: ${image.label}`}

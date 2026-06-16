@@ -14,21 +14,21 @@ export function SiteHeader({
   const { contacts, navItems, ui } = site;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#050607]/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="site-header-shell fixed inset-x-0 top-0 z-50">
+      <div className="site-container flex h-16 items-center justify-between">
         <a
           href="#top"
-          className="group flex items-center gap-3 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-300"
+          className="site-header-brand group flex items-center gap-3 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent-signal)]"
           aria-label={ui.header.backToTop}
         >
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-emerald-300/30 bg-emerald-300/10 text-emerald-200 transition duration-300 group-hover:border-emerald-200/60">
+          <span className="icon-tile icon-tile-round h-9 w-9 transition duration-300">
             <Code2 size={18} />
           </span>
           <span className="leading-none">
-            <span className="block text-sm font-semibold text-white">
+            <span className="block text-sm font-semibold text-[var(--text-primary)]">
               {ui.brandName}
             </span>
-            <span className="mt-1 block font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+            <span className="mt-1 block font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--text-faint)]">
               mchomak
             </span>
           </span>
@@ -39,7 +39,7 @@ export function SiteHeader({
             <a
               key={item.href}
               href={getLocalizedHref(locale, item.href)}
-              className="rounded-full px-4 py-2 text-sm text-zinc-400 transition duration-300 hover:bg-white/[0.06] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+              className="site-header-nav-link px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-signal)]"
             >
               {item.label}
             </a>
@@ -71,8 +71,8 @@ export function SiteHeader({
 
 function LocaleSwitcherFallback({ locale }: { locale: Locale }) {
   return (
-    <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] p-1">
-      <span className="min-h-8 rounded-full bg-emerald-300 px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-950">
+    <div className="inline-flex rounded-full border border-[var(--stroke-subtle)] bg-white/[0.04] p-1">
+      <span className="min-h-8 rounded-full bg-[var(--accent-primary)] px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--accent-primary-contrast)]">
         {locale}
       </span>
     </div>

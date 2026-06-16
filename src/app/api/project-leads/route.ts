@@ -17,6 +17,7 @@ type LeadPayload = {
     budget?: unknown;
     timeline?: unknown;
   };
+  sourceCase?: unknown;
   contact?: {
     name?: unknown;
     telegram?: unknown;
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
   const options = asTextList(payload.options);
   const budget = asText(payload.estimate?.budget);
   const timeline = asText(payload.estimate?.timeline);
+  const sourceCase = asText(payload.sourceCase);
   const name = asText(payload.contact?.name);
   const telegram = asText(payload.contact?.telegram);
   const email = asText(payload.contact?.email);
@@ -78,6 +80,7 @@ export async function POST(request: Request) {
     options,
     budget,
     timeline,
+    sourceCase,
     contactName: name,
     contactTelegram: telegram,
     contactEmail: email,

@@ -1,17 +1,26 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from "framer-motion";
 import { useEffect } from "react";
+import { motionDuration, motionEasing } from "@/lib/motion";
 
 const pointerSpring = { stiffness: 90, damping: 26, mass: 0.35 };
 
 export function SiteEffects() {
+  const reduceMotion = useReducedMotion();
   const pointerX = useMotionValue(-200);
   const pointerY = useMotionValue(-200);
   const x = useSpring(pointerX, pointerSpring);
   const y = useSpring(pointerY, pointerSpring);
 
   useEffect(() => {
+    if (reduceMotion) return;
+
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (!hasFinePointer) return;
 
@@ -25,19 +34,35 @@ export function SiteEffects() {
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
     };
-  }, [pointerX, pointerY]);
+  }, [pointerX, pointerY, reduceMotion]);
 
   return (
     <>
+      {!reduceMotion ? (
+        <>
+          <motion.div
+            aria-hidden
+            className="pointer-trace-y pointer-events-none fixed top-0 z-[60] hidden h-screen w-px md:block"
+            style={{ x }}
+          />
+          <motion.div
+            aria-hidden
+            className="pointer-trace-x pointer-events-none fixed left-0 z-[60] hidden h-px w-screen md:block"
+            style={{ y }}
+          />
+        </>
+      ) : null}
+
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed top-0 z-[60] hidden h-screen w-px bg-gradient-to-b from-transparent via-emerald-300/18 to-transparent md:block"
-        style={{ x }}
-      />
-      <motion.div
-        aria-hidden
-        className="pointer-events-none fixed left-0 z-[60] hidden h-px w-screen bg-gradient-to-r from-transparent via-cyan-200/16 to-transparent md:block"
-        style={{ y }}
+        className="page-transition-wipe pointer-events-none fixed inset-0 z-[70] origin-top bg-[var(--color-bg-deep)]"
+        initial={reduceMotion ? { opacity: 0 } : { scaleY: 1 }}
+        animate={reduceMotion ? { opacity: 0 } : { scaleY: 0 }}
+        transition={{
+          duration: reduceMotion ? 0 : motionDuration.page,
+          ease: motionEasing.exit,
+          delay: reduceMotion ? 0 : 0.16,
+        }}
       />
     </>
   );

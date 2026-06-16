@@ -1,23 +1,62 @@
 "use client";
 
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
 import type { ReactNode } from "react";
+import {
+  motionDuration,
+  motionEasing,
+  revealViewport,
+} from "@/lib/motion";
 
 type RevealProps = {
   children: ReactNode;
   delay?: number;
   className?: string;
+  variant?: "section" | "hero" | "panel" | "quiet";
 } & Pick<HTMLMotionProps<"div">, "id">;
 
-export function Reveal({ children, delay = 0, className, id }: RevealProps) {
+const revealDistance = {
+  section: 38,
+  hero: 24,
+  panel: 30,
+  quiet: 18,
+};
+
+const revealScale = {
+  section: 0.985,
+  hero: 0.992,
+  panel: 0.99,
+  quiet: 1,
+};
+
+export function Reveal({
+  children,
+  delay = 0,
+  className,
+  id,
+  variant = "section",
+}: RevealProps) {
+  const reduceMotion = useReducedMotion();
+  const initial = reduceMotion
+    ? { opacity: 0 }
+    : {
+        opacity: 0,
+        y: revealDistance[variant],
+        scale: revealScale[variant],
+      };
+
   return (
     <motion.div
       id={id}
       className={["reveal", className].filter(Boolean).join(" ")}
-      initial={{ opacity: 0.18, y: 44, scale: 0.985, filter: "blur(12px)" }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1], delay }}
+      initial={initial}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={revealViewport}
+      transition={{
+        duration: reduceMotion ? motionDuration.fast : motionDuration.reveal,
+        ease: motionEasing.entrance,
+        delay: reduceMotion ? 0 : delay,
+      }}
       style={{ transformOrigin: "50% 0%" }}
     >
       {children}

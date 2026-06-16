@@ -1,12 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/data/site";
-
-function getSiteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
-    /\/$/,
-    "",
-  );
-}
+import { getSiteUrl } from "@/lib/site-url";
 
 function getLocalizedAlternates(path = "") {
   const siteUrl = getSiteUrl();
