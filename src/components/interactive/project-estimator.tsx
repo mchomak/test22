@@ -768,10 +768,10 @@ function ProjectEstimatorForm({
                 href={data.contacts.telegramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+                className="estimator-telegram-link"
               >
-                <MessageCircle size={13} />
-                {copy.telegramFallback}
+                <MessageCircle size={16} />
+                <span>{copy.telegramFallback}</span>
               </a>
             </motion.div>
           ) : (
@@ -801,10 +801,10 @@ function ProjectEstimatorForm({
                       href={data.contacts.telegramUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm text-[var(--accent-signal)] transition hover:text-[var(--text-primary)]"
+                      className="estimator-telegram-link"
                     >
-                      <MessageCircle size={13} />
-                      {copy.telegramFallback}
+                      <MessageCircle size={16} />
+                      <span>{copy.telegramFallback}</span>
                     </a>
                   ) : null}
                 </div>

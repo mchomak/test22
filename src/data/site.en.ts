@@ -1042,7 +1042,7 @@ const ui: SiteData["ui"] = {
   },
   hero: {
     badge: "Telegram / AI / backend / automation",
-    headline: ["AI, backend and", "Telegram development", "turnkey"],
+    headline: ["AI, backend and Telegram", "turnkey"],
     description:
       "I build Telegram bots, Mini Apps, backend systems, AI modules, parsers and integrations - from MVP to a working product with admin panel, payments and analytics.",
     primaryCta: "Estimate a project",
@@ -1100,12 +1100,12 @@ const ui: SiteData["ui"] = {
     techLabel: "Stack / integrations",
   },
   trust: {
-    eyebrow: "Production proof",
+    eyebrow: "Delivery controls",
     title:
-      "Production modules I keep under control",
+      "Modules kept inside the same delivery flow",
     description:
-      "Payments, admin panels, AI, parsers, deploy and support stay inside the same delivery flow instead of a separate proof strip.",
-    proofLabel: "proof",
+      "Payments, admin panels, AI, parsers, deploy and support stay tied to the launch plan instead of feeling like a separate proof strip.",
+    proofLabel: "control",
   },
   configurator: {
     eyebrow: "Project request estimator",
@@ -1206,7 +1206,7 @@ const ui: SiteData["ui"] = {
     eyebrow: "Cases",
     title: "Cases that show the working result",
     description:
-      "The homepage highlights one large project and a short selection across Telegram, AI, crypto, backend, Mini App and web work. Details, flows and technical decisions live on a separate page.",
+      "The homepage highlights six projects in one format across Telegram, AI, crypto, backend, Mini App and web work. Details, flows and technical decisions live on a separate page.",
     intro:
       "Each case shows the task, assembled modules and final result. Open the full project for the detailed proof base.",
     allCases: "All cases",

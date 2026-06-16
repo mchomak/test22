@@ -79,9 +79,10 @@ export function getCaseGalleryImages(
 
 function getCaseCoverImage(locale: Locale, item: CaseStudy) {
   const location = getCaseImageLocation(locale, item.slug);
+  const previewRec = location ? getImageByBaseName(location, "preview_rec") : null;
   const previewSq = location ? getImageByBaseName(location, "preview_sq") : null;
 
-  return previewSq ?? item.coverImage;
+  return previewRec ?? previewSq ?? item.coverImage;
 }
 
 function getCaseImageLocation(locale: Locale, slug: string): CaseImageLocation | null {

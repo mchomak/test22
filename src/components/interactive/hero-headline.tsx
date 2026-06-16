@@ -19,12 +19,12 @@ export function HeroHeadline({ lines }: { lines: string[] }) {
   const isMobile = useIsMobile();
   const isStatic = reduceMotion || isMobile !== false;
   const { scrollY } = useScroll();
-  const y = useSpring(useTransform(scrollY, [0, 680], [0, -94]), {
+  const y = useSpring(useTransform(scrollY, [0, 440], [0, -72]), {
     damping: 28,
     mass: 0.35,
     stiffness: 110,
   });
-  const scale = useSpring(useTransform(scrollY, [0, 680], [1, 0.62]), {
+  const scale = useSpring(useTransform(scrollY, [0, 440], [1, 0.66]), {
     damping: 28,
     mass: 0.35,
     stiffness: 110,
