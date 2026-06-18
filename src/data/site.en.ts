@@ -7,7 +7,7 @@ import {
 
 type SiteData = typeof import("@/data/site.ru").ruSiteData;
 
-const priceDiscountFactor = 0.7;
+const priceDiscountFactor = 0.56;
 const rubToUsdRate = 100;
 const usdFormatter = new Intl.NumberFormat("en-US");
 
@@ -899,29 +899,39 @@ const budgetGuides: SiteData["budgetGuides"] = [
 
 const processSteps: SiteData["processSteps"] = [
   {
-    title: "Scope",
+    title: "Task review",
     text:
       "We lock scenarios, roles, data, constraints and first-launch risks.",
+    deliverable:
+      "A clear MVP boundary and the questions that should be closed before code.",
   },
   {
-    title: "Architecture",
+    title: "Architecture and estimate",
     text:
-      "I map the system, integrations, states, acceptance criteria and MVP boundary.",
+      "I map the system, integrations, states, acceptance criteria and budget range.",
+    deliverable:
+      "A system map, delivery stages, timeline and an honest risk estimate.",
   },
   {
-    title: "Build",
+    title: "MVP / first result",
     text:
-      "I build the backend, bot, Mini App, frontend, AI, parser or payment modules.",
+      "I build the first working scenario: bot, Mini App, API, AI module, parser or interface.",
+    deliverable:
+      "A version that can be opened, checked and shown to the team.",
   },
   {
-    title: "Launch",
+    title: "Integrations and testing",
     text:
-      "I prepare Docker, env, logs, webhooks, smoke checks and the production launch.",
+      "I connect payments, CRM, sheets, AI/OCR/RAG, access roles, notifications and checks.",
+    deliverable:
+      "Connected services, handled errors and a clear smoke-check list.",
   },
   {
-    title: "Support",
+    title: "Deploy and handoff",
     text:
-      "After release we fix bugs, stabilize scenarios and plan the next iterations.",
+      "I prepare Docker/Nginx, environment variables, logs, instructions and the server launch.",
+    deliverable:
+      "Working production, access details, short documentation and the next-iteration plan.",
   },
 ];
 
@@ -1047,7 +1057,8 @@ const ui: SiteData["ui"] = {
       "I build Telegram bots, Mini Apps, backend systems, AI modules, parsers and integrations - from MVP to a working product with admin panel, payments and analytics.",
     primaryCta: "Estimate a project",
     secondaryCta: "View cases",
-    bottomNote: "Architecture / build / launch / support",
+    trustBar: ["10+ projects", "Telegram Mini Apps", "AI/OCR/RAG", "Docker/Nginx deploy"],
+    bottomNote: "Real cases below",
   },
   liveTelemetry: {
     title: "Live product contour",
@@ -1125,9 +1136,9 @@ const ui: SiteData["ui"] = {
     moneyLocale: "en-US",
     currency: "$",
     currencyPosition: "prefix",
-    budgetStep: 50,
-    budgetMin: 150,
-    budgetGap: 100,
+    budgetStep: 40,
+    budgetMin: 120,
+    budgetGap: 80,
     dayShort: "d",
     timelineSuffix: "business days",
     kicker: "Project config",
@@ -1195,11 +1206,12 @@ const ui: SiteData["ui"] = {
     eyebrow: "Scope -> launch",
     title: "How a project moves from scope to launch",
     description:
-      "One section shows both the workflow and the production surface: what is fixed before code, what gets built, how it launches and what stays monitored.",
+      "Five clear stages instead of a complex task board: what happens at each step and what the client keeps.",
+    deliverableLabel: "Client gets",
     metrics: [
       { label: "Scope", value: "scenarios and boundary" },
-      { label: "Build", value: "modules and integrations" },
-      { label: "Launch", value: "deploy and smoke checks" },
+      { label: "Estimate", value: "architecture and timeline" },
+      { label: "Launch", value: "deploy and handoff" },
     ],
   },
   cases: {

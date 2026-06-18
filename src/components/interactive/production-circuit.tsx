@@ -88,7 +88,7 @@ export function ProductionCircuit({ items, videoSrc }: ProductionCircuitProps) {
   const isMobile = useIsMobile();
   const isStatic = reduceMotion || isMobile !== false;
   const { scrollY } = useScroll();
-  const heroProgress = useSpring(useTransform(scrollY, [0, 480], [0, 1]), {
+  const heroProgress = useSpring(useTransform(scrollY, [0, 420], [0, 1]), {
     damping: 30,
     mass: 0.38,
     stiffness: 115,

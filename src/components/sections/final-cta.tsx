@@ -1,10 +1,17 @@
-import { ArrowRight, Code2, Mail, MessageCircle, Send } from "lucide-react";
+import {
+  ArrowRight,
+  Code2,
+  Mail,
+  MessageCircle,
+  Phone,
+  Send,
+} from "lucide-react";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/reveal";
 import type { SiteData } from "@/data/site";
 
 export function FinalCTA({ site }: { site: SiteData }) {
-  const { contacts, heroMetrics, ui } = site;
+  const { contacts, ui } = site;
 
   return (
     <section id="contact" className="final-cta-section section-shell section-deep">
@@ -15,7 +22,7 @@ export function FinalCTA({ site }: { site: SiteData }) {
         <div className="final-cta-map-core" />
       </div>
 
-      <div className="site-container py-24 lg:py-32">
+      <div className="site-container py-16 lg:py-20">
         <Reveal>
           <div className="final-cta-layout">
             <div className="final-cta-copy">
@@ -28,56 +35,56 @@ export function FinalCTA({ site }: { site: SiteData }) {
               </p>
             </div>
 
-            <div className="final-cta-actions">
-              <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
-                {ui.finalCta.estimateCta}
-              </ButtonLink>
-              <ButtonLink
-                href={contacts.telegramUrl}
-                target="_blank"
-                rel="noreferrer"
-                variant="secondary"
-                icon={<MessageCircle size={18} />}
-              >
-                {ui.finalCta.telegramCta}
-              </ButtonLink>
-            </div>
+            <div className="final-cta-side">
+              <div className="final-cta-actions">
+                <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
+                  {ui.finalCta.estimateCta}
+                </ButtonLink>
+                <ButtonLink
+                  href={contacts.telegramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="secondary"
+                  icon={<MessageCircle size={18} />}
+                >
+                  {ui.finalCta.telegramCta}
+                </ButtonLink>
+              </div>
 
-            <div className="final-cta-proof-grid">
-              {heroMetrics.map((metric) => (
-                <div key={metric.label} className="final-cta-proof-item">
-                  <strong>{metric.value}</strong>
-                  <span>{metric.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="final-cta-contact-row">
-              <a
-                href={contacts.telegramUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="final-cta-contact-link"
-              >
-                <Send size={16} className="accent-signal" />
-                {contacts.telegram}
-              </a>
-              <a
-                href={`mailto:${contacts.email}`}
-                className="final-cta-contact-link"
-              >
-                <Mail size={16} className="accent-warm" />
-                {contacts.email}
-              </a>
-              <a
-                href={contacts.githubUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="final-cta-contact-link"
-              >
-                <Code2 size={16} className="accent-logic" />
-                {contacts.github}
-              </a>
+              <div className="final-cta-contact-row">
+                <a
+                  href={contacts.telegramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="final-cta-contact-link"
+                >
+                  <Send size={16} className="accent-signal" />
+                  {contacts.telegram}
+                </a>
+                <a
+                  href={`tel:${contacts.phoneHref}`}
+                  className="final-cta-contact-link"
+                >
+                  <Phone size={16} className="accent-logic" />
+                  {contacts.phone}
+                </a>
+                <a
+                  href={`mailto:${contacts.email}`}
+                  className="final-cta-contact-link"
+                >
+                  <Mail size={16} className="accent-warm" />
+                  {contacts.email}
+                </a>
+                <a
+                  href={contacts.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="final-cta-contact-link"
+                >
+                  <Code2 size={16} className="accent-logic" />
+                  {contacts.github}
+                </a>
+              </div>
             </div>
           </div>
         </Reveal>
@@ -87,13 +94,64 @@ export function FinalCTA({ site }: { site: SiteData }) {
 }
 
 export function Footer({ site }: { site: SiteData }) {
-  const { ui } = site;
+  const { contacts, navItems, ui } = site;
 
   return (
     <footer className="site-footer">
-      <div className="site-container flex flex-col gap-3 py-7 text-sm text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
-        <p>© 2026 {ui.brandName} / mchomak</p>
-        <p>{ui.finalCta.footer}</p>
+      <div className="site-container site-footer-layout">
+        <div className="site-footer-brand">
+          <strong>{ui.brandName}</strong>
+          <span>mchomak</span>
+          <p>{ui.finalCta.footer}</p>
+        </div>
+
+        <nav className="site-footer-nav" aria-label={ui.header.navAria}>
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="site-footer-contacts" aria-label="Contacts">
+          <a
+            href={contacts.telegramUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="site-footer-contact-link"
+          >
+            <Send size={15} className="accent-signal" />
+            {contacts.telegram}
+          </a>
+          <a
+            href={`tel:${contacts.phoneHref}`}
+            className="site-footer-contact-link"
+          >
+            <Phone size={15} className="accent-logic" />
+            {contacts.phone}
+          </a>
+          <a
+            href={`mailto:${contacts.email}`}
+            className="site-footer-contact-link"
+          >
+            <Mail size={15} className="accent-warm" />
+            {contacts.email}
+          </a>
+          <a
+            href={contacts.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="site-footer-contact-link"
+          >
+            <Code2 size={15} className="accent-logic" />
+            {contacts.github}
+          </a>
+        </div>
+      </div>
+
+      <div className="site-container site-footer-bottom">
+        <p>{"\u00A9"} 2026 {ui.brandName}</p>
+        <p>Telegram / AI / Backend</p>
       </div>
     </footer>
   );

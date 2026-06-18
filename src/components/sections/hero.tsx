@@ -8,6 +8,7 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { ProductionCircuit } from "@/components/interactive/production-circuit";
 import type { CaseMosaicItem } from "@/components/interactive/case-mosaic";
 import { HeroHeadline } from "@/components/interactive/hero-headline";
+import { HeroScrollGate } from "@/components/interactive/hero-scroll-gate";
 import type { Locale, SiteData } from "@/data/site";
 
 const heroCaseOrder = [
@@ -37,7 +38,7 @@ export function Hero({
   locale: Locale;
   site: SiteData;
 }) {
-  const { heroMetrics, ui } = site;
+  const { ui } = site;
   const circuitItems = getHeroCircuitItems(locale, cases);
 
   return (
@@ -45,6 +46,7 @@ export function Hero({
       id="top"
       className="cinematic-hero section-shell section-deep relative isolate overflow-hidden border-b border-[var(--stroke-subtle)]"
     >
+      <HeroScrollGate />
       <div className="absolute inset-0 -z-30 bg-[linear-gradient(180deg,#040505_0%,#070807_48%,#090908_100%)]" />
       <Image
         src="/images/engineering-command-center.webp"
@@ -97,22 +99,19 @@ export function Hero({
             <ProductionCircuit items={circuitItems} />
           </Reveal>
         </div>
-      </div>
 
-      <div className="hero-transition-strip site-container relative z-10 grid gap-4 border-t border-[var(--stroke-subtle)] py-5 lg:grid-cols-[1fr_auto]">
-        <div className="grid gap-3 sm:grid-cols-3">
-          {heroMetrics.map((metric) => (
-            <div key={metric.label} className="hero-proof-item">
-              <strong>{metric.value}</strong>
-              <span>{metric.label}</span>
-            </div>
-          ))}
-        </div>
+        <div className="hero-trust-dock site-container">
+          <div className="hero-trust-bar" aria-label={ui.hero.bottomNote}>
+            {ui.hero.trustBar.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
 
-        <div className="hero-next-proof">
-          <span className="eyebrow-muted">{ui.hero.bottomNote}</span>
-          <ArrowRight size={16} />
-          <span>{ui.cases.eyebrow}</span>
+          <a href="#cases" className="hero-next-proof">
+            <span>{ui.hero.bottomNote}</span>
+            <ArrowRight size={16} />
+            <span>{ui.cases.eyebrow}</span>
+          </a>
         </div>
       </div>
     </section>

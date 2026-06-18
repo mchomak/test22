@@ -1,29 +1,17 @@
 import {
   BrainCircuit,
   GitBranch,
-  LayoutDashboard,
-  LifeBuoy,
   Rocket,
-  SearchCode,
   Settings2,
-  WalletCards,
+  ShieldCheck,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import type { SiteData } from "@/data/site";
 
-const stepIcons = [GitBranch, Settings2, BrainCircuit, Rocket, LifeBuoy];
-
-const proofIcons = [
-  WalletCards,
-  LayoutDashboard,
-  BrainCircuit,
-  SearchCode,
-  Rocket,
-  LifeBuoy,
-];
+const stepIcons = [GitBranch, Settings2, BrainCircuit, ShieldCheck, Rocket];
 
 export function ProductionFlow({ site }: { site: SiteData }) {
-  const { processSteps, proofItems, ui } = site;
+  const { processSteps, ui } = site;
 
   return (
     <section id="process" className="section-shell section-warm">
@@ -63,54 +51,18 @@ export function ProductionFlow({ site }: { site: SiteData }) {
                         </span>
                         <h3>{step.title}</h3>
                         <p>{step.text}</p>
+                        <div className="production-flow-result">
+                          <span className="eyebrow-muted">
+                            {ui.process.deliverableLabel}
+                          </span>
+                          <strong>{step.deliverable}</strong>
+                        </div>
                       </div>
                     </article>
                   </Reveal>
                 );
               })}
             </div>
-
-            <Reveal className="production-flow-proof" variant="quiet">
-              <div className="production-flow-proof-head">
-                <p className="eyebrow">{ui.trust.eyebrow}</p>
-                <h3>{ui.trust.title}</h3>
-                <p>{ui.trust.description}</p>
-              </div>
-
-              <div className="production-flow-proof-list">
-                {proofItems.map((item, index) => {
-                  const Icon = proofIcons[index] ?? Settings2;
-                  const iconTone =
-                    index % 3 === 1
-                      ? "icon-tile-logic"
-                      : index % 3 === 2
-                        ? "icon-tile-warm"
-                        : "";
-
-                  return (
-                    <article key={item.title} className="production-flow-proof-row">
-                      <span className={`icon-tile production-flow-proof-icon ${iconTone}`}>
-                        <Icon size={18} />
-                      </span>
-                      <div className="production-flow-proof-content">
-                        <div className="production-flow-proof-titleline">
-                          <h4>{item.title}</h4>
-                          <span className="eyebrow-muted">
-                            {ui.trust.proofLabel} {String(index + 1).padStart(2, "0")}
-                          </span>
-                        </div>
-                        <p>{item.summary}</p>
-                        <div className="production-flow-proof-tags">
-                          {item.tags.map((tag) => (
-                            <span key={tag}>{tag}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </Reveal>
           </div>
         </div>
       </div>
