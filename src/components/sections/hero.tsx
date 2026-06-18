@@ -64,7 +64,7 @@ export function Hero({
 
       <div className="hero-sticky-viewport relative z-10">
         <div className="hero-stage-layout site-container">
-          <Reveal eager variant="hero" className="hero-copy">
+          <Reveal variant="hero" className="hero-copy">
             <div className="tag-pill tag-pill-signal mb-7 gap-2 bg-black/20">
               <span className="dot-signal" />
               {ui.hero.badge}
@@ -95,7 +95,7 @@ export function Hero({
             </div>
           </Reveal>
 
-          <Reveal eager delay={0.18} variant="panel" className="hero-visual">
+          <Reveal delay={0.18} variant="panel" className="hero-visual">
             <ProductionCircuit items={circuitItems} />
           </Reveal>
         </div>
