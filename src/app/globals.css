@@ -3621,6 +3621,10 @@ summary::-webkit-details-marker {
     grid-template-columns: 1fr;
   }
 
+  .estimator-lead-card {
+    grid-template-columns: 1fr;
+  }
+
   .estimator-summary-panel {
     position: relative;
     top: auto;
@@ -4352,7 +4356,7 @@ summary::-webkit-details-marker {
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.42fr);
   gap: clamp(1.5rem, 4vw, 4rem);
   align-items: end;
-  margin-bottom: clamp(2rem, 4vw, 4rem);
+  margin-bottom: clamp(1.5rem, 3vw, 2.75rem);
 }
 
 .estimator-section-steps {
@@ -4387,8 +4391,8 @@ summary::-webkit-details-marker {
 
 .estimator-workbench {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
-  gap: clamp(1rem, 2vw, 2rem);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+  gap: clamp(0.9rem, 1.8vw, 1.5rem);
   align-items: start;
   border: 1px solid var(--stroke-regular);
   border-radius: var(--radius-panel);
@@ -4396,24 +4400,65 @@ summary::-webkit-details-marker {
     linear-gradient(135deg, rgba(125, 211, 252, 0.045), transparent 30%),
     linear-gradient(180deg, rgba(244, 242, 236, 0.038), transparent 24rem),
     rgba(6, 8, 8, 0.86);
-  padding: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(0.9rem, 1.7vw, 1.25rem);
   box-shadow: var(--shadow-card);
 }
 
 .estimator-form {
   display: grid;
-  gap: clamp(1.1rem, 2vw, 1.55rem);
+  gap: clamp(0.9rem, 1.6vw, 1.2rem);
   min-width: 0;
 }
 
 .estimator-command-bar {
   border-bottom: 1px solid var(--stroke-subtle);
-  padding-bottom: clamp(1rem, 2vw, 1.35rem);
+  padding-bottom: clamp(0.9rem, 1.6vw, 1.15rem);
+}
+
+.estimator-lead-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.52fr);
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent-logic) 24%, var(--stroke-subtle));
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(135deg, rgba(167, 243, 208, 0.07), transparent 48%),
+    rgba(255, 255, 255, 0.03);
+  padding: 0.95rem;
+}
+
+.estimator-lead-card p:not(.eyebrow-muted) {
+  margin-top: 0.45rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.estimator-lead-bullets {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.estimator-lead-bullets span {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent-logic);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.estimator-lead-bullets svg {
+  flex: 0 0 auto;
 }
 
 .estimator-step-rail {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   overflow: hidden;
   border: 1px solid var(--stroke-subtle);
   border-radius: var(--radius-card);
@@ -4423,10 +4468,10 @@ summary::-webkit-details-marker {
 .estimator-step-token {
   display: grid;
   gap: 0.32rem;
-  min-height: 3.7rem;
+  min-height: 3.2rem;
   align-content: center;
   background: rgba(244, 242, 236, 0.032);
-  padding: 0.75rem;
+  padding: 0.65rem 0.75rem;
   color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 650;
@@ -4443,7 +4488,7 @@ summary::-webkit-details-marker {
 
 .estimator-step-block {
   border-top: 1px solid var(--stroke-subtle);
-  padding-top: clamp(1rem, 2vw, 1.35rem);
+  padding-top: clamp(0.9rem, 1.6vw, 1.15rem);
 }
 
 .estimator-step-block-head {
@@ -4512,6 +4557,48 @@ summary::-webkit-details-marker {
     0 14px 34px rgba(0, 0, 0, 0.18);
 }
 
+.estimator-tuning-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.estimator-module-details {
+  border: 1px solid var(--stroke-subtle);
+  border-radius: var(--radius-card);
+  background: rgba(244, 242, 236, 0.024);
+}
+
+.estimator-module-details summary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem;
+}
+
+.estimator-module-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.estimator-module-details summary strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+.estimator-module-details[open] summary {
+  border-bottom: 1px solid var(--stroke-subtle);
+}
+
+.estimator-module-grid {
+  padding: 0.95rem;
+}
+
 .estimator-submit-panel {
   border-top: 1px solid var(--stroke-subtle);
   padding-top: clamp(1rem, 2vw, 1.35rem);
@@ -4540,6 +4627,14 @@ summary::-webkit-details-marker {
   border-radius: var(--radius-card);
   background: rgba(244, 242, 236, 0.028);
   padding: 1rem;
+}
+
+.estimator-summary-actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--stroke-subtle);
+  padding-top: 1rem;
 }
 
 .estimator-preset-banner {
@@ -4622,11 +4717,19 @@ summary::-webkit-details-marker {
     grid-template-columns: 1fr;
   }
 
+  .estimator-tuning-grid {
+    grid-template-columns: 1fr;
+  }
+
   .estimator-workbench {
     padding: 0.9rem;
   }
 
   .estimator-step-block-head {
+    display: grid;
+  }
+
+  .estimator-module-details summary {
     display: grid;
   }
 }

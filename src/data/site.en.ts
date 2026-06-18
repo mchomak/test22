@@ -1127,9 +1127,7 @@ const ui: SiteData["ui"] = {
   estimator: {
     steps: [
       "Project type",
-      "Complexity",
-      "Modules",
-      "Timeline",
+      "Estimate",
       "Contacts",
       "Submit",
     ],
@@ -1143,6 +1141,12 @@ const ui: SiteData["ui"] = {
     timelineSuffix: "business days",
     kicker: "Project config",
     title: "Project type -> modules -> request",
+    leadTitle: "A quick request instead of a long questionnaire",
+    leadDescription:
+      "Choose the type and pace, leave Telegram and a short task note. Open modules only when you want a tighter estimate.",
+    leadBullets: ["budget range immediately", "2 required fields", "spec can be attached as a link"],
+    summaryCta: "Send request with estimate",
+    modulesToggle: "Adjust modules",
     presetLabel: "Preset from case",
     stepPrefix: "step",
     typeTitle: "Choose solution type",
