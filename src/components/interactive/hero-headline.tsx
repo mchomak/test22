@@ -45,11 +45,7 @@ export function HeroHeadline({ lines }: { lines: string[] }) {
             ]
               .filter(Boolean)
               .join(" ")}
-            initial={
-              reduceMotion
-                ? { opacity: 0 }
-                : { y: "112%", rotateX: 18, opacity: 0.4 }
-            }
+            initial={false}
             animate={{ y: 0, rotateX: 0, opacity: 1 }}
             transition={{
               duration: reduceMotion ? motionDuration.fast : motionDuration.hero,

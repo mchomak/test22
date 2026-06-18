@@ -11,6 +11,7 @@ import {
 type RevealProps = {
   children: ReactNode;
   delay?: number;
+  eager?: boolean;
   className?: string;
   variant?: "section" | "hero" | "panel" | "quiet";
 } & Pick<HTMLMotionProps<"div">, "id">;
@@ -32,6 +33,7 @@ const revealScale = {
 export function Reveal({
   children,
   delay = 0,
+  eager = false,
   className,
   id,
   variant = "section",
@@ -49,8 +51,9 @@ export function Reveal({
     <motion.div
       id={id}
       className={["reveal", className].filter(Boolean).join(" ")}
-      initial={initial}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={eager ? false : initial}
+      animate={eager ? { opacity: 1, y: 0, scale: 1 } : undefined}
+      whileInView={eager ? undefined : { opacity: 1, y: 0, scale: 1 }}
       viewport={revealViewport}
       transition={{
         duration: reduceMotion ? motionDuration.fast : motionDuration.reveal,
