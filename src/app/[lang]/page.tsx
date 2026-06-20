@@ -1,5 +1,4 @@
 import { Cases } from "@/components/sections/cases";
-import { BootSequence } from "@/components/effects/boot-sequence";
 import { ScrollOrb } from "@/components/effects/scroll-orb";
 import { SiteEffects } from "@/components/effects/site-effects";
 import { FAQ } from "@/components/sections/faq";
@@ -32,7 +31,6 @@ export default async function Home({
 
   return (
     <>
-      <BootSequence copy={site.ui.boot} />
       <SiteEffects />
       <ScrollOrb />
       <SiteHeader locale={locale} site={site} />

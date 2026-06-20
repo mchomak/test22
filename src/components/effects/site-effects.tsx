@@ -7,7 +7,6 @@ import {
   useSpring,
 } from "framer-motion";
 import { useEffect } from "react";
-import { motionDuration, motionEasing } from "@/lib/motion";
 
 const pointerSpring = { stiffness: 90, damping: 26, mass: 0.35 };
 
@@ -52,18 +51,6 @@ export function SiteEffects() {
           />
         </>
       ) : null}
-
-      <motion.div
-        aria-hidden
-        className="page-transition-wipe pointer-events-none fixed inset-0 z-[70] origin-top bg-[var(--color-bg-deep)]"
-        initial={reduceMotion ? { opacity: 0 } : { scaleY: 1 }}
-        animate={reduceMotion ? { opacity: 0 } : { scaleY: 0 }}
-        transition={{
-          duration: reduceMotion ? 0 : motionDuration.page,
-          ease: motionEasing.exit,
-          delay: reduceMotion ? 0 : 0.16,
-        }}
-      />
     </>
   );
 }
