@@ -88,7 +88,7 @@ export function ProductionCircuit({ items, videoSrc }: ProductionCircuitProps) {
   const isMobile = useIsMobile();
   const isStatic = reduceMotion || isMobile !== false;
   const { scrollY } = useScroll();
-  const heroProgress = useSpring(useTransform(scrollY, [0, 480], [0, 1]), {
+  const heroProgress = useSpring(useTransform(scrollY, [0, 420], [0, 1]), {
     damping: 30,
     mass: 0.38,
     stiffness: 115,
@@ -148,11 +148,7 @@ export function ProductionCircuit({ items, videoSrc }: ProductionCircuitProps) {
                 left: `${node.x}%`,
                 top: `${node.y}%`,
               }}
-              initial={
-                isStatic
-                  ? false
-                  : { opacity: 0, scale: 0.92, y: 12 }
-              }
+              initial={false}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true, amount: 0.45 }}
               transition={{ delay: isStatic ? 0 : 0.08 + index * 0.045 }}

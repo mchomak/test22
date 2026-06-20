@@ -114,6 +114,8 @@ type EstimatorInitialState = {
   presetCaseSlug: string;
 };
 
+const estimatorFormId = "project-estimator-form";
+
 const getEstimatorInitialState = (
   query: string,
   data: ProjectEstimatorData,
@@ -466,7 +468,7 @@ function ProjectEstimatorForm({
 
   return (
     <div className="estimator-workbench">
-      <form onSubmit={handleSubmit} className="estimator-form">
+      <form id={estimatorFormId} onSubmit={handleSubmit} className="estimator-form">
         <div className="estimator-command-bar">
           <div className="mb-5 flex items-center gap-3">
             <span className="icon-tile h-11 w-11">
@@ -479,6 +481,21 @@ function ProjectEstimatorForm({
               <h3 className="text-xl font-semibold text-[var(--text-primary)]">
                 {copy.title}
               </h3>
+            </div>
+          </div>
+
+          <div className="estimator-lead-card">
+            <div>
+              <p className="eyebrow-muted">{copy.leadTitle}</p>
+              <p>{copy.leadDescription}</p>
+            </div>
+            <div className="estimator-lead-bullets">
+              {copy.leadBullets.map((item) => (
+                <span key={item}>
+                  <Check size={13} />
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -531,7 +548,7 @@ function ProjectEstimatorForm({
                   type="button"
                   onClick={() => chooseType(type.id)}
                   aria-pressed={isActive}
-                  className={`choice-card estimator-choice-card min-h-32 p-4 ${
+                  className={`choice-card estimator-choice-card min-h-28 p-3 ${
                     isActive
                       ? "choice-card-active choice-card-active-logic"
                       : ""
@@ -566,127 +583,76 @@ function ProjectEstimatorForm({
         <ConfigBlock
           label="02"
           copy={copy}
-          title={copy.complexityTitle}
+          title={`${copy.complexityTitle} / ${copy.urgencyTitle}`}
           description={copy.complexityDescription}
         >
-          <div className="grid gap-3 md:grid-cols-3">
-            {complexityLevels.map((level) => {
-              const isActive = level.id === complexityId;
+          <div className="estimator-tuning-grid">
+            <div>
+              <p className="eyebrow-muted mb-3">{copy.complexityTitle}</p>
+              <div className="grid gap-2">
+                {complexityLevels.map((level) => {
+                  const isActive = level.id === complexityId;
 
-              return (
-                <button
-                  key={level.id}
-                  type="button"
-                  onClick={() => {
-                    setComplexityId(level.id);
-                    clearPresetContext();
-                  }}
-                  aria-pressed={isActive}
-                  className={`choice-card estimator-choice-card p-4 ${
-                    isActive
-                      ? "choice-card-active choice-card-active-signal"
-                      : ""
-                  }`}
-                >
-                  <span className="font-semibold text-[var(--text-primary)]">{level.label}</span>
-                  <span className="body-copy mt-2 block text-sm">
-                    {level.description}
-                  </span>
-                </button>
-              );
-            })}
+                  return (
+                    <button
+                      key={level.id}
+                      type="button"
+                      onClick={() => {
+                        setComplexityId(level.id);
+                        clearPresetContext();
+                      }}
+                      aria-pressed={isActive}
+                      className={`choice-card estimator-choice-card p-3 ${
+                        isActive
+                          ? "choice-card-active choice-card-active-signal"
+                          : ""
+                      }`}
+                    >
+                      <span className="font-semibold text-[var(--text-primary)]">{level.label}</span>
+                      <span className="body-copy mt-1 block text-xs leading-5">
+                        {level.description}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <p className="eyebrow-muted mb-3">{copy.urgencyTitle}</p>
+              <div className="grid gap-2">
+                {urgencyOptions.map((option) => {
+                  const isActive = option.id === urgencyId;
+
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => {
+                        setUrgencyId(option.id);
+                        clearPresetContext();
+                      }}
+                      aria-pressed={isActive}
+                      className={`choice-card estimator-choice-card p-3 ${
+                        isActive
+                          ? "choice-card-active choice-card-active-warm"
+                          : ""
+                      }`}
+                    >
+                      <span className="font-semibold text-[var(--text-primary)]">{option.label}</span>
+                      <span className="body-copy mt-1 block text-xs leading-5">
+                        {option.description}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </ConfigBlock>
 
         <ConfigBlock
           label="03"
-          copy={copy}
-          title={copy.modulesTitle}
-          description={copy.modulesDescription.replace("{category}", activeType.label)}
-        >
-          <div className="grid gap-3 md:grid-cols-2">
-            {modules.map((module) => {
-              const isActive = selectedModules.includes(module.id);
-              const ModuleIcon = getModuleIcon(module.id);
-
-              return (
-                <button
-                  key={module.id}
-                  type="button"
-                  onClick={() => toggleModule(module.id)}
-                  aria-pressed={isActive}
-                  className={`choice-card estimator-choice-card min-h-28 p-4 ${
-                    isActive
-                      ? "choice-card-active choice-card-active-logic"
-                      : ""
-                  }`}
-                >
-                  <span className="flex items-start justify-between gap-3">
-                    <span className="estimator-choice-content">
-                      <span className="estimator-choice-icon estimator-choice-icon-sm" aria-hidden="true">
-                        <ModuleIcon size={17} />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-sm font-semibold text-[var(--text-primary)]">
-                          {module.label}
-                        </span>
-                        <span className="mt-1 block text-xs leading-5 text-[var(--text-secondary)]">
-                          {module.description}
-                        </span>
-                        <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-faint)]">
-                          + {formatMoney(module.price)} / +{module.days} {copy.dayShort}
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      className="check-token h-6 w-6 shrink-0"
-                    >
-                      <Check size={14} />
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </ConfigBlock>
-
-        <ConfigBlock
-          label="04"
-          copy={copy}
-          title={copy.urgencyTitle}
-          description={copy.urgencyDescription}
-        >
-          <div className="grid gap-3 md:grid-cols-3">
-            {urgencyOptions.map((option) => {
-              const isActive = option.id === urgencyId;
-
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => {
-                    setUrgencyId(option.id);
-                    clearPresetContext();
-                  }}
-                  aria-pressed={isActive}
-                  className={`choice-card estimator-choice-card p-4 ${
-                    isActive
-                      ? "choice-card-active choice-card-active-warm"
-                      : ""
-                  }`}
-                >
-                  <span className="font-semibold text-[var(--text-primary)]">{option.label}</span>
-                  <span className="body-copy mt-2 block text-sm">
-                    {option.description}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </ConfigBlock>
-
-        <ConfigBlock
-          label="05"
           copy={copy}
           title={copy.contactsTitle}
           description={copy.contactsDescription}
@@ -731,13 +697,79 @@ function ProjectEstimatorForm({
             </span>
             <textarea
               required
-              rows={5}
+              rows={4}
               value={contact.comment}
               onChange={(event) => updateContact("comment", event.target.value)}
               placeholder={copy.fields.commentPlaceholder}
-              className="field-control min-h-32 w-full resize-y px-4 py-3 text-sm leading-6"
+              className="field-control min-h-28 w-full resize-y px-4 py-3 text-sm leading-6"
             />
           </label>
+        </ConfigBlock>
+
+        <ConfigBlock
+          label="04"
+          copy={copy}
+          title={copy.modulesTitle}
+          description={copy.modulesDescription.replace("{category}", activeType.label)}
+        >
+          <details className="estimator-module-details">
+            <summary>
+              <span>
+                <span className="eyebrow-muted">{copy.modulesToggle}</span>
+                <strong>
+                  {copy.selectedModules}: {selectedModuleDetails.length}
+                </strong>
+              </span>
+              <span className="tag-pill tag-pill-logic">
+                {activeType.label}
+              </span>
+            </summary>
+
+            <div className="estimator-module-grid grid gap-3 md:grid-cols-2">
+              {modules.map((module) => {
+                const isActive = selectedModules.includes(module.id);
+                const ModuleIcon = getModuleIcon(module.id);
+
+                return (
+                  <button
+                    key={module.id}
+                    type="button"
+                    onClick={() => toggleModule(module.id)}
+                    aria-pressed={isActive}
+                    className={`choice-card estimator-choice-card min-h-24 p-3 ${
+                      isActive
+                        ? "choice-card-active choice-card-active-logic"
+                        : ""
+                    }`}
+                  >
+                    <span className="flex items-start justify-between gap-3">
+                      <span className="estimator-choice-content">
+                        <span className="estimator-choice-icon estimator-choice-icon-sm" aria-hidden="true">
+                          <ModuleIcon size={17} />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-[var(--text-primary)]">
+                            {module.label}
+                          </span>
+                          <span className="mt-1 block text-xs leading-5 text-[var(--text-secondary)]">
+                            {module.description}
+                          </span>
+                          <span className="mt-2 block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-faint)]">
+                            + {formatMoney(module.price)} / +{module.days} {copy.dayShort}
+                          </span>
+                        </span>
+                      </span>
+                      <span
+                        className="check-token h-6 w-6 shrink-0"
+                      >
+                        <Check size={14} />
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </details>
         </ConfigBlock>
 
         <div className="estimator-submit-panel">
@@ -872,6 +904,31 @@ function ProjectEstimatorForm({
           )}
         </div>
 
+        <div className="estimator-summary-actions">
+          <button
+            type="submit"
+            form={estimatorFormId}
+            disabled={submitState === "sending"}
+            className="btn-link btn-link-primary w-full disabled:cursor-wait disabled:opacity-70"
+          >
+            {submitState === "sending" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Send size={18} />
+            )}
+            {copy.summaryCta}
+          </button>
+          <a
+            href={data.contacts.telegramUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="estimator-telegram-link"
+          >
+            <MessageCircle size={16} />
+            <span>{copy.telegramFallback}</span>
+          </a>
+        </div>
+
         <div className="estimator-request-preview">
           <p className="eyebrow-muted">
             {copy.requestFormat}
@@ -893,15 +950,6 @@ ${copy.timelineLabel} ${estimate.timeline}`}
         >
           {copy.viewCases}
           <ArrowRight size={16} />
-        </a>
-        <a
-          href={data.contacts.telegramUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="estimator-telegram-link mt-3"
-        >
-          <MessageCircle size={16} />
-          <span>{copy.telegramFallback}</span>
         </a>
       </aside>
     </div>

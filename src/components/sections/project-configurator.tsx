@@ -22,7 +22,7 @@ export function ProjectConfigurator({ site }: { site: SiteData }) {
 
   return (
     <section id="estimator" className="section-shell estimator-section section-soft">
-      <div className="site-container py-24">
+      <div className="site-container py-20">
         <div className="estimator-section-head">
           <div>
             <p className="eyebrow mb-4">{ui.configurator.eyebrow}</p>
@@ -49,7 +49,7 @@ export function ProjectConfigurator({ site }: { site: SiteData }) {
 
         <Suspense
           fallback={
-            <div className="estimator-workbench min-h-[680px]" />
+            <div className="estimator-workbench min-h-[520px]" />
           }
         >
           <ProjectEstimator data={estimatorData} />

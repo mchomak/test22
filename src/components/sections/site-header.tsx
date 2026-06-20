@@ -59,7 +59,7 @@ export function SiteHeader({
             target="_blank"
             rel="noreferrer"
             variant="secondary"
-            className="hidden min-h-10 px-4 sm:inline-flex"
+            className="hidden min-h-10 px-4 lg:inline-flex"
           >
             {ui.header.contactCta}
           </ButtonLink>
