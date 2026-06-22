@@ -1287,13 +1287,13 @@ export const ui = {
     ],
   },
   hero: {
-    badge: "Telegram / AI / backend / automation",
-    headline: ["AI, backend и", "Telegram-разработка", "под ключ"],
+    badge: "Для бизнеса, экспертов и команд с ручной рутиной",
+    headline: ["Telegram-боты и сервисы", "для заявок и оплат"],
     description:
-      "Собираю Telegram-ботов, Mini Apps, backend-системы, AI-модули, парсеры и интеграции — от MVP до рабочего продукта с админкой, платежами и аналитикой.",
-    primaryCta: "Рассчитать проект",
-    secondaryCta: "Смотреть кейсы",
-    bottomNote: "Architecture / build / launch / support",
+      "Делаю под ключ ботов, Mini Apps, backend, AI-модули, админки и платежи — от идеи до запуска на сервере.",
+    primaryCta: "Обсудить проект",
+    secondaryCta: "Посчитать точнее",
+    bottomNote: "Ниже — реальные проекты",
   },
   liveTelemetry: {
     title: "Live product contour",

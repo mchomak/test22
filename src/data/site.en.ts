@@ -1061,13 +1061,13 @@ const ui: SiteData["ui"] = {
     ],
   },
   hero: {
-    badge: "Telegram / AI / backend / automation",
-    headline: ["AI, backend and", "Telegram development", "turnkey"],
+    badge: "For small businesses, experts and product teams",
+    headline: ["Telegram bots and services", "for leads and payments"],
     description:
-      "I build Telegram bots, Mini Apps, backend systems, AI modules, parsers and integrations - from MVP to a working product with admin panel, payments and analytics.",
-    primaryCta: "Estimate a project",
-    secondaryCta: "View cases",
-    bottomNote: "Architecture / build / launch / support",
+      "I build bots, Mini Apps, backend systems, AI modules, admin panels and payments - from idea to production launch.",
+    primaryCta: "Discuss a project",
+    secondaryCta: "Get a tighter estimate",
+    bottomNote: "Real projects below",
   },
   liveTelemetry: {
     title: "Live product contour",

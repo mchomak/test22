@@ -10,6 +10,7 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { EngineeringScene } from "@/components/interactive/engineering-scene";
 import { HeroHeadline } from "@/components/interactive/hero-headline";
 import { LiveTelemetry } from "@/components/interactive/live-telemetry";
+import { QuickLeadForm } from "@/components/interactive/quick-lead-form";
 import type { SiteData } from "@/data/site";
 
 export function Hero({ site }: { site: SiteData }) {
@@ -51,18 +52,27 @@ export function Hero({ site }: { site: SiteData }) {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink
-              href="#estimator"
-              icon={<Calculator size={18} />}
+              href="#quick-lead"
+              icon={<ArrowRight size={18} />}
             >
               {ui.hero.primaryCta}
             </ButtonLink>
             <ButtonLink
-              href="#cases"
+              href="#estimator"
               variant="secondary"
-              icon={<ArrowRight size={18} />}
+              icon={<Calculator size={18} />}
             >
               {ui.hero.secondaryCta}
             </ButtonLink>
+          </div>
+
+          <div id="quick-lead" className="mt-6 max-w-xl scroll-mt-24">
+            <QuickLeadForm
+              contacts={contacts}
+              copy={ui.quickLead}
+              source="hero"
+              compact
+            />
           </div>
 
           <div className="mt-10 grid gap-3 sm:grid-cols-3">
