@@ -5,17 +5,36 @@ export type LeadMessageFields = {
   options: string[];
   budget: string;
   timeline: string;
+  source?: string;
   sourceCase?: string;
   contactName: string;
-  contactTelegram: string;
-  contactEmail: string;
+  contactChannel?: string;
+  contactValue: string;
+  contactTelegram?: string;
+  contactEmail?: string;
   comment: string;
   fileUrl: string;
 };
 
+const sourceLabels: Record<string, string> = {
+  final: "Финальная форма",
+  hero: "Быстрая форма в hero",
+  inline: "Встроенная форма",
+  sticky: "Мобильная sticky-форма",
+};
+
 export function formatLeadMessage(lead: LeadMessageFields): string {
+  const contactValue = lead.contactValue || lead.contactTelegram || lead.contactEmail;
+  const source = lead.source ? sourceLabels[lead.source] ?? lead.source : "Конфигуратор";
+  const channel = lead.contactChannel || (lead.contactTelegram ? "Telegram" : "Контакт");
+  const shouldShowTelegram =
+    Boolean(lead.contactTelegram) && lead.contactTelegram !== contactValue;
+  const shouldShowEmail =
+    Boolean(lead.contactEmail) && lead.contactEmail !== contactValue;
+
   return [
     "Новая заявка с сайта",
+    `Источник: ${source}`,
     "",
     `Категория: ${lead.category}`,
     `Сложность: ${lead.complexity}`,
@@ -29,11 +48,13 @@ export function formatLeadMessage(lead: LeadMessageFields): string {
     `Оценка: ${lead.budget}`,
     `Срок: ${lead.timeline}`,
     "",
-    `Контакт: ${lead.contactTelegram}`,
+    `Канал: ${channel}`,
+    `Контакт: ${contactValue}`,
     lead.contactName ? `Имя: ${lead.contactName}` : "",
-    lead.contactEmail ? `Email: ${lead.contactEmail}` : "",
+    shouldShowTelegram ? `Telegram: ${lead.contactTelegram}` : "",
+    shouldShowEmail ? `Email: ${lead.contactEmail}` : "",
     lead.fileUrl ? `ТЗ / файл: ${lead.fileUrl}` : "",
-    `Комментарий: ${lead.comment}`,
+    `Задача: ${lead.comment}`,
   ]
     .filter(Boolean)
     .join("\n");

@@ -2,6 +2,8 @@ export const contacts = {
   email: "kaneevramil7@gmail.com",
   telegram: "@McHomak15",
   telegramUrl: "https://t.me/McHomak15",
+  whatsapp: "+79269549196",
+  whatsappUrl: "https://wa.me/79269549196",
   phone: "+79269549196",
   phoneHref: "+79269549196",
   github: "github.com/mchomak",
@@ -1347,6 +1349,34 @@ export const ui = {
     title: "Соберите конфигурацию проекта",
     description:
       "Выберите тип решения, модули и сроки — сайт покажет ориентир по бюджету и сформирует заявку.",
+  },
+  quickLead: {
+    title: "Коротко опишите задачу",
+    description: "Ответ пришлю в удобный для вас канал.",
+    name: "Имя",
+    namePlaceholder: "Как к вам обращаться",
+    channel: "Канал связи",
+    channels: {
+      telegram: "Telegram",
+      whatsapp: "WhatsApp",
+      phone: "Телефон",
+      email: "Email",
+    },
+    contact: "Куда написать",
+    contactPlaceholder: {
+      telegram: "@username",
+      whatsapp: "+7...",
+      phone: "+7...",
+      email: "name@company.com",
+    },
+    comment: "Что нужно сделать",
+    commentPlaceholder:
+      "Например: нужен Telegram-бот с оплатой и админкой для заявок.",
+    submit: "Обсудить проект",
+    sending: "Отправляю",
+    success: "Заявка отправлена. Вернусь с уточняющими вопросами.",
+    validationError: "Оставьте контакт и коротко опишите задачу.",
+    fallbackTitle: "Можно написать напрямую:",
   },
   estimator: {
     steps: [

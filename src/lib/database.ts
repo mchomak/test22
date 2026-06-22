@@ -9,10 +9,13 @@ export type ProjectLeadRecord = {
   options: string[];
   budget: string;
   timeline: string;
+  source?: string;
   sourceCase?: string;
   contactName: string;
-  contactTelegram: string;
-  contactEmail: string;
+  contactChannel: string;
+  contactValue: string;
+  contactTelegram?: string;
+  contactEmail?: string;
   comment: string;
   fileUrl: string;
   payload: Record<string, unknown>;
@@ -41,10 +44,13 @@ export type DashboardLead = {
   budget: string;
   timeline: string;
   contactName: string;
+  contactChannel: string;
+  contactValue: string;
   contactTelegram: string;
   contactEmail: string;
   comment: string;
   fileUrl: string;
+  source: string;
   telegramDelivered: boolean;
   telegramError: string;
 };
@@ -120,6 +126,8 @@ async function ensureSchema(pool: Pool) {
         budget TEXT NOT NULL,
         timeline TEXT NOT NULL,
         contact_name TEXT,
+        contact_channel TEXT,
+        contact_value TEXT,
         contact_telegram TEXT NOT NULL,
         contact_email TEXT,
         comment TEXT NOT NULL,
@@ -155,6 +163,8 @@ async function ensureSchema(pool: Pool) {
         ON site_visits (visitor_id);
 
       ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS telegram_retry_count INT NOT NULL DEFAULT 0;
+      ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS contact_channel TEXT;
+      ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS contact_value TEXT;
     `).then(() => undefined);
   }
 
@@ -184,13 +194,15 @@ export async function insertProjectLead(lead: ProjectLeadRecord) {
           budget,
           timeline,
           contact_name,
+          contact_channel,
+          contact_value,
           contact_telegram,
           contact_email,
           comment,
           file_url,
           payload
         )
-        VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12::jsonb)
+        VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14::jsonb)
         RETURNING id
       `,
       [
@@ -201,7 +213,9 @@ export async function insertProjectLead(lead: ProjectLeadRecord) {
         lead.budget,
         lead.timeline,
         lead.contactName || null,
-        lead.contactTelegram,
+        lead.contactChannel || null,
+        lead.contactValue,
+        lead.contactTelegram || lead.contactValue,
         lead.contactEmail || null,
         lead.comment,
         lead.fileUrl || null,
@@ -244,7 +258,10 @@ export type UndeliveredLead = {
   options: string[];
   budget: string;
   timeline: string;
+  source: string;
   contactName: string;
+  contactChannel: string;
+  contactValue: string;
   contactTelegram: string;
   contactEmail: string;
   comment: string;
@@ -262,14 +279,18 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
       budget: string;
       timeline: string;
       contact_name: string | null;
+      contact_channel: string | null;
+      contact_value: string | null;
       contact_telegram: string;
       contact_email: string | null;
       comment: string;
       file_url: string | null;
+      payload: unknown;
     }>(
       `
         SELECT id, category, complexity, urgency, options, budget, timeline,
-               contact_name, contact_telegram, contact_email, comment, file_url
+               contact_name, contact_channel, contact_value, contact_telegram,
+               contact_email, comment, file_url, payload
         FROM project_leads
         WHERE telegram_delivered = false
           AND telegram_retry_count < 10
@@ -293,9 +314,14 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
       : [],
     budget: row.budget,
     timeline: row.timeline,
+    source: textFromLeadPayload(row.payload, "source"),
     contactName: row.contact_name ?? "",
-    contactTelegram: row.contact_telegram,
-    contactEmail: row.contact_email ?? "",
+    contactChannel: row.contact_channel ?? (row.contact_value ? "" : "Telegram"),
+    contactValue: row.contact_value ?? row.contact_telegram,
+    contactTelegram:
+      textFromLeadPayload(row.payload, "contact.telegram") ||
+      (row.contact_value ? "" : row.contact_telegram),
+    contactEmail: row.contact_email ?? textFromLeadPayload(row.payload, "contact.email"),
     comment: row.comment,
     fileUrl: row.file_url ?? "",
   }));
@@ -379,10 +405,13 @@ export async function getDashboardData(): Promise<DashboardData | null> {
           budget,
           timeline,
           COALESCE(contact_name, '') AS contact_name,
+          COALESCE(contact_channel, '') AS contact_channel,
+          COALESCE(contact_value, contact_telegram, '') AS contact_value,
           contact_telegram,
           COALESCE(contact_email, '') AS contact_email,
           comment,
           COALESCE(file_url, '') AS file_url,
+          payload,
           telegram_delivered,
           COALESCE(telegram_error, '') AS telegram_error
         FROM project_leads
@@ -448,15 +477,22 @@ type LeadRow = {
   budget: string;
   timeline: string;
   contact_name: string;
+  contact_channel: string;
+  contact_value: string;
   contact_telegram: string;
   contact_email: string;
   comment: string;
   file_url: string;
+  payload: unknown;
   telegram_delivered: boolean;
   telegram_error: string;
 };
 
 function mapLeadRow(row: LeadRow): DashboardLead {
+  const payloadTelegram = textFromLeadPayload(row.payload, "contact.telegram");
+  const payloadEmail = textFromLeadPayload(row.payload, "contact.email");
+  const isOldTelegramOnlyRow = !row.contact_channel && row.contact_value === row.contact_telegram;
+
   return {
     id: Number(row.id),
     createdAt: new Date(row.created_at).toISOString(),
@@ -469,10 +505,13 @@ function mapLeadRow(row: LeadRow): DashboardLead {
     budget: row.budget,
     timeline: row.timeline,
     contactName: row.contact_name,
-    contactTelegram: row.contact_telegram,
-    contactEmail: row.contact_email,
+    contactChannel: row.contact_channel || (isOldTelegramOnlyRow ? "Telegram" : ""),
+    contactValue: row.contact_value,
+    contactTelegram: payloadTelegram || (isOldTelegramOnlyRow ? row.contact_telegram : ""),
+    contactEmail: row.contact_email || payloadEmail,
     comment: row.comment,
     fileUrl: row.file_url,
+    source: textFromLeadPayload(row.payload, "source"),
     telegramDelivered: row.telegram_delivered,
     telegramError: row.telegram_error,
   };
@@ -483,4 +522,27 @@ function numberFrom<T extends Record<string, string>>(
   key: keyof T,
 ) {
   return Number(result.rows[0]?.[key] ?? 0);
+}
+
+function textFromLeadPayload(payload: unknown, path: "source" | "contact.telegram" | "contact.email") {
+  const root = payload && typeof payload === "object" && !Array.isArray(payload)
+    ? (payload as Record<string, unknown>)
+    : null;
+
+  if (!root) {
+    return "";
+  }
+
+  if (path === "source") {
+    return typeof root.source === "string" ? root.source.trim() : "";
+  }
+
+  const contact =
+    root.contact && typeof root.contact === "object" && !Array.isArray(root.contact)
+      ? (root.contact as Record<string, unknown>)
+      : null;
+  const key = path === "contact.telegram" ? "telegram" : "email";
+  const value = contact?.[key];
+
+  return typeof value === "string" ? value.trim() : "";
 }

@@ -18,13 +18,25 @@ type LeadPayload = {
     timeline?: unknown;
   };
   sourceCase?: unknown;
+  source?: unknown;
   contact?: {
     name?: unknown;
+    channel?: unknown;
+    value?: unknown;
     telegram?: unknown;
     email?: unknown;
+    phone?: unknown;
+    whatsapp?: unknown;
   };
   comment?: unknown;
   fileUrl?: unknown;
+};
+
+const contactChannelLabels: Record<string, string> = {
+  email: "Email",
+  phone: "Телефон",
+  telegram: "Telegram",
+  whatsapp: "WhatsApp",
 };
 
 const asText = (value: unknown) =>
@@ -37,6 +49,37 @@ const asTextList = (value: unknown) =>
         .map((item) => item.trim().slice(0, 400))
         .filter(Boolean)
     : [];
+
+const firstText = (...values: string[]) => values.find(Boolean) ?? "";
+
+function resolveContactChannel({
+  channel,
+  contactValue,
+  email,
+  phone,
+  telegram,
+  whatsapp,
+}: {
+  channel: string;
+  contactValue: string;
+  email: string;
+  phone: string;
+  telegram: string;
+  whatsapp: string;
+}) {
+  const normalizedChannel = channel.toLowerCase();
+
+  if (contactChannelLabels[normalizedChannel]) {
+    return contactChannelLabels[normalizedChannel];
+  }
+
+  if (contactValue === telegram) return contactChannelLabels.telegram;
+  if (contactValue === phone) return contactChannelLabels.phone;
+  if (contactValue === whatsapp) return contactChannelLabels.whatsapp;
+  if (contactValue === email) return contactChannelLabels.email;
+
+  return channel || "Контакт";
+}
 
 export async function POST(request: Request) {
   let payload: LeadPayload;
@@ -56,18 +99,32 @@ export async function POST(request: Request) {
   const options = asTextList(payload.options);
   const budget = asText(payload.estimate?.budget);
   const timeline = asText(payload.estimate?.timeline);
+  const source = asText(payload.source);
   const sourceCase = asText(payload.sourceCase);
   const name = asText(payload.contact?.name);
+  const channel = asText(payload.contact?.channel);
+  const value = asText(payload.contact?.value);
   const telegram = asText(payload.contact?.telegram);
   const email = asText(payload.contact?.email);
+  const phone = asText(payload.contact?.phone);
+  const whatsapp = asText(payload.contact?.whatsapp);
+  const contactValue = firstText(value, telegram, phone, whatsapp, email);
+  const contactChannel = resolveContactChannel({
+    channel,
+    contactValue,
+    email,
+    phone,
+    telegram,
+    whatsapp,
+  });
   const comment = asText(payload.comment);
   const fileUrl = asText(payload.fileUrl);
 
-  if (!category || !complexity || !telegram || !comment || !budget || !timeline) {
+  if (!category || !complexity || !contactValue || !comment || !budget || !timeline) {
     return Response.json(
       {
         ok: false,
-        error: "Заполните Telegram, описание задачи и конфигурацию.",
+        error: "Оставьте контакт, описание задачи и конфигурацию.",
       },
       { status: 400 },
     );
@@ -80,8 +137,11 @@ export async function POST(request: Request) {
     options,
     budget,
     timeline,
+    source,
     sourceCase,
     contactName: name,
+    contactChannel,
+    contactValue,
     contactTelegram: telegram,
     contactEmail: email,
     comment,
