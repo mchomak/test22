@@ -634,6 +634,10 @@ summary::-webkit-details-marker {
     padding-bottom: calc(5.2rem + env(safe-area-inset-bottom));
   }
 
+  .site-footer {
+    padding-bottom: calc(5.2rem + env(safe-area-inset-bottom));
+  }
+
   .mobile-contact-bar {
     position: fixed;
     inset: auto 0 0;

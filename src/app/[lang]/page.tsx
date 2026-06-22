@@ -1,4 +1,5 @@
 import { Cases } from "@/components/sections/cases";
+import { HashScroller } from "@/components/hash-scroller";
 import { ScrollOrb } from "@/components/effects/scroll-orb";
 import { SiteEffects } from "@/components/effects/site-effects";
 import { FAQ } from "@/components/sections/faq";
@@ -33,6 +34,7 @@ export default async function Home({
   return (
     <>
       <SiteEffects />
+      <HashScroller />
       <ScrollOrb />
       <SiteHeader locale={locale} site={site} />
       <MobileContactBar site={site} />
