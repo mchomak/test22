@@ -1,156 +1,135 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { RadioTower, ShieldCheck, TerminalSquare } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { SiteData } from "@/data/site";
+import { useIsMobile } from "@/lib/use-is-mobile";
 
-const events = [
-  {
-    label: "Telegram webhook",
-    value: "18 ms",
-    tone: "text-emerald-200",
-    log: "event.message -> scenario.router -> state.commit",
-  },
-  {
-    label: "Payment callback",
-    value: "verified",
-    tone: "text-cyan-200",
-    log: "provider.webhook -> signature.check -> order.paid",
-  },
-  {
-    label: "LLM guardrail",
-    value: "scoped",
-    tone: "text-amber-200",
-    log: "query -> retrieval -> policy.limit -> answer",
-  },
-  {
-    label: "Deploy health",
-    value: "green",
-    tone: "text-emerald-200",
-    log: "docker.restart=0 errors=0 queue.depth=3",
-  },
-];
+function getToneClass(tone: string) {
+  if (tone.includes("cyan")) return "accent-signal";
+  if (tone.includes("amber")) return "accent-warm";
+  if (tone.includes("emerald")) return "accent-logic";
 
-const pipeline = [
-  "Telegram Bot",
-  "Payments",
-  "FastAPI",
-  "PostgreSQL",
-  "Redis Queue",
-  "AI Gateway",
-];
+  return tone;
+}
 
-export function LiveTelemetry() {
+export function LiveTelemetry({
+  copy,
+}: {
+  copy: SiteData["ui"]["liveTelemetry"];
+}) {
   const [active, setActive] = useState(0);
   const [latency, setLatency] = useState(18);
-  const [isVisible, setIsVisible] = useState(true);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root || !("IntersectionObserver" in window)) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.15 },
-    );
-    observer.observe(root);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
+    if (isMobile !== false) {
+      return;
+    }
 
     const interval = window.setInterval(() => {
-      if (document.visibilityState !== "visible") return;
-
-      setActive((current) => (current + 1) % events.length);
+      setActive((current) => (current + 1) % copy.events.length);
       setLatency(14 + Math.round(Math.random() * 12));
-    }, 4200);
+    }, 1900);
 
     return () => window.clearInterval(interval);
-  }, [isVisible]);
+  }, [copy.events.length, isMobile]);
 
-  const currentEvent = useMemo(() => events[active], [active]);
+  const currentEvent = useMemo(() => copy.events[active], [active, copy.events]);
 
   return (
-    <div ref={rootRef} className="absolute inset-0">
-      <div className="absolute left-4 right-4 top-5 z-10 rounded-2xl border border-white/[0.14] bg-[#07100e]/88 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:left-8 sm:right-auto sm:w-[390px]">
+    <>
+      <div className="surface-panel absolute left-4 right-4 top-5 z-10 p-4 sm:left-8 sm:right-auto sm:w-[390px]">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-semibold text-white">
-            <RadioTower size={17} className="text-emerald-300" />
-            Live product contour
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+            <RadioTower size={17} className="accent-signal" />
+            {copy.title}
           </div>
-          <span className="rounded-full bg-emerald-300/12 px-2.5 py-1 font-mono text-[11px] text-emerald-200">
-            online
+          <span className="tag-pill tag-pill-logic min-h-0 px-2.5 py-1 text-[11px]">
+            {copy.status}
           </span>
         </div>
 
         <div className="mt-4 grid gap-2">
-          {events.map((event, index) => (
+          {copy.events.map((event, index) => (
             <button
               key={event.label}
               type="button"
               onClick={() => setActive(index)}
-              className={`group grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+              className={`choice-card group grid grid-cols-[1fr_auto] items-center gap-3 px-3 py-2.5 ${
                 index === active
-                  ? "border-emerald-300/35 bg-emerald-300/10"
-                  : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
+                  ? "choice-card-active choice-card-active-signal"
+                  : ""
               }`}
             >
-              <span className="font-mono text-xs text-zinc-400">
+              <span className="font-mono text-xs text-[var(--text-muted)]">
                 {event.label}
               </span>
-              <span className={`font-mono text-xs ${event.tone}`}>
-                {event.label === "Telegram webhook" ? `${latency} ms` : event.value}
+              <span className={`font-mono text-xs ${getToneClass(event.tone)}`}>
+                {index === 0 ? `${latency} ms` : event.value}
               </span>
             </button>
           ))}
         </div>
 
-        <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black/35 px-3 py-2.5">
-          <p className="font-mono text-[11px] leading-5 text-zinc-400">
-            <span className="text-emerald-300">$</span> {currentEvent.log}
-          </p>
+        <div className="surface-tool mt-4 overflow-hidden px-3 py-2.5 shadow-none">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentEvent.log}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.24 }}
+              className="font-mono text-[11px] leading-5 text-[var(--text-muted)]"
+            >
+              <span className="accent-signal">$</span> {currentEvent.log}
+            </motion.p>
+          </AnimatePresence>
         </div>
       </div>
 
-      <div className="absolute bottom-5 left-4 right-4 z-10 rounded-2xl border border-white/[0.14] bg-[#050607]/90 p-4 shadow-2xl shadow-black/40 backdrop-blur-md sm:bottom-8 sm:left-auto sm:right-8 sm:w-[440px]">
+      <div className="surface-panel absolute bottom-5 left-4 right-4 z-10 p-4 sm:bottom-8 sm:left-auto sm:right-8 sm:w-[440px]">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-white">
-            <TerminalSquare size={17} className="text-cyan-200" />
-            Bot to payment pipeline
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+            <TerminalSquare size={17} className="accent-signal" />
+            {copy.pipelineTitle}
           </div>
-          <ShieldCheck size={17} className="text-emerald-300" />
+          <ShieldCheck size={17} className="accent-logic" />
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {pipeline.map((node, index) => (
-            <div
+          {copy.pipeline.map((node, index) => (
+            <motion.div
               key={node}
-              className={`relative overflow-hidden rounded-xl border bg-white/[0.045] px-3 py-3 transition-colors duration-300 ${
-                index === active || index === (active + 2) % pipeline.length
-                  ? "border-emerald-300/45"
-                  : "border-white/10"
-              }`}
+              className="surface-card relative overflow-hidden px-3 py-3 shadow-none"
+              animate={{
+                borderColor:
+                  index === active || index === (active + 2) % copy.pipeline.length
+                    ? "rgba(125,211,252,0.42)"
+                    : "rgba(244,242,236,0.09)",
+              }}
+              transition={{ duration: 0.35 }}
             >
-              <span
-                className={`absolute inset-y-0 left-0 w-1 bg-emerald-300 transition duration-300 ${
-                  index === active ? "opacity-100" : "scale-y-[0.35] opacity-[0.18]"
-                }`}
+              <motion.span
+                className="absolute inset-y-0 left-0 w-1 bg-[var(--accent-signal)]"
+                animate={{
+                  opacity: index === active ? 1 : 0.18,
+                  scaleY: index === active ? 1 : 0.35,
+                }}
               />
               <div className="mb-2 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-300/80" />
-                <span className="font-mono text-[10px] text-zinc-500">
+                <span className="h-2 w-2 rounded-full bg-[var(--accent-warm)]" />
+                <span className="font-mono text-[10px] text-[var(--text-faint)]">
                   0{index + 1}
                 </span>
               </div>
-              <div className="text-sm font-medium leading-5 text-zinc-200">
+              <div className="text-sm font-medium leading-5 text-[var(--text-secondary)]">
                 {node}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }

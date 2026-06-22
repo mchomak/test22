@@ -1,134 +1,153 @@
 import Image from "next/image";
 import {
   ArrowRight,
-  Code2,
-  Mail,
+  Calculator,
   MessageCircle,
 } from "lucide-react";
-import { contacts, heroMetrics, stack } from "@/data/site";
 import { Reveal } from "@/components/reveal";
 import { ButtonLink } from "@/components/ui/button-link";
-import { EngineeringScene } from "@/components/interactive/engineering-scene";
+import { QuickLeadForm } from "@/components/interactive/quick-lead-form";
+import { ProductionCircuit } from "@/components/interactive/production-circuit";
+import type { CaseMosaicItem } from "@/components/interactive/case-mosaic";
 import { HeroHeadline } from "@/components/interactive/hero-headline";
-import { LiveTelemetry } from "@/components/interactive/live-telemetry";
+import { HeroScrollGate } from "@/components/interactive/hero-scroll-gate";
+import type { Locale, SiteData } from "@/data/site";
 
-export function Hero() {
+const heroCaseOrder = [
+  "sapsanex-mini-app",
+  "subscription-bot",
+  "seedream-tryon",
+  "bybit-trading-bot",
+  "skillup",
+  "ai-reply-assistant",
+] as const;
+
+const heroCaseFragments: Record<(typeof heroCaseOrder)[number], string> = {
+  "sapsanex-mini-app": "1",
+  "subscription-bot": "5",
+  "seedream-tryon": "2",
+  "bybit-trading-bot": "preview_sq",
+  skillup: "preview_sq",
+  "ai-reply-assistant": "1",
+};
+
+export function Hero({
+  cases,
+  locale,
+  site,
+}: {
+  cases: SiteData["cases"];
+  locale: Locale;
+  site: SiteData;
+}) {
+  const { ui } = site;
+  const circuitItems = getHeroCircuitItems(locale, cases);
+
   return (
     <section
       id="top"
-      className="relative isolate min-h-screen overflow-hidden border-b border-white/10 pt-16"
+      className="cinematic-hero section-shell section-deep relative isolate overflow-hidden border-b border-[var(--stroke-subtle)]"
     >
-      <div className="absolute inset-0 -z-30 bg-[linear-gradient(180deg,#050607_0%,#07100e_44%,#090a0a_100%)]" />
+      <HeroScrollGate />
+      <div className="absolute inset-0 -z-30 bg-[linear-gradient(180deg,#040505_0%,#070807_48%,#090908_100%)]" />
       <Image
         src="/images/engineering-command-center.webp"
         alt=""
         aria-hidden
         fill
-        priority
+        preload
         quality={70}
         sizes="100vw"
-        className="absolute inset-0 -z-20 object-cover opacity-[0.14]"
+        className="absolute inset-0 -z-20 object-cover opacity-[0.07] saturate-0"
       />
-      <div className="hero-grid absolute inset-0 -z-10 opacity-70" />
-      <EngineeringScene showCore={false} />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_67%_46%,transparent_0%,rgba(5,6,7,0.2)_30%,rgba(5,6,7,0.84)_78%),linear-gradient(90deg,rgba(5,6,7,0.98)_0%,rgba(5,6,7,0.78)_40%,rgba(5,6,7,0.2)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 z-[1] h-36 bg-gradient-to-t from-[#090a0a] to-transparent" />
+      <div className="hero-grid absolute inset-0 -z-10 opacity-30" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(4,5,5,0.98)_0%,rgba(4,5,5,0.82)_42%,rgba(4,5,5,0.18)_100%),radial-gradient(circle_at_72%_48%,rgba(125,211,252,0.02)_0%,rgba(4,5,5,0.25)_42%,rgba(4,5,5,0.92)_86%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-40 bg-gradient-to-t from-[var(--color-bg)] to-transparent" />
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8 lg:py-18">
-        <Reveal className="max-w-3xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-300 shadow-2xl shadow-black/30 backdrop-blur">
-            <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,231,183,0.8)]" />
-            Python backend / bots / AI systems
-          </div>
+      <div className="hero-sticky-viewport relative z-10">
+        <div className="hero-stage-layout site-container">
+          <Reveal variant="hero" className="hero-copy">
+            <div className="tag-pill tag-pill-signal mb-7 gap-2 bg-black/20">
+              <span className="dot-signal" />
+              {ui.hero.badge}
+            </div>
 
-          <HeroHeadline />
+            <HeroHeadline lines={ui.hero.headline} />
 
-          <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-zinc-300 sm:text-xl">
-            Архитектура, FastAPI, Telegram Bot API, платежи, базы данных,
-            очереди, AI/LLM, деплой и поддержка. 5 лет опыта, 30+ проектов
-            под ключ.
-          </p>
+            <p className="mt-7 max-w-2xl text-pretty text-lg leading-8 text-[var(--text-secondary)] sm:text-xl">
+              {ui.hero.description}
+            </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink
-              href={contacts.telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              icon={<MessageCircle size={18} />}
-            >
-              Обсудить проект
-            </ButtonLink>
-            <ButtonLink
-              href="#cases"
-              variant="secondary"
-              icon={<ArrowRight size={18} />}
-            >
-              Смотреть кейсы
-            </ButtonLink>
-          </div>
-
-          <div className="mt-10 grid gap-3 sm:grid-cols-3">
-            {heroMetrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.045] p-4 backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-emerald-300/35 hover:bg-white/[0.075]"
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink
+                href="#quick-lead"
+                icon={<MessageCircle size={18} />}
+                className="sm:min-w-48"
+                data-site-event="hero_primary_cta_click"
               >
-                <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/60 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-                <div className="text-2xl font-semibold text-white">
-                  {metric.value}
-                </div>
-                <div className="mt-1 text-sm leading-5 text-zinc-500">
-                  {metric.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-2">
-            {stack.slice(0, 12).map((item, index) => (
-              <span
-                key={item}
-                className="stack-chip rounded-full border border-white/10 bg-black/35 px-3 py-1.5 font-mono text-xs text-zinc-400 backdrop-blur"
-                style={{ animationDelay: `${index * 95}ms` }}
+                {ui.hero.primaryCta}
+              </ButtonLink>
+              <ButtonLink
+                href="#estimator"
+                variant="secondary"
+                icon={<Calculator size={18} />}
+                className="sm:min-w-44"
               >
-                {item}
-              </span>
-            ))}
-          </div>
-        </Reveal>
+                {ui.hero.secondaryCta}
+              </ButtonLink>
+            </div>
 
-        <Reveal
-          delay={0.12}
-          className="relative min-h-[560px] lg:min-h-[700px]"
-        >
-          <div className="absolute inset-0 rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_52%_48%,rgba(16,185,129,0.12),transparent_35%)] shadow-[0_0_120px_rgba(16,185,129,0.08)]" />
-          <LiveTelemetry />
-        </Reveal>
-      </div>
+            <div id="quick-lead" className="hero-quick-lead surface-tool">
+              <QuickLeadForm
+                compact
+                contacts={site.contacts}
+                copy={ui.quickLead}
+                source="hero"
+              />
+            </div>
+          </Reveal>
 
-      <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-3 px-4 pb-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-        <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-600">
-          Architecture / build / launch / support
+          <Reveal delay={0.18} variant="panel" className="hero-visual">
+            <ProductionCircuit items={circuitItems} />
+          </Reveal>
         </div>
-        <div className="flex flex-wrap gap-3 text-sm text-zinc-400">
-          <a
-            href={`mailto:${contacts.email}`}
-            className="inline-flex items-center gap-2 transition hover:text-white"
-          >
-            <Mail size={16} />
-            {contacts.email}
-          </a>
-          <a
-            href={contacts.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 transition hover:text-white"
-          >
-            <Code2 size={16} />
-            {contacts.github}
+
+        <div className="hero-trust-dock site-container">
+          <div className="hero-trust-bar" aria-label={ui.hero.bottomNote}>
+            {ui.hero.trustBar.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+
+          <a href="#cases" className="hero-next-proof">
+            <span>{ui.hero.bottomNote}</span>
+            <ArrowRight size={16} />
+            <span>{ui.cases.eyebrow}</span>
           </a>
         </div>
       </div>
     </section>
   );
+}
+
+function getHeroCircuitItems(
+  locale: Locale,
+  cases: SiteData["cases"],
+): CaseMosaicItem[] {
+  const bySlug = new Map(cases.map((item) => [item.slug, item]));
+
+  return heroCaseOrder
+    .map((slug) => {
+      const item = bySlug.get(slug);
+      if (!item) return null;
+
+      return {
+        accent: item.preview.accent,
+        label: item.preview.label,
+        slug: item.slug,
+        src: `/cases/${locale}/${item.slug}/${heroCaseFragments[slug]}.webp`,
+        title: item.title,
+      };
+    })
+    .filter((item): item is CaseMosaicItem => Boolean(item));
 }

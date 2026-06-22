@@ -1,152 +1,257 @@
-# Subscription Bot (vpn-bot)
+Ты видишь репозиторий моего сайта-портфолио. Нужно переработать структуру главной страницы и связанные компоненты под новую логику позиционирования и лидогенерации.
 
-Slug на сайте: `/cases/subscription-bot`
-Источник в vault: `Projects/Personal/vpn-bot/vpn-bot-telegram-bot-dlia-prodazhi-vpn-proxy.md`
+Цель: сайт должен продавать не только Python backend, а более широкий спектр услуг: Telegram-боты, Telegram Mini Apps, AI/ML-интеграции, backend, парсинг, автоматизация, web-сервисы, crypto/trading-инструменты. При этом не превращать сайт в хаотичный список “умею всё”, а упаковать услуги как понятную продуктовую линейку.
 
-> Публичное позиционирование — «бот продажи цифровых подписок с автовыдачей доступа». Слова «VPN-реселлер», «Marzban-панель», «3proxy», «обход блокировок» в публичные тексты не выносим.
+Сохрани текущий визуальный стиль сайта: тёмный tech-интерфейс, зелёные акценты, карточки, аккуратная сетка, терминальный/инженерный вайб, текущую атмосферу и качество UI. Не надо радикально менять дизайн, нужна именно переработка структуры, текстов и логики блоков.
 
----
+Новая структура главной страницы:
 
-## 1. Название
+1. Hero / первый экран
+   Заменить узкое позиционирование “Python backend под ключ” на более широкое:
+   “AI, backend и Telegram-разработка под ключ”
 
-**Основное (96 симв):**
-> Subscription Bot — продажа цифровых подписок через Telegram: автовыдача доступа, оплата фиатом и криптой
+   Подзаголовок:
+   “Собираю Telegram-ботов, Mini Apps, backend-системы, AI-модули, парсеры и интеграции — от MVP до рабочего продукта с админкой, платежами и аналитикой.”
 
-**Короткое (78 симв, для карточки на витрине):**
-> Subscription Bot — Telegram-бот подписок с 4 платёжными провайдерами и админкой
+   CTA-кнопки:
 
-## 2. Описание (~1460 симв)
+   * “Рассчитать проект”
+   * “Смотреть кейсы”
 
-Telegram-бот для подписочного бизнеса: автоматическая выдача доступа после оплаты, четыре платёжных провайдера в одном продукте и web-админка для операторов.
+   Python можно оставить ниже как часть стека, но не как главный продукт.
 
-**Проблема.** До бота заявки и выдача учётных данных велись вручную в чате. Клиенту приходилось ждать оператора, оператор путал тарифы и страны, платежи принимались через личную карту. Чем больше клиентов — тем сильнее ломалась схема.
+2. Блок “С какими задачами я помогаю”
+   Сделать 6 карточек направлений:
 
-**Решение.** Один async-сервис на aiohttp обслуживает три точки одновременно: webhook бота (aiogram 3), webhooks четырёх платёжных систем (Rapira, CryptoBot, ParityPay) и админ-панель на Jinja2. Покупка — FSM-сценарий: тариф → локация → провайдер оплаты → автоматическая выдача конфига через REST/SSH-интеграции. APScheduler следит за истечениями подписок, отправляет напоминания и крутит фоновые рассылки. Реферальная система с бонусом за регистрацию. In-memory кэш настроек и кнопок прогревается на старте, каждое обновление в админке инвалидирует кэш.
+   * Telegram-боты и Mini Apps
+   * AI / ML / нейросетевые модули
+   * Парсинг и автоматизация
+   * Web-сервисы и админ-панели
+   * Crypto / trading / blockchain-интеграции
+   * Backend API и базы данных
 
-**Результат.** Полностью автоматическая воронка от «выбрал тариф» до «получил доступ» без участия человека. Оператор работает только с edge-кейсами: видит платежи в разрезе провайдеров, продлевает подписки, делает таргетированные рассылки, включает/выключает платёжные системы налету. Тарифная сетка и список локаций редактируются без редеплоя — через каталог в админке.
+   В карточках писать не просто технологии, а бизнес-результат для клиента. Пример:
+   “Боты для заявок, магазинов, подписок, оплат, реферальных систем и личных кабинетов.”
 
-**Стек:** Python, aiogram 3, aiohttp, SQLAlchemy 2.0 async, PostgreSQL, APScheduler, Jinja2, Docker.
+3. Короткий trust-блок перед калькулятором
+   Добавить компактный блок доказательства экспертизы, не полноценные кейсы.
+   3–4 мини-карточки:
 
-## 2.1. Description (~1000 символов)
+   * Telegram Mini App: каталог, платежи, рефералка, админка
+   * AI-сервис: генерация структуры, тесты, обработка данных
+   * Crypto bot: мониторинг, сигналы, API бирж, Telegram alerts
+   * Backend-система: БД, роли, API, админ-панель
 
-Telegram-бот для продажи цифровых подписок с автоматической выдачей доступа после оплаты. Публично кейс подаётся нейтрально: подписочный продукт, платежи, админка и автоматизация операторской рутины.
+   Цель блока — перед калькулятором быстро показать, что я уже работал с такими типами задач.
 
-Один aiohttp-сервис обслуживает webhook бота, webhooks платёжных систем и Jinja2-админку. Покупка устроена как FSM-сценарий: тариф, локация, провайдер оплаты, счёт и выдача доступа через интеграции. APScheduler следит за сроками подписок, отправляет напоминания и запускает рассылки. В админке оператор управляет тарифами, платежами, пользователями, провайдерами и broadcast-сценариями.
+4. Главный блок: конфигуратор проекта / калькулятор заявки
+   Это центральный lead generation-блок страницы.
 
-Результат — автоматическая воронка от выбора тарифа до получения доступа, где человек нужен только для спорных случаев и поддержки.
+   Заголовок:
+   “Соберите конфигурацию проекта”
 
-## 3. Превью (обложка кейса)
+   Подзаголовок:
+   “Выберите тип решения, модули и сроки — сайт покажет ориентир по бюджету и сформирует заявку.”
 
-Split-image. Левая половина — мокап смартфона с Telegram-ботом (список тарифов + бейдж «Подписка активна до 24 июня»). Правая половина — ноутбук с админкой (таблица платежей с цветными бейджами статусов и фильтром по провайдеру). Между ними — ломаная FSM-стрелка и 4 мини-иконки платёжных провайдеров.
+   Логика:
+   Тип проекта > Сложность > Модули > Сроки > Контакты > Отправка заявки
 
-Размеры: hero 1600×900, карточка на витрине 800×600. Фон — в выбранной палитре, акцент на зелёном бейдже «paid».
+   Типы проекта:
 
-## 4. Скрины и видео (18 файлов)
+   * Telegram-бот
+   * Telegram Mini App
+   * AI-интеграция
+   * Парсер / автоматизация
+   * Web-сервис / админ-панель
+   * Crypto / trading bot
+   * Не уверен, хочу обсудить
 
-> Везде блюрить: IP/домены серверов, реальные ключи в `.env`, никнеймы клиентов, ID платежей, реальные конфиги. Заменять на `client_***`, `vps_***`, `pay_***`.
+   После выбора типа проекта показывать только релевантные опции, а не все сразу.
 
-### Telegram-бот
-- [ ] `bot-01-main-menu.png` — `/start`, главное меню.
-- [ ] `bot-02-tariffs.png` — список тарифов с ценой и сроком.
-- [ ] `bot-03-countries.png` — выбор локации (флаги + страны).
-- [ ] `bot-04-payment-providers.png` — 4 кнопки выбора провайдера оплаты.
-- [ ] `bot-05-invoice.png` — счёт с суммой, QR/кнопкой «Оплатить», таймером.
-- [ ] `bot-06-access-delivered.png` — «доступ выдан» с обезличенным форматом конфига.
-- [ ] `bot-07-my-subscription.png` — статус подписки, дата окончания, локация, «продлить».
+   Примеры модулей:
+   Для Telegram:
 
-### Админ-панель
-- [ ] `admin-01-login.png` — авторизация (без реальных кред).
-- [ ] `admin-02-users.png` — таблица пользователей, ФИО/ID заблюрены.
-- [ ] `admin-03-payments.png` — лента платежей с фильтром по провайдеру. **Главный «вау»-скрин.**
-- [ ] `admin-04-tariffs.png` — редактор тарифа (цена/срок/локация/тоглы провайдеров).
-- [ ] `admin-05-broadcast.png` — композер рассылки: текст + фильтр аудитории + preview.
-- [ ] `admin-06-settings.png` — тоглы платёжных провайдеров, настройка реф. бонуса.
+   * база данных
+   * админ-панель
+   * платежи
+   * Telegram Stars
+   * крипто-платежи
+   * реферальная система
+   * личный кабинет
+   * уведомления
+   * аналитика
+   * интеграция с внешним API
+   * деплой
 
-### Техника
-- [ ] `arch-diagram.svg` — 4 payment webhook → aiohttp → DB + интеграции + APScheduler. Excalidraw, 30 мин.
-- [ ] `code-fsm-purchase.png` — снипет FSM покупки через carbon.now.sh, 12–15 строк.
-- [ ] `code-aps-job.png` — снипет APScheduler-задачи на истечения подписок, ~10 строк.
+   Для AI:
 
-### Видео
-- [ ] `demo-bot-purchase.mp4` — 25–35 сек: главное меню → тариф → локация → провайдер → фейковый success → получение доступа. Test-режим.
-- [ ] `demo-admin-walkthrough.mp4` — 20–30 сек: Users → Payments → Broadcast → Settings. Без монтажа.
+   * OpenAI / Claude API
+   * RAG-база знаний
+   * обработка документов
+   * классификация текстов
+   * генерация контента
+   * AI-ассистент
+   * интеграция в существующий продукт
+   * админ-панель
+   * хранение истории / логов
 
-### Не снимать (экономия времени)
-- Marzban-панель и SSH-сессии с 3proxy — серая зона, не «твой» интерфейс.
-- Логи / Grafana — нет красивого мониторинга, потёмкинский дашборд не делаем.
-- Сценарий ошибки/рефанда — упоминается в тексте, отдельный скриншот не нужен.
+   Для парсинга:
 
----
+   * один сайт
+   * несколько сайтов
+   * авторизация
+   * капча / антибот-защита
+   * прокси
+   * регулярный запуск
+   * экспорт в Excel / CSV / Google Sheets
+   * база данных
+   * Telegram-уведомления
 
-# EN version
+   Для web/backend:
 
-> On the EN site the framing must stay neutral: this is a **digital subscription bot with automated access delivery**. Do not mention "VPN reselling", "Marzban", "3proxy" or anything proxy/circumvention-related on the public English page.
+   * frontend
+   * backend API
+   * авторизация
+   * роли пользователей
+   * база данных
+   * админ-панель
+   * dashboard / аналитика
+   * платежи
+   * внешние интеграции
 
-## 1. Title
+   Для crypto:
 
-**Primary (98 chars):**
-> Subscription Bot — Telegram bot for selling digital subscriptions: automated access delivery, fiat and crypto
+   * Bybit / Binance / OKX API
+   * Solana / Ethereum DEX
+   * мониторинг цен
+   * торговые сигналы
+   * уведомления в Telegram
+   * crypto-платежи
+   * логирование сделок
+   * риск-ограничения
 
-**Short (76 chars, for the grid card):**
-> Subscription Bot — Telegram subscription bot with 4 payment gateways and admin
+   Калькулятор должен показывать не точную цену, а вилку:
+   “Предварительная оценка: 80 000 – 140 000 ₽”
+   “Срок: 10–18 рабочих дней”
 
-## 2. Description (~1450 chars)
+   Добавить пояснение:
+   “Калькулятор показывает ориентир. Финальная стоимость фиксируется после короткого обсуждения задачи, интеграций, дизайна и сроков.”
 
-A Telegram bot for subscription businesses: automated access delivery on payment, four payment gateways unified in one product, and a web admin panel for operators.
+   Формула может быть простой:
+   базовая стоимость типа проекта + стоимость выбранных модулей + коэффициент сложности + коэффициент срочности.
 
-**Problem.** Before the bot, orders and access delivery were handled manually in a Telegram chat. Customers had to wait for an operator, the operator would mix up plans and locations, and payments were collected through a personal card. The more customers came in, the worse the workflow scaled.
+   Пользователю формулу не показывать.
 
-**Solution.** A single async aiohttp service serves three surfaces at once: the bot webhook (aiogram 3), webhooks for four payment systems (Rapira, CryptoBot, ParityPay), and a Jinja2 admin panel. Purchase is an FSM flow: plan → location → payment provider → automated access delivery through REST/SSH integrations. APScheduler tracks subscription expirations, sends renewal reminders and runs background broadcasts. Referral system with a signup bonus. An in-memory cache of settings and buttons is warmed at startup and invalidated on every admin update.
+   После расчёта должна быть форма заявки:
 
-**Result.** A fully automated funnel from "picked a plan" to "received access" with no human in the loop. The operator only handles edge cases: sees payments grouped by provider, extends subscriptions, runs targeted broadcasts, toggles payment systems on the fly. Plans and locations are edited in the admin catalog without a redeploy.
+   * имя
+   * Telegram
+   * email, необязательно
+   * краткое описание задачи
+   * выбранная конфигурация
+   * рассчитанная бюджетная вилка
+   * срок
+   * ссылка на ТЗ / файл, если в проекте уже есть такой функционал
 
-**Stack:** Python, aiogram 3, aiohttp, SQLAlchemy 2.0 async, PostgreSQL, APScheduler, Jinja2, Docker.
+   После отправки заявка должна отправляться мне удобным способом. Если в проекте уже есть backend/API/интеграция с Telegram — используй существующий подход. Если нет — реализуй аккуратный frontend state и подготовь API endpoint/заглушку так, чтобы потом легко подключить отправку в Telegram.
 
-## 2.1. Description (~1000 chars)
+   Формат заявки, которую я должен получать:
+   “Новая заявка с сайта
 
-A Telegram bot for selling digital subscriptions with automated access delivery after payment. The public framing stays neutral: subscription product, payments, admin panel and operator workflow automation.
+   Категория: Telegram Mini App
+   Сложность: бизнес-продукт
+   Опции:
 
-One aiohttp service handles the bot webhook, payment-system webhooks and a Jinja2 admin panel. Purchase is an FSM flow: plan, location, payment provider, invoice and access delivery through integrations. APScheduler tracks expirations, sends renewal reminders and runs broadcasts. In the admin panel, operators manage plans, payments, users, providers and broadcast scenarios.
+   * база данных
+   * админ-панель
+   * платежи
+   * реферальная система
+   * аналитика
 
-The result is an automated funnel from plan selection to access delivery, where a human is only needed for edge cases and support.
+   Оценка: 120 000 – 220 000 ₽
+   Срок: 15–25 рабочих дней
 
-## 3. Cover preview
+   Контакт: @username
+   Комментарий: Нужно сделать мини-приложение для магазина одежды.”
 
-Split image. Left half — a phone mockup with the Telegram bot open (list of plans + a "Subscription active until June 24" badge). Right half — a laptop with the admin panel (payments table with colored status badges and a provider filter). Between them — a kinked FSM arrow and four mini payment-provider icons.
+   Визуально калькулятор сделать в стиле текущего сайта: слева шаги и выборы, справа live summary / смета / сроки / выбранные модули. Выбранные опции показывать как chips/tags.
 
-Sizes: hero 1600×900, grid card 800×600. Background in the chosen site palette, accent on the green "paid" badge.
+5. Блок “Как проходит работа”
+   Перестроить процесс под новую воронку:
 
-## 4. Screenshots and videos (18 files)
+   1. Вы отправляете конфигурацию
+   2. Я уточняю детали
+   3. Фиксируем MVP и границы работ
+   4. Я даю финальную смету и сроки
+   5. Разработка, тестирование, запуск
+   6. Поддержка после релиза
 
-> Blur everywhere: server IPs/domains, real `.env` keys, customer usernames, payment IDs, real access configs. Replace with `client_***`, `vps_***`, `pay_***`.
+   Блок должен снижать тревожность клиента и объяснять, что происходит после заявки.
 
-### Telegram bot
-- [ ] `bot-01-main-menu.png` — `/start`, main menu.
-- [ ] `bot-02-tariffs.png` — plans list with price and duration.
-- [ ] `bot-03-countries.png` — location picker (flags + countries).
-- [ ] `bot-04-payment-providers.png` — four payment provider buttons.
-- [ ] `bot-05-invoice.png` — invoice with amount, QR/Pay button, countdown.
-- [ ] `bot-06-access-delivered.png` — "access delivered" message with an anonymized config shape.
-- [ ] `bot-07-my-subscription.png` — subscription status, expiry date, location, "extend" button.
+6. Блок реализованных кейсов
+   Оставить ниже процесса. Кейсы должны работать как доказательство, а не как первый продающий блок.
 
-### Admin panel
-- [ ] `admin-01-login.png` — auth screen (no real credentials).
-- [ ] `admin-02-users.png` — users table, names/IDs blurred.
-- [ ] `admin-03-payments.png` — payments feed with provider filter. **Hero shot.**
-- [ ] `admin-04-tariffs.png` — plan editor (price/duration/location/provider toggles).
-- [ ] `admin-05-broadcast.png` — broadcast composer: copy + audience filter + preview.
-- [ ] `admin-06-settings.png` — payment-provider toggles, referral bonus setup.
+   Если структура кейсов уже есть — не ломать. При необходимости обновить заголовок:
+   “Кейсы, которые показывают подход к разработке”
 
-### Engineering
-- [ ] `arch-diagram.svg` — 4 payment webhooks → aiohttp → DB + integrations + APScheduler. Excalidraw, 30 min.
-- [ ] `code-fsm-purchase.png` — purchase FSM snippet via carbon.now.sh, 12–15 lines.
-- [ ] `code-aps-job.png` — APScheduler job for expirations, ~10 lines.
+   В карточках желательно акцентировать тип результата: бот, AI-сервис, backend, crypto-интеграция, Mini App.
 
-### Video
-- [ ] `demo-bot-purchase.mp4` — 25–35 sec: main menu → plan → location → provider → mock success → access delivered. Test mode.
-- [ ] `demo-admin-walkthrough.mp4` — 20–30 sec: Users → Payments → Broadcast → Settings. No edits.
+7. Блок с бюджетными ориентирами вместо классических тарифов
+   Не делать большие тарифы “Старт / Бизнес / Премиум”, если они конфликтуют с калькулятором.
 
-### Do NOT shoot (time-saver)
-- Marzban panel and 3proxy SSH sessions — grey zone, not "your" UI.
-- Logs / Grafana — no nice monitoring set up, no Potemkin dashboards.
-- Failure/refund flow — covered in the copy, separate screenshot adds nothing.
+   Сделать компактный блок:
+   “Ориентиры по бюджету”
+
+   3 карточки:
+
+   * Небольшой бот / скрипт
+     от 15 000 ₽
+     Простая автоматизация, уведомления, базовая логика.
+
+   * Бизнес-бот / парсер / backend-модуль
+     от 40 000 ₽
+     База данных, роли, интеграции, API, регулярные задачи.
+
+   * Mini App / AI-сервис / система под ключ
+     от 100 000 ₽
+     Frontend, backend, админка, платежи, аналитика, AI-модули.
+
+   Добавить дисклеймер:
+   “Финальная стоимость зависит от сценариев, дизайна, интеграций, платежей, объёма данных и сроков.”
+
+   Этот блок должен быть компактным и не конкурировать с калькулятором.
+
+8. FAQ
+   Обновить вопросы под новую структуру:
+
+   * Можно ли прийти без готового ТЗ?
+   * Почему цена в калькуляторе предварительная?
+   * Можно ли начать с MVP?
+   * Делаете ли вы Telegram Mini Apps?
+   * Можно ли подключить AI / нейросети к существующему проекту?
+   * Работаете ли вы с платежами, Telegram Stars и криптой?
+   * Можно ли доработать уже существующий проект?
+   * Что будет после отправки заявки?
+
+9. Финальный CTA
+   Заголовок:
+   “Опишите задачу — я вернусь с архитектурой, сроками и вилкой бюджета.”
+
+   Кнопки:
+
+   * “Рассчитать проект”
+   * “Написать в Telegram”
+
+   Финальный CTA должен вести к конфигуратору или открывать форму заявки.
+
+Технические требования:
+
+* Сначала изучи текущую структуру проекта, компоненты, стили и routing.
+* Не ломай существующую визуальную систему.
+* Переиспользуй текущие компоненты, если они уже есть.
+* Сделай код поддерживаемым: данные для карточек, опций калькулятора, FAQ и бюджетных ориентиров лучше вынести в отдельные массивы/конфиги.
+* Калькулятор должен быть адаптивным: desktop — две колонки, mobile — пошагово в одну колонку.
+* Состояние калькулятора должно быть понятным и расширяемым.
+* Не добавляй лишние зависимости без необходимости.
+* Проверь сборку, lint/typecheck, если в проекте есть соответствующие команды.
+* После изменений кратко опиши, какие файлы изменил и как проверить результат локально.

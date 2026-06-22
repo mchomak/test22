@@ -1,4 +1,19 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-portfolio}
+      POSTGRES_USER: ${POSTGRES_USER:-portfolio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-portfolio} -d ${POSTGRES_DB:-portfolio}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   portfolio:
     build:
       context: .
@@ -8,10 +23,27 @@ services:
         DEPLOYMENT_VERSION: ${DEPLOYMENT_VERSION:-local}
     image: test22-portfolio:${DEPLOYMENT_VERSION:-local}
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       NODE_ENV: production
       HOSTNAME: 0.0.0.0
       PORT: 3000
       NEXT_TELEMETRY_DISABLED: "1"
+      DATABASE_URL: postgres://${POSTGRES_USER:-portfolio}:${POSTGRES_PASSWORD:-change-this-password}@postgres:5432/${POSTGRES_DB:-portfolio}
+      DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-5}
+      DATABASE_SSL: "false"
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      TELEGRAM_PROXY_URL: ${TELEGRAM_PROXY_URL:-}
+      TELEGRAM_REQUEST_TIMEOUT_MS: ${TELEGRAM_REQUEST_TIMEOUT_MS:-15000}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-}
+      ANALYTICS_SALT: ${ANALYTICS_SALT:-}
     ports:
       - "${APP_PORT:-3000}:3000"
+
+volumes:
+  postgres_data:

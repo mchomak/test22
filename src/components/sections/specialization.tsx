@@ -1,77 +1,86 @@
-import { Bot, BrainCircuit, DatabaseZap } from "lucide-react";
-import { specializations } from "@/data/site";
+import {
+  Bot,
+  BrainCircuit,
+  DatabaseZap,
+  Globe2,
+} from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { SectionHeading } from "@/components/ui/section-heading";
+import type { SiteData } from "@/data/site";
 
-const icons = [Bot, BrainCircuit, DatabaseZap];
+const icons = [Bot, BrainCircuit, DatabaseZap, Globe2];
 
-export function Specialization() {
+export function Specialization({ site }: { site: SiteData }) {
+  const { heroMetrics, specializations, ui } = site;
+
   return (
-    <section id="specialization" className="section-shell bg-[#090a0a]">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Специализация"
-          title="Не набор скриптов, а продуктовая backend-система с понятными границами"
-          description="Рамиль подключается там, где у проекта уже есть бизнес-логика, операции, платежи, API и ответственность за стабильный запуск."
-        />
+    <section id="specialization" className="section-shell section-soft">
+      <div className="site-container py-20">
+        <div className="specialization-story">
+          <Reveal>
+            <aside className="specialization-sticky">
+              <p className="eyebrow">{ui.specialization.eyebrow}</p>
+              <h2 className="section-title mt-4">{ui.specialization.title}</h2>
+              <p className="section-copy mt-5">
+                {ui.specialization.description}
+              </p>
 
-        <div className="grid gap-5 lg:grid-cols-3">
-          {specializations.map((item, index) => {
-            const Icon = icons[index];
+              <div className="specialization-metrics">
+                {heroMetrics.map((metric) => (
+                  <div key={metric.label} className="specialization-metric">
+                    <span>{metric.value}</span>
+                    <small>{metric.label}</small>
+                  </div>
+                ))}
+              </div>
+            </aside>
+          </Reveal>
 
-            return (
-              <Reveal key={item.title} delay={index * 0.08}>
-                <article className="group h-full rounded-3xl border border-white/10 bg-[#0d1110]/70 p-6 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-emerald-300/35 hover:bg-[#101715]/78">
-                  <div className="mb-6 flex items-start justify-between gap-4">
-                    <div className="grid h-12 w-12 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200 transition duration-300 group-hover:border-emerald-200/60">
+          <div className="specialization-lanes">
+            {specializations.map((item, index) => {
+              const Icon = icons[index] ?? Globe2;
+              const iconTone =
+                index % 3 === 1
+                  ? "icon-tile-logic"
+                  : index % 3 === 2
+                    ? "icon-tile-warm"
+                    : "";
+
+              return (
+                <Reveal key={item.title} delay={index * 0.06}>
+                  <article className="specialization-lane">
+                    <div className={`icon-tile specialization-lane-icon ${iconTone}`}>
                       <Icon size={24} />
                     </div>
-                    <span className="rounded-full border border-white/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                      direction 0{index + 1}
-                    </span>
-                  </div>
 
-                  <h3 className="text-2xl font-semibold leading-tight text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 text-sm leading-6 text-zinc-400">
-                    <span className="text-zinc-200">Кому подходит: </span>
-                    {item.audience}
-                  </p>
+                    <div className="specialization-lane-main">
+                      <div className="specialization-lane-head">
+                        <span className="number-pill">
+                          {ui.specialization.taskLabel} 0{index + 1}
+                        </span>
+                        <h3>{item.title}</h3>
+                      </div>
 
-                  <div className="mt-6 space-y-3">
-                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                      Что входит
-                    </p>
-                    <ul className="space-y-2">
-                      {item.includes.map((point) => (
-                        <li
-                          key={point}
-                          className="flex gap-3 text-sm leading-6 text-zinc-300"
-                        >
-                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                      <p className="specialization-audience">
+                        <span>{ui.specialization.audienceLabel} </span>
+                        {item.audience}
+                      </p>
 
-                  <div className="mt-6 border-t border-white/10 pt-5">
-                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                      Технологии / интеграции
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-zinc-300">
-                      {item.tech}
-                    </p>
-                  </div>
+                      <div className="specialization-includes">
+                        {item.includes.slice(0, 2).map((point) => (
+                          <span key={point}>{point}</span>
+                        ))}
+                      </div>
+                    </div>
 
-                  <p className="mt-5 text-sm leading-6 text-emerald-100/85">
-                    {item.result}
-                  </p>
-                </article>
-              </Reveal>
-            );
-          })}
+                    <div className="specialization-lane-result">
+                      <p>{item.result}</p>
+                      <small>{item.tech}</small>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

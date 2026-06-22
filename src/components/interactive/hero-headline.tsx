@@ -1,25 +1,62 @@
-export function HeroHeadline() {
+"use client";
+
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import {
+  motionDuration,
+  motionEasing,
+  motionStagger,
+} from "@/lib/motion";
+import { useIsMobile } from "@/lib/use-is-mobile";
+
+export function HeroHeadline({ lines }: { lines: string[] }) {
+  const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  const isStatic = reduceMotion || isMobile !== false;
+  const { scrollY } = useScroll();
+  const y = useSpring(useTransform(scrollY, [0, 440], [0, -72]), {
+    damping: 28,
+    mass: 0.35,
+    stiffness: 110,
+  });
+  const scale = useSpring(useTransform(scrollY, [0, 440], [1, 0.66]), {
+    damping: 28,
+    mass: 0.35,
+    stiffness: 110,
+  });
+
   return (
-    <h1 className="max-w-5xl text-balance text-5xl font-semibold leading-[0.96] text-white sm:text-6xl md:text-7xl xl:text-8xl">
-      <span className="block overflow-hidden pb-1">
-        <span className="block">
-          Python backend
+    <motion.h1
+      className="hero-headline break-words text-balance font-semibold text-[var(--text-primary)]"
+      style={isStatic ? undefined : { scale, y }}
+    >
+      {lines.map((line, index) => (
+        <span key={line} className="block overflow-hidden pb-1.5">
+          <motion.span
+            className={[
+              "block",
+              index === 1 ? "text-[var(--text-secondary)]" : "",
+              index === 2 ? "accent-warm" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            initial={false}
+            animate={{ y: 0, rotateX: 0, opacity: 1 }}
+            transition={{
+              duration: reduceMotion ? motionDuration.fast : motionDuration.hero,
+              ease: motionEasing.expressive,
+              delay: reduceMotion ? 0 : 0.1 + index * motionStagger.base,
+            }}
+          >
+            {line}
+          </motion.span>
         </span>
-      </span>
-      <span className="block overflow-hidden pb-2">
-        <span className="block text-zinc-300">
-          под ключ
-        </span>
-      </span>
-      <span
-        className="relative mt-4 block w-fit overflow-hidden text-2xl leading-tight text-emerald-200 sm:text-3xl md:text-4xl"
-      >
-        для ботов, AI и платежей
-        <span
-          aria-hidden
-          className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-70"
-        />
-      </span>
-    </h1>
+      ))}
+    </motion.h1>
   );
 }

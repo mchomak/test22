@@ -1,138 +1,113 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import * as THREE from "three";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useIsMobile } from "@/lib/use-is-mobile";
 
-const stops = [0, 0.16, 0.32, 0.5, 0.68, 0.84, 1];
-const xStops = [57, 33, 18, 48, 74, 62, 35];
-const yStops = [47, 30, 45, 62, 50, 75, 82];
-const scaleStops = [1, 0.92, 0.88, 1.02, 1.08, 0.94, 1.02];
-const opacityStops = [0.12, 0.1, 0.085, 0.09, 0.1, 0.085, 0.06];
+export type ScrollOrbAnimation =
+  | "hero"
+  | "deep-pull"
+  | "soft-bulge"
+  | "ripple"
+  | "twist"
+  | "calm";
+
+export type ScrollOrbConfig = {
+  animation: ScrollOrbAnimation;
+  meshScale: number;
+  lineOpacity: number;
+  inwardStrength: number;
+  outwardStrength: number;
+  dentSize: number;
+  dentSharpness: number;
+  waveSpeed: number;
+  rotationSpeed: number;
+  wobble: number;
+  breathing: number;
+  twist: number;
+  cameraDistance: number;
+  preserveDrawingBuffer: boolean;
+};
+
+export const defaultScrollOrbConfig: ScrollOrbConfig = {
+  animation: "calm",
+  meshScale: 1,
+  lineOpacity: 0.08,
+  inwardStrength: 0,
+  outwardStrength: 0,
+  dentSize: 0,
+  dentSharpness: 1,
+  waveSpeed: 0,
+  rotationSpeed: 0,
+  wobble: 0,
+  breathing: 0,
+  twist: 0,
+  cameraDistance: 0,
+  preserveDrawingBuffer: false,
+};
 
 export function ScrollOrb() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const mountRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
-  useEffect(() => {
-    const root = rootRef.current;
-    const mount = mountRef.current;
-    if (!root || !mount) return;
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.08, 0.46, 0.82, 1],
+    [0.2, 0.13, 0.08, 0.12, 0.05],
+  );
+  const shiftA = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.64, 1],
+    ["-6vw", "8vw", "-2vw", "5vw"],
+  );
+  const shiftB = useTransform(
+    scrollYProgress,
+    [0, 0.36, 0.72, 1],
+    ["8vw", "-4vw", "6vw", "-8vw"],
+  );
+  const yA = useTransform(
+    scrollYProgress,
+    [0, 0.28, 0.58, 1],
+    ["19vh", "42vh", "58vh", "76vh"],
+  );
+  const yB = useTransform(
+    scrollYProgress,
+    [0, 0.28, 0.58, 1],
+    ["72vh", "56vh", "35vh", "22vh"],
+  );
 
-    let width = mount.clientWidth;
-    let height = mount.clientHeight;
-    let frameId = 0;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 20);
-    camera.position.set(0, 0, 4.2);
-
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: false,
-      powerPreference: "low-power",
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.15));
-    renderer.setSize(width, height);
-    renderer.domElement.className = "h-full w-full";
-    mount.appendChild(renderer.domElement);
-
-    const geometry = new THREE.IcosahedronGeometry(0.34, 1);
-    const material = new THREE.MeshBasicMaterial({
-      color: "#a7f3d0",
-      wireframe: true,
-      transparent: true,
-      opacity: 0.62,
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.setScalar(2.45);
-    mesh.rotation.set(0.18, -0.36, 0.08);
-    scene.add(mesh);
-
-    const resize = () => {
-      width = mount.clientWidth;
-      height = mount.clientHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-      update();
-    };
-
-    const observer = new ResizeObserver(resize);
-    observer.observe(mount);
-
-    const update = () => {
-      frameId = 0;
-      const progress = getScrollProgress();
-      const x = interpolate(stops, xStops, progress);
-      const y = interpolate(stops, yStops, progress);
-      const scale = interpolate(stops, scaleStops, progress);
-      const opacity = interpolate(stops, opacityStops, progress);
-      root.style.opacity = String(opacity);
-      root.style.transform = `translate3d(calc(${x}vw - 50%), calc(${y}vh - 50%), 0) scale(${scale})`;
-
-      if (!reduceMotion) {
-        mesh.rotation.y = -0.36 + progress * Math.PI * 1.4;
-        mesh.rotation.x = 0.18 + Math.sin(progress * Math.PI * 2) * 0.08;
-        mesh.rotation.z = 0.08 + progress * Math.PI * 0.5;
-      }
-
-      renderer.render(scene, camera);
-    };
-
-    const requestUpdate = () => {
-      if (!frameId && document.visibilityState === "visible") {
-        frameId = window.requestAnimationFrame(update);
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") requestUpdate();
-    };
-
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    update();
-
-    return () => {
-      if (frameId) window.cancelAnimationFrame(frameId);
-      observer.disconnect();
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      renderer.dispose();
-      geometry.dispose();
-      material.dispose();
-      mount.removeChild(renderer.domElement);
-    };
-  }, []);
+  if (reduceMotion || isMobile !== false) return null;
 
   return (
-    <div
-      ref={rootRef}
+    <motion.div
       aria-hidden
-      className="pointer-events-none fixed z-[1] h-[352px] w-[352px] opacity-0 transition-transform duration-500 ease-out md:h-[512px] md:w-[512px]"
+      className="scroll-field pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden md:block"
+      style={{ opacity }}
     >
-      <div ref={mountRef} className="h-full w-full" />
-    </div>
+      <motion.span
+        className="scroll-field-line scroll-field-line-a"
+        style={{ x: shiftA, y: yA }}
+      />
+      <motion.span
+        className="scroll-field-line scroll-field-line-b"
+        style={{ x: shiftB, y: yB }}
+      />
+      <span className="scroll-field-plane" />
+    </motion.div>
   );
 }
 
-function getScrollProgress() {
-  const documentElement = document.documentElement;
-  const max = Math.max(documentElement.scrollHeight - window.innerHeight, 1);
-  return Math.min(Math.max(window.scrollY / max, 0), 1);
-}
-
-function interpolate(input: number[], output: number[], value: number) {
-  for (let index = 1; index < input.length; index += 1) {
-    if (value <= input[index]) {
-      const start = input[index - 1];
-      const end = input[index];
-      const progress = (value - start) / (end - start);
-      return output[index - 1] + (output[index] - output[index - 1]) * progress;
-    }
-  }
-  return output[output.length - 1];
+export function ScrollOrbCanvas({
+  className = "h-full w-full",
+}: {
+  className?: string;
+  config?: Partial<ScrollOrbConfig>;
+  reduceMotion?: boolean;
+}) {
+  return <div aria-hidden className={className} />;
 }

@@ -1,311 +1,63 @@
-export const contacts = {
-  email: "kaneevramil7@gmail.com",
-  telegram: "@McHomak15",
-  telegramUrl: "https://t.me/McHomak15",
-  github: "github.com/mchomak",
-  githubUrl: "https://github.com/mchomak",
+import { enSiteData } from "@/data/site.en";
+import {
+  buildEstimatorHref,
+  ruSiteData,
+  type CaseStudy,
+  type ProjectComplexityId,
+  type ProjectEstimatorPreset,
+  type ProjectModule,
+  type ProjectTypeId,
+} from "@/data/site.ru";
+
+export {
+  buildEstimatorHref,
+  type CaseStudy,
+  type ProjectComplexityId,
+  type ProjectEstimatorPreset,
+  type ProjectModule,
+  type ProjectTypeId,
 };
 
-export const navItems = [
-  { label: "Специализация", href: "#specialization" },
-  { label: "Кейсы", href: "#cases" },
-  { label: "Пакеты", href: "#packages" },
-  { label: "Процесс", href: "#process" },
-  { label: "FAQ", href: "#faq" },
-];
+export const locales = ["ru", "en"] as const;
 
-export const heroMetrics = [
-  { value: "5 лет", label: "production-опыта" },
-  { value: "30+", label: "проектов под ключ" },
-  { value: "4 зоны", label: "Telegram / AI / Payments / Crypto" },
-];
+export type Locale = (typeof locales)[number];
+export type SiteData = typeof ruSiteData;
 
-export const stack = [
-  "Python 3.11+",
-  "FastAPI",
-  "aiogram 3",
-  "SQLAlchemy 2.0 async",
-  "PostgreSQL",
-  "Redis",
-  "Docker",
-  "OpenAI SDK",
-  "Anthropic SDK",
-  "PyTorch",
-  "Next.js",
-  "React",
-  "Telegram Bot API",
-  "YooKassa",
-  "CryptoBot",
-  "Telegram Stars",
-  "Rapira",
-  "ParityPay",
-];
+export const defaultLocale: Locale = "en";
+export const russianLocale: Locale = "ru";
+export const localeCookieName = "site-locale";
 
-export const specializations = [
-  {
-    title: "Telegram-боты с оплатой",
-    audience: "Сервисам, экспертам, школам, обменникам и продуктам, где бот должен не просто отвечать, а проводить пользователя до оплаты или заявки.",
-    includes: [
-      "сценарии пользователей и состояния",
-      "личный кабинет, роли, уведомления",
-      "оплаты через YooKassa, CryptoBot, Stars и кастомные провайдеры",
-      "админка, выгрузки, webhook-интеграции",
-    ],
-    tech: "aiogram 3, PostgreSQL, Redis, Telegram Bot API, Docker",
-    result: "Бот работает как самостоятельный продукт: принимает заявки, платежи, данные и не требует ручного контроля каждого шага.",
-  },
-  {
-    title: "AI/LLM-интеграции",
-    audience: "Командам, которым нужен AI не как демо-чат, а как часть процесса: поиск по базе знаний, классификация, ассистенты, обработка документов.",
-    includes: [
-      "RAG-пайплайны и индексация документов",
-      "подключение GPT/Claude и ограничение ответов",
-      "история диалогов, роли, лимиты, модерация",
-      "интеграция с CRM, админкой или Telegram",
-    ],
-    tech: "OpenAI SDK, Anthropic SDK, PyTorch, FastAPI, PostgreSQL",
-    result: "AI отвечает по вашим данным, сохраняет контекст и встраивается в рабочий процесс без ручных копипаст.",
-  },
-  {
-    title: "Backend и автоматизация",
-    audience: "Проектам, где нужно связать API, платежи, парсеры, CRM, каталоги, очереди, мониторинг и деплой в единую устойчивую систему.",
-    includes: [
-      "FastAPI-сервисы и асинхронная архитектура",
-      "базы данных, очереди, кэш, фоновые задачи",
-      "интеграции с внешними API и платежами",
-      "Docker-деплой, логирование, мониторинг",
-    ],
-    tech: "FastAPI, SQLAlchemy 2.0 async, PostgreSQL, Redis, Docker",
-    result: "Система выдерживает реальные операции: хранит данные, обрабатывает события, восстанавливается после ошибок и понятна в поддержке.",
-  },
-];
+export const siteDataByLocale = {
+  ru: ruSiteData,
+  en: enSiteData,
+} satisfies Record<Locale, SiteData>;
 
-export const cases = [
-  {
-    title: "ByBit Trading Bot — спотовая торговля 24/7",
-    type: "Crypto trading automation",
-    problem: "Ручная торговля не успевала за 300+ спотовыми парами: нужно одновременно ловить всплески объёма, ускорение цены и контролировать риск по открытым позициям.",
-    solution: "Собран трёхслойный пайплайн: Bybit WebSocket/REST-сканер, стратегия Volume Spike + Price Acceleration и риск-менеджер со стопами, тейк-профитом и Telegram-отчётами.",
-    result: "Цикл «сканирование → сигнал → сделка → выход» работает автономно 24/7, а dry-run режим позволяет проверять стратегию на реальных данных без риска для боевого счёта.",
-    stack: ["Python asyncio", "Bybit API", "CoinPaprika", "PostgreSQL", "Telegram Bot API", "Docker Compose"],
-    metrics: ["300+ монет в мониторинге", "автоуправление позициями", "dry-run перед production"],
-  },
-  {
-    title: "EPS Bot — ML-торговля на Solana DEX",
-    type: "DEX trading / ML pipeline",
-    problem: "Для проверки стратегий на Solana DEX нужно было вручную собирать данные по пулам, готовить датасеты, запускать бэктесты и отдельно исполнять сделки в кошельке.",
-    solution: "Собран pipeline: Raydium + GeckoTerminal данные, PostgreSQL-хранилище, ML-модуль на PyTorch/scikit-learn и слой tx_tools для формирования Solana-транзакций.",
-    result: "Проект закрыл полный цикл «данные → модель → сигнал → сделка → отчёт» и стал технической базой для последующих crypto/automation решений.",
-    stack: ["Python 3.12", "PyTorch", "scikit-learn", "Raydium API", "Solana RPC", "PostgreSQL", "Docker Compose"],
-    metrics: ["LSTM / GRU / CNN / Transformer", "on-chain исполнение", "ежедневный PnL в Telegram"],
-  },
-  {
-    title: "SkillUp — AI-платформа обучения",
-    type: "AI education product",
-    problem: "Обычные AI-ответы дают хаотичные стены текста, а готовые roadmap-сайты не учитывают текущий уровень и цель конкретного пользователя.",
-    solution: "Собран full-stack продукт: Next.js frontend, FastAPI backend, Celery + Redis для AI-задач и Anthropic API для онбординга, плана, объяснений и квизов.",
-    result: "Пользователь за несколько минут получает персональный 4-уровневый roadmap, где прогресс отображается как интерактивное дерево с активными и закрытыми узлами.",
-    stack: ["Next.js", "TypeScript", "FastAPI", "Celery", "Redis", "PostgreSQL", "Anthropic API"],
-    metrics: ["4 уровня плана", "AI-онбординг и квизы", "Docker + Nginx deployment"],
-  },
-  {
-    title: "SapsanEx — Telegram Mini App обменника",
-    type: "Telegram Mini App / exchanger",
-    problem: "Пользователь приходил из Telegram, уходил на сайт, создавал заявку и проверял статус на отдельном экране — мобильная воронка теряла людей на каждом переходе.",
-    solution: "Собран Docker Compose из React Mini App, FastAPI-шлюза, aiogram-бота и PostgreSQL. Авторизация идёт через Telegram initData, а внешний API обменника обёрнут в типизированный слой.",
-    result: "Расчёт курса, создание заявки, polling статуса, автоотмена по таймауту и уведомления о смене статуса остались внутри Telegram без отдельного логина.",
-    stack: ["React", "TypeScript", "FastAPI", "aiogram 3", "SQLAlchemy async", "PostgreSQL", "Docker Compose"],
-    metrics: ["Telegram WebApp auth", "typed exchanger gateway", "ru/en i18n"],
-  },
-  {
-    title: "Seedream Bot — AI-примерка одежды в Telegram",
-    type: "AI bot / e-commerce",
-    problem: "Небольшим магазинам дорого снимать каждую позицию на модели, а внешние AI-сервисы требуют ручной работы и вытаскивают продавца из Telegram.",
-    solution: "aiogram-бот принимает фото товара, ведёт пользователя через FSM-параметры генерации, вызывает Seedream API, принимает оплату через Telegram Stars или YooKassa и отдаёт результат в чат.",
-    result: "Получился законченный продукт для e-commerce: бот, генерация, две платёжные системы и FastAPI-админка для пользователей, балансов, тарифов и транзакций.",
-    stack: ["Python", "aiogram 3", "FastAPI", "Seedream API", "Telegram Stars", "YooKassa", "PostgreSQL"],
-    metrics: ["две платёжные дорожки", "админка операторов", "RU/EN локализация"],
-  },
-  {
-    title: "Subscription Bot — цифровые подписки с автовыдачей",
-    type: "Subscription automation",
-    problem: "Заявки, платежи и выдача доступа велись вручную в чате: клиенты ждали оператора, тарифы путались, а рост аудитории ломал операционную схему.",
-    solution: "Один aiohttp-сервис обслуживает Telegram-бота, webhooks платёжных провайдеров и Jinja2-админку. Покупка построена как FSM: тариф, локация, оплата, автовыдача доступа.",
-    result: "Воронка от выбора тарифа до получения доступа работает без человека, а оператор управляет тарифами, платежами, рассылками и спорными случаями из админки.",
-    stack: ["Python", "aiogram 3", "aiohttp", "SQLAlchemy 2.0 async", "PostgreSQL", "APScheduler", "Docker"],
-    metrics: ["4 платёжных провайдера", "автовыдача доступа", "рассылки и напоминания"],
-  },
-  {
-    title: "AI Reply Assistant — Telegram-бот с 7 AI-сценариями",
-    type: "AI Telegram bot",
-    problem: "Пользователю нужен был быстрый помощник внутри Telegram: без ручного копипаста в отдельные AI-сервисы и без зависания из-за нестабильного доступа к модели.",
-    solution: "Собран aiogram + aiohttp webhook-сервис с 7 AI-сценариями, prompt-builder/response-parser модулями, YooKassa-платежами, реферальной логикой и пулом HTTP-прокси для OpenAI.",
-    result: "MVP с оплатой готов к production: бот выбирает рабочий прокси, принимает оплату с фискальным чеком и возвращает варианты ответа в одном Telegram-окне.",
-    stack: ["Python", "aiogram 3", "aiohttp", "OpenAI GPT-4o", "YooKassa", "PostgreSQL", "Docker"],
-    metrics: ["7 AI-сценариев", "proxy healthcheck + cooldown", "trial и referral flow"],
-  },
-  {
-    title: "gym_progres — трекер тренировок с auto-save",
-    type: "Niche web app",
-    problem: "Заметки и таблицы быстро превращались в хаос, а готовые фитнес-приложения были перегружены рекламой, подписками и лишними сценариями.",
-    solution: "FastAPI отдаёт SSR-страницы на Jinja2, Alpine.js отправляет debounced JSON-запросы, упражнения хранятся в расширяемом каталоге, а шаблоны импортируются по публичной ссылке.",
-    result: "Пользователь записывает подходы без кнопки «Сохранить», видит историю прогресса и может импортировать тренировочный шаблон без дублей.",
-    stack: ["Python 3.12", "FastAPI", "Jinja2", "Alpine.js", "SQLAlchemy", "PostgreSQL", "Docker Compose"],
-    metrics: ["auto-save без кнопки", "публичные шаблоны", "40+ упражнений в каталоге"],
-  },
-  {
-    title: "Tech Rise Academy — лендинг с заявками в Telegram",
-    type: "Landing / lead automation",
-    problem: "Академии нужен был быстрый сайт без CRM: заявки терялись в директе и почте, а скорость ответа в первые минуты критична для продажи курса.",
-    solution: "Собраны главная и страницы курсов на Vanilla HTML/CSS/JS, общий config.js для контента и FastAPI endpoint, который валидирует заявку и отправляет её владельцу через Telegram Bot API.",
-    result: "Сайт задеплоен на собственный домен, заявки приходят в Telegram за несколько секунд, а контакты и ссылки можно менять без участия разработчика.",
-    stack: ["HTML", "CSS", "JavaScript", "FastAPI", "Pydantic", "Telegram Bot API", "Nginx"],
-    metrics: ["без CRM и базы", "заявка в Telegram", "Docker Compose deployment"],
-  },
-  {
-    title: "Frax — редизайн криптообменника на WordPress",
-    type: "Crypto exchanger redesign",
-    problem: "Рабочий обменник на WordPress визуально устарел, мобильный UX калькулятора проседал, но переписывать обменный плагин было слишком рискованно.",
-    solution: "Перевёрстаны WordPress-шаблоны, собрана новая визуальная система, переработан главный экран и калькулятор, а выводы плагина встроены в новую разметку через хуки и шорткоды.",
-    result: "Production-сайт стал соответствовать ожиданиям рынка обменников, мобильный сценарий стал рабочим, а существующая backend-логика осталась стабильной.",
-    stack: ["WordPress", "PHP", "CSS", "JavaScript", "Exchange plugin"],
-    metrics: ["без замены CMS", "мобильный UX калькулятора", "production rollout"],
-  },
-];
+export function isLocale(value: string | undefined | null): value is Locale {
+  return locales.some((locale) => locale === value);
+}
 
-export const packages = [
-  {
-    title: "Базовый",
-    subtitle: "Небольшой Telegram-бот, MVP или одна интеграция.",
-    price: "от 60 000 ₽",
-    term: "1-2 недели",
-    includes: [
-      "диагностика задачи и короткое ТЗ",
-      "один основной пользовательский сценарий",
-      "бот или backend-интеграция",
-      "базовая база данных или хранение состояний",
-      "деплой и короткая инструкция",
-    ],
-    excludes: ["сложные роли и админка", "несколько платёжных провайдеров", "долгая пострелизная поддержка"],
-    featured: false,
-  },
-  {
-    title: "Стандарт",
-    subtitle: "Полноценный бот/backend-сервис с оплатами, базой, админкой и деплоем.",
-    price: "от 140 000 ₽",
-    term: "3-5 недель",
-    includes: [
-      "техническая схема и архитектура",
-      "несколько сценариев пользователей",
-      "платежи, база данных, роли",
-      "админские действия и уведомления",
-      "Docker-деплой, логирование, тестирование",
-    ],
-    excludes: ["сложный ML-пайплайн", "многоэтапная аналитика", "круглосуточная поддержка"],
-    featured: true,
-  },
-  {
-    title: "Премиум",
-    subtitle: "Сложная система: AI, интеграции, платежи, очереди, мониторинг и поддержка запуска.",
-    price: "от 280 000 ₽",
-    term: "6-10 недель",
-    includes: [
-      "детальная архитектура и ограничения проекта",
-      "AI/LLM или несколько внешних интеграций",
-      "платежи, очереди, мониторинг, роли",
-      "документация, staging/production контур",
-      "поддержка запуска и стабилизация",
-    ],
-    excludes: ["закупка сторонних сервисов", "дизайн сложных интерфейсов с нуля", "юридическая настройка платежей"],
-    featured: false,
-  },
-];
+export function getSiteData(locale: string | undefined | null): SiteData {
+  return isLocale(locale) ? siteDataByLocale[locale] : siteDataByLocale[defaultLocale];
+}
 
-export const retainer = {
-  title: "Поддержка и развитие",
-  price: "от 35 000 ₽ / месяц",
-  description: "Фикс багов, небольшие доработки, обновление интеграций, контроль ошибок, помощь после релиза и планирование следующих итераций.",
-};
+export function getLocalizedHref(locale: Locale, href: string) {
+  if (/^(?:https?:|mailto:|tel:|#)/.test(href)) {
+    return href;
+  }
 
-export const processSteps = [
-  {
-    title: "Диагностика задачи",
-    text: "Разбираем продуктовую цель, ограничения, пользователей, платежи, внешние API и риски.",
-  },
-  {
-    title: "Техническая схема",
-    text: "Фиксируем архитектуру, сущности, роли, события, интеграции и понятный объём первой версии.",
-  },
-  {
-    title: "MVP / первая рабочая версия",
-    text: "Собирается основная логика: бот, backend, база, статусы, ключевые сценарии.",
-  },
-  {
-    title: "Интеграции и платежи",
-    text: "Подключаются Telegram, YooKassa, CryptoBot, Stars, CRM, парсеры или другие внешние системы.",
-  },
-  {
-    title: "Тестирование",
-    text: "Проверяются сценарии, ошибки, права доступа, повторные платежи, webhook-и и крайние состояния.",
-  },
-  {
-    title: "Деплой",
-    text: "Проект переносится в production-контур: Docker, env, домены, логи, базовый мониторинг.",
-  },
-  {
-    title: "Поддержка и развитие",
-    text: "После запуска можно подключить retainer: стабильность, доработки, новые сценарии и интеграции.",
-  },
-];
+  if (href === "/") {
+    return `/${locale}`;
+  }
 
-export const trustItems = [
-  "5 лет коммерческой разработки на Python",
-  "30+ завершённых проектов под ключ",
-  "Опыт с оплатами, возвратами, статусами и webhook-и",
-  "AI/LLM-интеграции с ограничениями, ролями и базой знаний",
-  "Backend-first подход: данные, статусы и ошибки продуманы заранее",
-  "Деплой, логирование и поддержка после запуска",
-  "Понятные границы работ, сроки, предоплата 50%",
-];
+  const normalizedHref = href.startsWith("/") ? href : `/${href}`;
 
-export const testimonials = [
-  {
-    quote: "Нужен был не просто бот, а рабочий сервис с оплатой, статусами и админскими действиями. Рамиль быстро разложил задачу на схему, показал риски и довёл до запуска без лишней драматургии.",
-    author: "Основатель Telegram-сервиса",
-  },
-  {
-    quote: "Мы не хотели ломать существующий обменник. Получили аккуратный редизайн, понятный путь заявки и ощущение более зрелого продукта без переписывания всего backend.",
-    author: "Владелец обменного проекта",
-  },
-  {
-    quote: "Ценность была в инженерном мышлении: где хранить состояния, как ограничить доступ, что мониторить после релиза. В итоге внутренний инструмент стал предсказуемым в эксплуатации.",
-    author: "Product manager внутреннего инструмента",
-  },
-];
+  if (locales.some((item) => normalizedHref === `/${item}` || normalizedHref.startsWith(`/${item}/`))) {
+    return normalizedHref;
+  }
 
-export const faqs = [
-  {
-    question: "Можно ли начать с MVP?",
-    answer: "Да. Обычно MVP фиксирует один главный сценарий, минимальный набор интеграций и понятную точку проверки гипотезы. После запуска можно расширять роли, платежи, админку и аналитику.",
-  },
-  {
-    question: "Работаете ли с существующим кодом?",
-    answer: "Да, если код можно развернуть и проверить. Сначала проводится диагностика: структура проекта, зависимости, база данных, деплой, риски изменений. После этого становится понятно, дешевле доработать или выделить новый сервис рядом.",
-  },
-  {
-    question: "Делаете ли платежи в Telegram?",
-    answer: "Да. Возможны YooKassa, CryptoBot, Telegram Stars и кастомные платёжные сценарии. Отдельно проверяются статусы, повторные оплаты, ошибки webhook-ов и админские операции.",
-  },
-  {
-    question: "Можно ли подключить AI к базе знаний?",
-    answer: "Да. Для этого проектируется RAG-пайплайн: загрузка документов, индексация, поиск контекста, правила ответа, роли, лимиты и история диалогов. Важно заранее определить, что AI имеет право отвечать, а что должен эскалировать человеку.",
-  },
-  {
-    question: "Что нужно для оценки проекта?",
-    answer: "Короткое описание задачи, целевые пользователи, желаемые сценарии, список интеграций, платежи, сроки и любые существующие материалы: код, API-документация, таблицы, макеты или примеры ботов.",
-  },
-  {
-    question: "Как устроена поддержка после запуска?",
-    answer: "Поддержка подключается отдельно: фикс багов, мелкие доработки, обновление зависимостей, контроль ошибок, помощь с интеграциями и планирование следующих итераций. Формат обычно retainer от 35 000 ₽ в месяц.",
-  },
-];
+  return `/${locale}${normalizedHref}`;
+}
+
+export function getLocaleFromParams(params: { lang?: string }) {
+  return isLocale(params.lang) ? params.lang : null;
+}
