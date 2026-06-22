@@ -33,6 +33,7 @@ type LeadPayload = {
 };
 
 const contactChannelLabels: Record<string, string> = {
+  contact: "Контакт",
   email: "Email",
   phone: "Телефон",
   telegram: "Telegram",

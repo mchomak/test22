@@ -1,11 +1,12 @@
 import {
-  ArrowRight,
+  Calculator,
   Code2,
   Mail,
   MessageCircle,
   Phone,
   Send,
 } from "lucide-react";
+import { QuickLeadForm } from "@/components/interactive/quick-lead-form";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/reveal";
 import type { SiteData } from "@/data/site";
@@ -36,20 +37,20 @@ export function FinalCTA({ site }: { site: SiteData }) {
             </div>
 
             <div className="final-cta-side">
-              <div className="final-cta-actions">
-                <ButtonLink href="#estimator" icon={<ArrowRight size={18} />}>
-                  {ui.finalCta.estimateCta}
-                </ButtonLink>
-                <ButtonLink
-                  href={contacts.telegramUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="secondary"
-                  icon={<MessageCircle size={18} />}
-                >
-                  {ui.finalCta.telegramCta}
-                </ButtonLink>
-              </div>
+              <QuickLeadForm
+                contacts={contacts}
+                copy={ui.quickLead}
+                source="final"
+              />
+
+              <ButtonLink
+                href="#estimator"
+                variant="secondary"
+                icon={<Calculator size={18} />}
+                className="final-cta-estimate-link"
+              >
+                {ui.finalCta.estimateCta}
+              </ButtonLink>
 
               <div className="final-cta-contact-row">
                 <a
@@ -60,6 +61,15 @@ export function FinalCTA({ site }: { site: SiteData }) {
                 >
                   <Send size={16} className="accent-signal" />
                   {contacts.telegram}
+                </a>
+                <a
+                  href={contacts.whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="final-cta-contact-link"
+                >
+                  <MessageCircle size={16} className="accent-signal" />
+                  {contacts.whatsapp}
                 </a>
                 <a
                   href={`tel:${contacts.phoneHref}`}
@@ -74,15 +84,6 @@ export function FinalCTA({ site }: { site: SiteData }) {
                 >
                   <Mail size={16} className="accent-warm" />
                   {contacts.email}
-                </a>
-                <a
-                  href={contacts.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="final-cta-contact-link"
-                >
-                  <Code2 size={16} className="accent-logic" />
-                  {contacts.github}
                 </a>
               </div>
             </div>
@@ -122,6 +123,15 @@ export function Footer({ site }: { site: SiteData }) {
           >
             <Send size={15} className="accent-signal" />
             {contacts.telegram}
+          </a>
+          <a
+            href={contacts.whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="site-footer-contact-link"
+          >
+            <MessageCircle size={15} className="accent-signal" />
+            {contacts.whatsapp}
           </a>
           <a
             href={`tel:${contacts.phoneHref}`}

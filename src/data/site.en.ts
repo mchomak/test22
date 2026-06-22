@@ -1124,10 +1124,10 @@ const ui: SiteData["ui"] = {
     proofLabel: "control",
   },
   configurator: {
-    eyebrow: "Project request estimator",
-    title: "Build your project configuration",
+    eyebrow: "Precise estimate",
+    title: "If you want more precision, configure the project",
     description:
-      "Choose the solution type, modules and timeline - the site will show a budget range and prepare a request.",
+      "This is optional. Pick the solution type to get a budget range, and open modules only when the details matter.",
   },
   quickLead: {
     title: "Briefly describe the task",
@@ -1164,10 +1164,9 @@ const ui: SiteData["ui"] = {
   },
   estimator: {
     steps: [
-      "Project type",
+      "Type",
       "Estimate",
-      "Contacts",
-      "Submit",
+      "Contact",
     ],
     moneyLocale: "en-US",
     currency: "$",
@@ -1177,14 +1176,14 @@ const ui: SiteData["ui"] = {
     budgetGap: 80,
     dayShort: "d",
     timelineSuffix: "business days",
-    kicker: "Project config",
-    title: "Project type -> modules -> request",
-    leadTitle: "A quick request instead of a long questionnaire",
+    kicker: "Precise estimate",
+    title: "Project type -> estimate -> contact",
+    leadTitle: "Get a tighter estimate or just write directly",
     leadDescription:
-      "Choose the type and pace, leave Telegram and a short task note. Open modules only when you want a tighter estimate.",
-    leadBullets: ["budget range immediately", "2 required fields", "spec can be attached as a link"],
-    summaryCta: "Send request with estimate",
-    modulesToggle: "Adjust modules",
+      "Choose the project type if you want a budget range. If the brief is still rough, leave a quick request above or write directly.",
+    leadBullets: ["budget range immediately", "contact and task only", "modules are optional"],
+    summaryCta: "Send estimate request",
+    modulesToggle: "Adjust modules if needed",
     presetLabel: "Preset from case",
     stepPrefix: "step",
     typeTitle: "Choose solution type",
@@ -1193,18 +1192,20 @@ const ui: SiteData["ui"] = {
     complexityTitle: "Complexity",
     complexityDescription:
       "This affects budget and timeline: MVP, business product or complex system.",
-    modulesTitle: "Modules",
-    modulesDescription: "Options are shown for the {category} category.",
+    modulesTitle: "Modules (optional)",
+    modulesDescription:
+      "Options are shown for the {category} category. You can leave them closed if you only need a quick orientation point.",
     urgencyTitle: "Timeline",
     urgencyDescription:
       "Choose a comfortable pace. Urgency increases cost, but compresses the work plan.",
     contactsTitle: "Contacts and description",
     contactsDescription:
-      "These details will be included in the request together with the selected configuration and estimate.",
+      "Leave any convenient contact and a short task note. The rest can be clarified in conversation.",
     fields: {
       name: "Name",
       namePlaceholder: "How should I address you",
-      telegram: "Telegram",
+      contact: "Where should I write",
+      contactPlaceholder: "@username, phone, email or WhatsApp",
       email: "Email",
       emailPlaceholder: "optional",
       fileUrl: "Spec / file link",
@@ -1215,17 +1216,17 @@ const ui: SiteData["ui"] = {
     },
     note:
       "The calculator shows an orientation point. Final cost is fixed after a short discussion of the task, integrations, design and timeline.",
-    submit: "Send configuration",
+    submit: "Send estimate request",
     sendAnother: "Send another",
-    telegramFallback: "Write directly in Telegram",
-    validationError: "Please add Telegram and briefly describe the task.",
+    directFallback: "Leave a quick request",
+    validationError: "Leave a contact and briefly describe the task.",
     fallbackSubmitError: "Could not submit the request.",
     unknownSubmitError:
-      "Could not submit the request. Please try writing in Telegram.",
+      "Could not submit the request. Try leaving a quick request or writing directly.",
     successDelivered:
-      "The request was sent to Telegram. I will come back with clarifying questions.",
+      "The request was sent. I will come back with clarifying questions.",
     successStub:
-      "Request received. I'll message you on Telegram shortly.",
+      "Request received. I will reply through the contact you left shortly.",
     estimateLabel: "Preliminary estimate",
     timelineLabel: "Timeline:",
     summaryLabels: {
@@ -1333,13 +1334,12 @@ const ui: SiteData["ui"] = {
   },
   finalCta: {
     eyebrow: "Next step",
-    title:
-      "Describe the task - I will return with architecture, timeline and budget range.",
+    title: "Tell me what should be automated or launched.",
     description:
-      "The fastest way to start is the estimator: it collects project type, modules, timeline and contact into one request. If you have little input, you can write directly in Telegram.",
-    estimateCta: "Build the scope",
+      "You can leave a short description without a full spec. I will come back with questions, suggest the first scope, timeline and budget range.",
+    estimateCta: "Get a tighter estimate",
     telegramCta: "Write in Telegram",
-    footer: "Python, Telegram bots, AI integrations, backend services.",
+    footer: "Telegram bots, Mini Apps, AI integrations, backend and turnkey launch.",
   },
   gallery: {
     previous: "Previous screen",

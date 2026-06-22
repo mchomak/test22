@@ -428,7 +428,9 @@ function ProjectEstimatorForm({
       sourceCase: activePresetCase?.title ?? "",
       contact: {
         name: contact.name.trim(),
-        telegram: contact.telegram.trim(),
+        channel: "contact",
+        value: contact.telegram.trim(),
+        telegram: "",
         email: contact.email.trim(),
       },
       comment: contact.comment.trim(),
@@ -536,6 +538,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.typeTitle}
           description={copy.typeDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.directFallback}
         >
           <div className="grid gap-3 md:grid-cols-2">
             {projectTypes.map((type) => {
@@ -585,6 +589,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={`${copy.complexityTitle} / ${copy.urgencyTitle}`}
           description={copy.complexityDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.directFallback}
         >
           <div className="estimator-tuning-grid">
             <div>
@@ -656,6 +662,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.contactsTitle}
           description={copy.contactsDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.directFallback}
         >
           <div className="grid gap-3 md:grid-cols-2">
             <Field
@@ -667,9 +675,9 @@ function ProjectEstimatorForm({
             />
             <Field
               icon={<MessageCircle size={16} />}
-              label={copy.fields.telegram}
+              label={copy.fields.contact}
               value={contact.telegram}
-              placeholder="@username"
+              placeholder={copy.fields.contactPlaceholder}
               required
               onChange={(value) => updateContact("telegram", value)}
             />
@@ -711,6 +719,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.modulesTitle}
           description={copy.modulesDescription.replace("{category}", activeType.label)}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.directFallback}
         >
           <details className="estimator-module-details">
             <summary>
@@ -797,13 +807,11 @@ function ProjectEstimatorForm({
                 {copy.sendAnother}
               </button>
               <a
-                href={data.contacts.telegramUrl}
-                target="_blank"
-                rel="noreferrer"
+                href="#quick-lead"
                 className="estimator-telegram-link"
               >
                 <MessageCircle size={16} />
-                <span>{copy.telegramFallback}</span>
+                <span>{copy.directFallback}</span>
               </a>
             </motion.div>
           ) : (
@@ -830,13 +838,11 @@ function ProjectEstimatorForm({
                   </p>
                   {submitState === "error" ? (
                     <a
-                      href={data.contacts.telegramUrl}
-                      target="_blank"
-                      rel="noreferrer"
+                      href="#quick-lead"
                       className="estimator-telegram-link"
                     >
                       <MessageCircle size={16} />
-                      <span>{copy.telegramFallback}</span>
+                      <span>{copy.directFallback}</span>
                     </a>
                   ) : null}
                 </div>
@@ -919,14 +925,22 @@ function ProjectEstimatorForm({
             {copy.summaryCta}
           </button>
           <a
-            href={data.contacts.telegramUrl}
-            target="_blank"
-            rel="noreferrer"
             className="estimator-telegram-link"
+            href="#quick-lead"
           >
             <MessageCircle size={16} />
-            <span>{copy.telegramFallback}</span>
+            <span>{copy.directFallback}</span>
           </a>
+          <div className="estimator-direct-links">
+            <a href={data.contacts.telegramUrl} target="_blank" rel="noreferrer">
+              <Send size={14} />
+              <span>{data.contacts.telegram}</span>
+            </a>
+            <a href={data.contacts.whatsappUrl} target="_blank" rel="noreferrer">
+              <MessageCircle size={14} />
+              <span>{data.contacts.whatsapp}</span>
+            </a>
+          </div>
         </div>
 
         <div className="estimator-request-preview">
@@ -961,12 +975,16 @@ function ConfigBlock({
   copy,
   title,
   description,
+  fallbackHref,
+  fallbackLabel,
   children,
 }: {
   label: string;
   copy: ProjectEstimatorData["ui"]["estimator"];
   title: string;
   description: string;
+  fallbackHref?: string;
+  fallbackLabel?: string;
   children: ReactNode;
 }) {
   return (
@@ -982,6 +1000,12 @@ function ConfigBlock({
           <p className="body-copy mt-2 max-w-3xl text-sm">
             {description}
           </p>
+          {fallbackHref && fallbackLabel ? (
+            <a href={fallbackHref} className="estimator-step-fallback">
+              <ArrowRight size={14} />
+              {fallbackLabel}
+            </a>
+          ) : null}
         </div>
       </div>
       {children}

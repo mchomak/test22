@@ -4574,7 +4574,7 @@ summary::-webkit-details-marker {
 
 .estimator-step-rail {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   overflow: hidden;
   border: 1px solid var(--stroke-subtle);
   border-radius: var(--radius-card);
@@ -4623,6 +4623,25 @@ summary::-webkit-details-marker {
   letter-spacing: 0.16em;
   line-height: 1.35;
   text-transform: uppercase;
+}
+
+.estimator-step-fallback {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  color: var(--accent-signal);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.35;
+  transition:
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.estimator-step-fallback:hover {
+  transform: translateX(2px);
+  color: var(--text-primary);
 }
 
 .estimator-choice-card {
@@ -4752,6 +4771,37 @@ summary::-webkit-details-marker {
   margin-top: 1.5rem;
   border-top: 1px solid var(--stroke-subtle);
   padding-top: 1rem;
+}
+
+.estimator-direct-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.estimator-direct-links a {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--stroke-subtle);
+  border-radius: 999px;
+  background: rgba(244, 242, 236, 0.035);
+  padding: 0.48rem 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition:
+    border-color 220ms ease,
+    color 220ms ease,
+    background 220ms ease;
+}
+
+.estimator-direct-links a:hover {
+  border-color: color-mix(in srgb, var(--accent-signal) 35%, var(--stroke-subtle));
+  background: color-mix(in srgb, var(--accent-signal) 8%, transparent);
+  color: var(--text-primary);
 }
 
 .estimator-preset-banner {
@@ -5103,7 +5153,7 @@ summary::-webkit-details-marker {
   z-index: 2;
   display: grid;
   min-height: auto;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 512px);
   gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
   border-block: 1px solid var(--stroke-regular);
@@ -5139,7 +5189,7 @@ summary::-webkit-details-marker {
 
 .final-cta-side {
   display: grid;
-  width: min(100%, 26rem);
+  width: min(100%, 32rem);
   justify-self: end;
   gap: 1.25rem;
 }
@@ -5151,6 +5201,10 @@ summary::-webkit-details-marker {
 }
 
 .final-cta-actions .btn-link {
+  width: 100%;
+}
+
+.final-cta-estimate-link {
   width: 100%;
 }
 
@@ -5201,9 +5255,14 @@ summary::-webkit-details-marker {
   align-items: center;
   gap: 0.55rem;
   color: inherit;
+  overflow-wrap: anywhere;
   transition:
     color 220ms ease,
     transform 220ms ease;
+}
+
+.final-cta-contact-link svg {
+  flex: 0 0 auto;
 }
 
 .final-cta-contact-link:hover {
