@@ -19,9 +19,14 @@ type LeadPayload = {
   };
   contact?: {
     name?: unknown;
+    channel?: unknown;
+    value?: unknown;
     telegram?: unknown;
     email?: unknown;
+    phone?: unknown;
+    whatsapp?: unknown;
   };
+  source?: unknown;
   comment?: unknown;
   fileUrl?: unknown;
 };
@@ -56,16 +61,24 @@ export async function POST(request: Request) {
   const budget = asText(payload.estimate?.budget);
   const timeline = asText(payload.estimate?.timeline);
   const name = asText(payload.contact?.name);
+  const channel = asText(payload.contact?.channel);
+  const value = asText(payload.contact?.value);
   const telegram = asText(payload.contact?.telegram);
+  const phone = asText(payload.contact?.phone);
+  const whatsapp = asText(payload.contact?.whatsapp);
   const email = asText(payload.contact?.email);
+  const source = asText(payload.source);
   const comment = asText(payload.comment);
   const fileUrl = asText(payload.fileUrl);
 
-  if (!category || !complexity || !telegram || !comment || !budget || !timeline) {
+  // Primary contact: explicit `value`, then legacy fallbacks in priority order.
+  const contactValue = value || telegram || phone || whatsapp || email;
+
+  if (!category || !complexity || !contactValue || !comment || !budget || !timeline) {
     return Response.json(
       {
         ok: false,
-        error: "Заполните Telegram, описание задачи и конфигурацию.",
+        error: "Оставьте контакт, описание задачи и конфигурацию.",
       },
       { status: 400 },
     );
@@ -79,8 +92,13 @@ export async function POST(request: Request) {
     budget,
     timeline,
     contactName: name,
-    contactTelegram: telegram,
+    // Keep contact_telegram populated for legacy NOT NULL: use the separate
+    // Telegram handle when given, otherwise fall back to the primary contact.
+    contactTelegram: telegram || contactValue,
+    contactChannel: channel,
+    contactValue,
     contactEmail: email,
+    source,
     comment,
     fileUrl,
     payload: payload as Record<string, unknown>,

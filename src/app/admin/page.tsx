@@ -212,7 +212,12 @@ function LeadCard({ lead }: { lead: DashboardLead }) {
           <p className="mt-2 text-sm leading-6 text-zinc-300">{lead.comment}</p>
         </div>
         <div className="grid shrink-0 gap-1 text-sm text-zinc-400 lg:min-w-72">
-          <span>Контакт: {lead.contactTelegram}</span>
+          <span>Контакт: {lead.contactValue || lead.contactTelegram}</span>
+          {lead.contactChannel ? <span>Канал: {lead.contactChannel}</span> : null}
+          {lead.contactTelegram &&
+          lead.contactTelegram !== (lead.contactValue || lead.contactTelegram) ? (
+            <span>Telegram: {lead.contactTelegram}</span>
+          ) : null}
           {lead.contactName ? <span>Имя: {lead.contactName}</span> : null}
           {lead.contactEmail ? <span>Email: {lead.contactEmail}</span> : null}
           {lead.fileUrl ? <span className="truncate">Файл: {lead.fileUrl}</span> : null}

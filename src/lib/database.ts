@@ -10,8 +10,11 @@ export type ProjectLeadRecord = {
   budget: string;
   timeline: string;
   contactName: string;
+  contactChannel: string;
+  contactValue: string;
   contactTelegram: string;
   contactEmail: string;
+  source?: string;
   comment: string;
   fileUrl: string;
   payload: Record<string, unknown>;
@@ -40,6 +43,8 @@ export type DashboardLead = {
   budget: string;
   timeline: string;
   contactName: string;
+  contactChannel: string;
+  contactValue: string;
   contactTelegram: string;
   contactEmail: string;
   comment: string;
@@ -154,6 +159,8 @@ async function ensureSchema(pool: Pool) {
         ON site_visits (visitor_id);
 
       ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS telegram_retry_count INT NOT NULL DEFAULT 0;
+      ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS contact_channel TEXT;
+      ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS contact_value TEXT;
     `).then(() => undefined);
   }
 
@@ -184,12 +191,14 @@ export async function insertProjectLead(lead: ProjectLeadRecord) {
           timeline,
           contact_name,
           contact_telegram,
+          contact_channel,
+          contact_value,
           contact_email,
           comment,
           file_url,
           payload
         )
-        VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12::jsonb)
+        VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14::jsonb)
         RETURNING id
       `,
       [
@@ -201,6 +210,8 @@ export async function insertProjectLead(lead: ProjectLeadRecord) {
         lead.timeline,
         lead.contactName || null,
         lead.contactTelegram,
+        lead.contactChannel || null,
+        lead.contactValue,
         lead.contactEmail || null,
         lead.comment,
         lead.fileUrl || null,
@@ -244,6 +255,8 @@ export type UndeliveredLead = {
   budget: string;
   timeline: string;
   contactName: string;
+  contactChannel: string;
+  contactValue: string;
   contactTelegram: string;
   contactEmail: string;
   comment: string;
@@ -261,6 +274,8 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
       budget: string;
       timeline: string;
       contact_name: string | null;
+      contact_channel: string | null;
+      contact_value: string | null;
       contact_telegram: string;
       contact_email: string | null;
       comment: string;
@@ -268,7 +283,8 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
     }>(
       `
         SELECT id, category, complexity, urgency, options, budget, timeline,
-               contact_name, contact_telegram, contact_email, comment, file_url
+               contact_name, contact_channel, contact_value, contact_telegram,
+               contact_email, comment, file_url
         FROM project_leads
         WHERE telegram_delivered = false
           AND telegram_retry_count < 10
@@ -293,6 +309,9 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
     budget: row.budget,
     timeline: row.timeline,
     contactName: row.contact_name ?? "",
+    contactChannel: row.contact_channel ?? "",
+    // Old rows predate contact_value: fall back to the legacy Telegram column.
+    contactValue: row.contact_value ?? row.contact_telegram,
     contactTelegram: row.contact_telegram,
     contactEmail: row.contact_email ?? "",
     comment: row.comment,
@@ -378,6 +397,8 @@ export async function getDashboardData(): Promise<DashboardData | null> {
           budget,
           timeline,
           COALESCE(contact_name, '') AS contact_name,
+          COALESCE(contact_channel, '') AS contact_channel,
+          COALESCE(contact_value, contact_telegram, '') AS contact_value,
           contact_telegram,
           COALESCE(contact_email, '') AS contact_email,
           comment,
@@ -447,6 +468,8 @@ type LeadRow = {
   budget: string;
   timeline: string;
   contact_name: string;
+  contact_channel: string;
+  contact_value: string;
   contact_telegram: string;
   contact_email: string;
   comment: string;
@@ -468,6 +491,8 @@ function mapLeadRow(row: LeadRow): DashboardLead {
     budget: row.budget,
     timeline: row.timeline,
     contactName: row.contact_name,
+    contactChannel: row.contact_channel,
+    contactValue: row.contact_value,
     contactTelegram: row.contact_telegram,
     contactEmail: row.contact_email,
     comment: row.comment,

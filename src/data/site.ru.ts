@@ -2,6 +2,8 @@ export const contacts = {
   email: "kaneevramil7@gmail.com",
   telegram: "@McHomak15",
   telegramUrl: "https://t.me/McHomak15",
+  whatsapp: "+79269549196",
+  whatsappUrl: "https://wa.me/79269549196",
   github: "github.com/mchomak",
   githubUrl: "https://github.com/mchomak",
 };
