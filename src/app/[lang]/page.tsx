@@ -5,6 +5,7 @@ import { SiteEffects } from "@/components/effects/site-effects";
 import { FAQ } from "@/components/sections/faq";
 import { FinalCTA, Footer } from "@/components/sections/final-cta";
 import { Hero } from "@/components/sections/hero";
+import { MobileContactBar } from "@/components/sections/mobile-contact-bar";
 import { Process } from "@/components/sections/process";
 import { ProjectConfigurator } from "@/components/sections/project-configurator";
 import { Services } from "@/components/sections/services";
@@ -36,6 +37,7 @@ export default async function Home({
       <SiteEffects />
       <ScrollOrb />
       <SiteHeader locale={locale} site={site} />
+      <MobileContactBar contacts={site.contacts} copy={site.ui.stickyCta} />
       <main>
         <Hero site={site} />
         <Specialization site={site} />

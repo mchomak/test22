@@ -1162,6 +1162,11 @@ const ui: SiteData["ui"] = {
     submitError: "Could not send. Write directly:",
     fallbackTitle: "You can also write directly:",
   },
+  stickyCta: {
+    discuss: "Discuss a project",
+    telegram: "Telegram",
+    whatsapp: "WhatsApp",
+  },
   estimator: {
     steps: [
       "Project type",

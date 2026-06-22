@@ -1388,6 +1388,11 @@ export const ui = {
     submitError: "Не удалось отправить. Напишите напрямую:",
     fallbackTitle: "Можно написать напрямую:",
   },
+  stickyCta: {
+    discuss: "Обсудить проект",
+    telegram: "Telegram",
+    whatsapp: "WhatsApp",
+  },
   estimator: {
     steps: [
       "Тип проекта",

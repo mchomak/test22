@@ -1653,3 +1653,31 @@ summary::-webkit-details-marker {
     transform: translateX(calc(760%));
   }
 }
+
+/* Mobile sticky contact bar: shown on mobile/tablet, hidden from lg (1024px) up. */
+.mobile-contact-bar {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .mobile-contact-bar {
+    display: block;
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-contact-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  /* Keep the fixed bar from covering the footer / final-CTA submit on mobile. */
+  body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}
