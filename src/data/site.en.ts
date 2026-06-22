@@ -1327,13 +1327,13 @@ const ui: SiteData["ui"] = {
   },
   finalCta: {
     eyebrow: "Next step",
-    title:
-      "Describe the task - I will return with architecture, timeline and budget range.",
+    title: "Tell me what you need to automate or launch.",
     description:
-      "The fastest way to start is the estimator: it collects project type, modules, timeline and contact into one request. If you have little input, you can write directly in Telegram.",
-    estimateCta: "Estimate a project",
+      "A short description without a spec is enough. I will come back with questions and propose a first scope of work, timeline and budget range.",
+    estimateCta: "Get a tighter estimate",
     telegramCta: "Write in Telegram",
-    footer: "Python, Telegram bots, AI integrations, backend services.",
+    footer:
+      "Telegram bots, Mini Apps, AI integrations, backend and turnkey launch.",
   },
   gallery: {
     previous: "Previous screen",

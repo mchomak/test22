@@ -4,6 +4,8 @@ export const contacts = {
   telegramUrl: "https://t.me/McHomak15",
   whatsapp: "+79269549196",
   whatsappUrl: "https://wa.me/79269549196",
+  phone: "+79269549196",
+  phoneHref: "+79269549196",
   github: "github.com/mchomak",
   githubUrl: "https://github.com/mchomak",
 };
@@ -1553,14 +1555,14 @@ export const ui = {
       "Формулировки обезличены, но передают типичный запрос: довести продукт до рабочего состояния, а не просто написать отдельный скрипт.",
   },
   finalCta: {
-    eyebrow: "Next step",
-    title:
-      "Опишите задачу — я вернусь с архитектурой, сроками и вилкой бюджета.",
+    eyebrow: "Следующий шаг",
+    title: "Расскажите, что нужно автоматизировать или запустить.",
     description:
-      "Быстрее всего начать с конфигуратора: он соберёт тип проекта, модули, сроки и контакт в одну заявку. Если вводных мало, можно сразу написать в Telegram.",
-    estimateCta: "Рассчитать проект",
+      "Можно оставить короткое описание без ТЗ. Я вернусь с вопросами, предложу первый объём работ, сроки и вилку бюджета.",
+    estimateCta: "Посчитать точнее",
     telegramCta: "Написать в Telegram",
-    footer: "Python, Telegram bots, AI integrations, backend services.",
+    footer:
+      "Telegram-боты, Mini Apps, AI-интеграции, backend и запуск под ключ.",
   },
   gallery: {
     previous: "Предыдущий скрин",
