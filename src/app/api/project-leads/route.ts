@@ -93,12 +93,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const category = asText(payload.category);
-  const complexity = asText(payload.complexity);
+  const category = asText(payload.category) || "Быстрая заявка";
+  const complexity = asText(payload.complexity) || "не указана";
   const urgency = asText(payload.urgency);
   const options = asTextList(payload.options);
-  const budget = asText(payload.estimate?.budget);
-  const timeline = asText(payload.estimate?.timeline);
+  const budget = asText(payload.estimate?.budget) || "после обсуждения";
+  const timeline = asText(payload.estimate?.timeline) || "после обсуждения";
   const source = asText(payload.source);
   const sourceCase = asText(payload.sourceCase);
   const name = asText(payload.contact?.name);
@@ -120,11 +120,11 @@ export async function POST(request: Request) {
   const comment = asText(payload.comment);
   const fileUrl = asText(payload.fileUrl);
 
-  if (!category || !complexity || !contactValue || !comment || !budget || !timeline) {
+  if (!contactValue || !comment) {
     return Response.json(
       {
         ok: false,
-        error: "Оставьте контакт, описание задачи и конфигурацию.",
+        error: "Оставьте контакт и коротко опишите задачу.",
       },
       { status: 400 },
     );

@@ -2,9 +2,11 @@ import Image from "next/image";
 import {
   ArrowRight,
   Calculator,
+  MessageCircle,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ButtonLink } from "@/components/ui/button-link";
+import { QuickLeadForm } from "@/components/interactive/quick-lead-form";
 import { ProductionCircuit } from "@/components/interactive/production-circuit";
 import type { CaseMosaicItem } from "@/components/interactive/case-mosaic";
 import { HeroHeadline } from "@/components/interactive/hero-headline";
@@ -78,20 +80,29 @@ export function Hero({
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ButtonLink
-                href="#estimator"
-                icon={<Calculator size={18} />}
+                href="#quick-lead"
+                icon={<MessageCircle size={18} />}
                 className="sm:min-w-48"
               >
                 {ui.hero.primaryCta}
               </ButtonLink>
               <ButtonLink
-                href="#cases"
+                href="#estimator"
                 variant="secondary"
-                icon={<ArrowRight size={18} />}
+                icon={<Calculator size={18} />}
                 className="sm:min-w-44"
               >
                 {ui.hero.secondaryCta}
               </ButtonLink>
+            </div>
+
+            <div id="quick-lead" className="hero-quick-lead surface-tool">
+              <QuickLeadForm
+                compact
+                contacts={site.contacts}
+                copy={ui.quickLead}
+                source="hero"
+              />
             </div>
           </Reveal>
 

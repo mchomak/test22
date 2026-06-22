@@ -1277,13 +1277,18 @@ export const ui = {
     ],
   },
   hero: {
-    badge: "Telegram / AI / Backend / автоматизация",
-    headline: ["Telegram, AI и Backend", "под ключ"],
+    badge: "Для бизнеса, экспертов и команд с ручной рутиной",
+    headline: ["Telegram-боты и сервисы", "для заявок и оплат"],
     description:
-      "Собираю Telegram-ботов, Mini Apps, Backend-системы, AI-модули, парсеры и интеграции — от MVP до рабочего продукта с админкой, платежами и аналитикой.",
-    primaryCta: "Рассчитать проект",
-    secondaryCta: "Смотреть кейсы",
-    trustBar: ["10+ проектов", "Telegram Mini Apps", "AI/OCR/RAG", "Docker/Nginx deploy"],
+      "Делаю под ключ ботов, Mini Apps, backend, AI-модули, админки и платежи - от идеи до запуска на сервере.",
+    primaryCta: "Обсудить проект",
+    secondaryCta: "Посчитать точнее",
+    trustBar: [
+      "малый бизнес и эксперты",
+      "Telegram / Mini Apps",
+      "платежи и заявки",
+      "запуск под ключ",
+    ],
     bottomNote: "Ниже - реальные кейсы",
   },
   liveTelemetry: {
@@ -1377,6 +1382,11 @@ export const ui = {
     success: "Заявка отправлена. Вернусь с уточняющими вопросами.",
     validationError: "Оставьте контакт и коротко опишите задачу.",
     fallbackTitle: "Можно написать напрямую:",
+  },
+  stickyCta: {
+    discuss: "Обсудить проект",
+    telegram: "Telegram",
+    whatsapp: "WhatsApp",
   },
   estimator: {
     steps: [

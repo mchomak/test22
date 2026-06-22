@@ -4,6 +4,7 @@ import { SiteEffects } from "@/components/effects/site-effects";
 import { FAQ } from "@/components/sections/faq";
 import { FinalCTA, Footer } from "@/components/sections/final-cta";
 import { Hero } from "@/components/sections/hero";
+import { MobileContactBar } from "@/components/sections/mobile-contact-bar";
 import { ProductionFlow } from "@/components/sections/production-flow";
 import { ProjectConfigurator } from "@/components/sections/project-configurator";
 import { SiteHeader } from "@/components/sections/site-header";
@@ -34,7 +35,8 @@ export default async function Home({
       <SiteEffects />
       <ScrollOrb />
       <SiteHeader locale={locale} site={site} />
-      <main>
+      <MobileContactBar site={site} />
+      <main className="site-main">
         <Hero cases={casesData.cases} locale={locale} site={site} />
         <Cases data={casesData} locale={locale} />
         <Specialization site={site} />

@@ -69,6 +69,9 @@ export function QuickLeadForm({
     setSubmitState("idle");
     setSubmitMessage("");
   };
+  const formClassName = compact
+    ? "quick-lead-form quick-lead-form-compact grid gap-3"
+    : "quick-lead-form grid gap-4";
 
   const submitLead = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -135,19 +138,22 @@ export function QuickLeadForm({
   };
 
   return (
-    <form
-      onSubmit={submitLead}
-      className={compact ? "grid gap-3" : "grid gap-4"}
-    >
-      <div>
+    <form onSubmit={submitLead} className={formClassName}>
+      <div className="quick-lead-form-head">
         <h3 className="text-lg font-semibold text-[var(--text-primary)]">
           {copy.title}
         </h3>
         <p className="body-copy mt-2 text-sm">{copy.description}</p>
       </div>
 
-      <div className="grid gap-3">
-        <label className="block">
+      <div
+        className={
+          compact
+            ? "quick-lead-form-fields grid gap-3 sm:grid-cols-2"
+            : "quick-lead-form-fields grid gap-3"
+        }
+      >
+        <label className="quick-lead-form-field block">
           <span className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">
             {copy.name}
           </span>
@@ -163,7 +169,7 @@ export function QuickLeadForm({
           />
         </label>
 
-        <fieldset className="grid gap-2">
+        <fieldset className="quick-lead-form-field quick-lead-form-field-wide grid gap-2">
           <legend className="text-sm font-medium text-[var(--text-secondary)]">
             {copy.channel}
           </legend>
@@ -193,7 +199,7 @@ export function QuickLeadForm({
           </div>
         </fieldset>
 
-        <label className="block">
+        <label className="quick-lead-form-field block">
           <span className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">
             {copy.contact} <span className="accent-warm">*</span>
           </span>
@@ -210,7 +216,7 @@ export function QuickLeadForm({
           />
         </label>
 
-        <label className="block">
+        <label className="quick-lead-form-field quick-lead-form-field-wide block">
           <span className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">
             {copy.comment} <span className="accent-warm">*</span>
           </span>
@@ -231,7 +237,7 @@ export function QuickLeadForm({
       <button
         type="submit"
         disabled={submitState === "sending"}
-        className="btn-link btn-link-primary w-full disabled:cursor-wait disabled:opacity-70"
+        className="quick-lead-form-submit btn-link btn-link-primary w-full disabled:cursor-wait disabled:opacity-70"
       >
         {submitState === "sending" ? (
           <Loader2 size={18} className="animate-spin" />

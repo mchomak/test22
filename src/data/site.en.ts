@@ -1051,13 +1051,18 @@ const ui: SiteData["ui"] = {
     ],
   },
   hero: {
-    badge: "Telegram / AI / backend / automation",
-    headline: ["AI, backend and Telegram", "turnkey"],
+    badge: "For small businesses, experts and product teams",
+    headline: ["Telegram bots and services", "for leads and payments"],
     description:
-      "I build Telegram bots, Mini Apps, backend systems, AI modules, parsers and integrations - from MVP to a working product with admin panel, payments and analytics.",
-    primaryCta: "Estimate a project",
-    secondaryCta: "View cases",
-    trustBar: ["10+ projects", "Telegram Mini Apps", "AI/OCR/RAG", "Docker/Nginx deploy"],
+      "I build bots, Mini Apps, backend systems, AI modules, admin panels and payments - from idea to production launch.",
+    primaryCta: "Discuss a project",
+    secondaryCta: "Get a tighter estimate",
+    trustBar: [
+      "small businesses and experts",
+      "Telegram / Mini Apps",
+      "payments and leads",
+      "turnkey launch",
+    ],
     bottomNote: "Real cases below",
   },
   liveTelemetry: {
@@ -1151,6 +1156,11 @@ const ui: SiteData["ui"] = {
     success: "Request sent. I will come back with clarifying questions.",
     validationError: "Leave a contact and briefly describe the task.",
     fallbackTitle: "You can write directly:",
+  },
+  stickyCta: {
+    discuss: "Discuss project",
+    telegram: "Telegram",
+    whatsapp: "WhatsApp",
   },
   estimator: {
     steps: [
