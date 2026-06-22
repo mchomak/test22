@@ -1133,6 +1133,35 @@ const ui: SiteData["ui"] = {
     description:
       "Choose the solution type, modules and timeline - the site will show a budget range and prepare a request.",
   },
+  quickLead: {
+    title: "Briefly describe the task",
+    description: "I will reply in whatever channel suits you.",
+    name: "Name",
+    namePlaceholder: "How should I address you",
+    channel: "Contact channel",
+    channels: {
+      telegram: "Telegram",
+      whatsapp: "WhatsApp",
+      phone: "Phone",
+      email: "Email",
+    },
+    contact: "Where to reply",
+    contactPlaceholder: {
+      telegram: "@username",
+      whatsapp: "+7...",
+      phone: "+7...",
+      email: "name@company.com",
+    },
+    comment: "What needs to be done",
+    commentPlaceholder:
+      "For example: I need a Telegram bot with payments and an admin panel for requests.",
+    submit: "Discuss a project",
+    sending: "Sending",
+    success: "Request sent. I will get back with a few clarifying questions.",
+    validationError: "Leave a contact and briefly describe the task.",
+    submitError: "Could not send. Write directly:",
+    fallbackTitle: "You can also write directly:",
+  },
   estimator: {
     steps: [
       "Project type",

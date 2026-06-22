@@ -1359,6 +1359,35 @@ export const ui = {
     description:
       "Выберите тип решения, модули и сроки — сайт покажет ориентир по бюджету и сформирует заявку.",
   },
+  quickLead: {
+    title: "Коротко опишите задачу",
+    description: "Ответ пришлю в удобный для вас канал.",
+    name: "Имя",
+    namePlaceholder: "Как к вам обращаться",
+    channel: "Канал связи",
+    channels: {
+      telegram: "Telegram",
+      whatsapp: "WhatsApp",
+      phone: "Телефон",
+      email: "Email",
+    },
+    contact: "Куда написать",
+    contactPlaceholder: {
+      telegram: "@username",
+      whatsapp: "+7...",
+      phone: "+7...",
+      email: "name@company.com",
+    },
+    comment: "Что нужно сделать",
+    commentPlaceholder:
+      "Например: нужен Telegram-бот с оплатой и админкой для заявок.",
+    submit: "Обсудить проект",
+    sending: "Отправляю",
+    success: "Заявка отправлена. Вернусь с уточняющими вопросами.",
+    validationError: "Оставьте контакт и коротко опишите задачу.",
+    submitError: "Не удалось отправить. Напишите напрямую:",
+    fallbackTitle: "Можно написать напрямую:",
+  },
   estimator: {
     steps: [
       "Тип проекта",
