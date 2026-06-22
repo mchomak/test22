@@ -57,17 +57,15 @@ export function Cases({
           <div className="cases-cta-scene" aria-label={copy.nextStepTitle}>
             <div className="cases-cta-actions">
               <span className="cases-cta-motion cases-cta-motion-primary">
-                <ButtonLink href="#estimator" icon={<Calculator size={18} />}>
+                <ButtonLink href="#quick-lead" icon={<MessageCircle size={18} />}>
                   {copy.estimateCta}
                 </ButtonLink>
               </span>
               <span className="cases-cta-motion cases-cta-motion-secondary">
                 <ButtonLink
-                  href={data.contacts.telegramUrl}
-                  target="_blank"
-                  rel="noreferrer"
+                  href="#estimator"
                   variant="secondary"
-                  icon={<MessageCircle size={18} />}
+                  icon={<Calculator size={18} />}
                 >
                   {copy.telegramCta}
                 </ButtonLink>

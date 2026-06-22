@@ -3,6 +3,7 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
 import type { Locale } from "@/data/site";
+import { trackSiteEvent, type SiteEventName } from "@/lib/site-events";
 
 export function AnalyticsTracker({ locale }: { locale: Locale }) {
   const pathname = usePathname();
@@ -56,6 +57,48 @@ export function AnalyticsTracker({ locale }: { locale: Locale }) {
     const timeoutId = globalThis.setTimeout(sendPageView, 1200);
     return () => globalThis.clearTimeout(timeoutId);
   }, [locale, path]);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const trigger = target.closest("[data-site-event]") as HTMLElement | null;
+      const eventName = trigger?.dataset.siteEvent as SiteEventName | undefined;
+
+      if (!trigger || !eventName) {
+        return;
+      }
+
+      let payload: Record<string, unknown> = {};
+      const rawPayload = trigger.dataset.siteEventPayload;
+
+      if (rawPayload) {
+        try {
+          const parsed = JSON.parse(rawPayload) as unknown;
+
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+            payload = parsed as Record<string, unknown>;
+          }
+        } catch (error) {
+          if (process.env.NODE_ENV !== "production") {
+            console.info("[site-event:payload]", error);
+          }
+        }
+      }
+
+      trackSiteEvent(eventName, {
+        href: trigger.getAttribute("href") ?? undefined,
+        ...payload,
+      });
+    };
+
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
 
   return null;
 }

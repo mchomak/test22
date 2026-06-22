@@ -6,7 +6,12 @@ export function MobileContactBar({ site }: { site: SiteData }) {
 
   return (
     <aside className="mobile-contact-bar" aria-label={ui.stickyCta.discuss}>
-      <a href="#quick-lead" className="mobile-contact-bar-primary">
+      <a
+        href="#quick-lead"
+        className="mobile-contact-bar-primary"
+        data-site-event="sticky_cta_click"
+        data-site-event-payload='{"target":"quick-lead"}'
+      >
         <MessageCircle size={17} />
         <span>{ui.stickyCta.discuss}</span>
       </a>
@@ -17,6 +22,8 @@ export function MobileContactBar({ site }: { site: SiteData }) {
         aria-label={ui.stickyCta.telegram}
         title={ui.stickyCta.telegram}
         className="mobile-contact-bar-icon"
+        data-site-event="sticky_cta_click"
+        data-site-event-payload='{"target":"telegram"}'
       >
         <Send size={17} />
       </a>
@@ -27,6 +34,8 @@ export function MobileContactBar({ site }: { site: SiteData }) {
         aria-label={ui.stickyCta.whatsapp}
         title={ui.stickyCta.whatsapp}
         className="mobile-contact-bar-icon"
+        data-site-event="sticky_cta_click"
+        data-site-event-payload='{"target":"whatsapp"}'
       >
         <MessageCircle size={17} />
       </a>

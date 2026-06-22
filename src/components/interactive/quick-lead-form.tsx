@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState, type FormEvent } from "react";
 import type { SiteData } from "@/data/site";
+import { trackSiteEvent } from "@/lib/site-events";
 
 type ContactChannel = "telegram" | "whatsapp" | "phone" | "email";
 type SubmitState = "idle" | "sending" | "success" | "error";
@@ -79,6 +80,10 @@ export function QuickLeadForm({
     if (!contactValue.trim() || !comment.trim()) {
       setSubmitState("error");
       setSubmitMessage(copy.validationError);
+      trackSiteEvent("quick_form_submit_error", {
+        reason: "validation",
+        source,
+      });
       return;
     }
 
@@ -129,11 +134,20 @@ export function QuickLeadForm({
       setComment("");
       setSubmitState("success");
       setSubmitMessage(copy.success);
+      trackSiteEvent("quick_form_submit_success", {
+        channel,
+        source,
+      });
     } catch (error) {
       setSubmitState("error");
       setSubmitMessage(
         error instanceof Error ? error.message : copy.validationError,
       );
+      trackSiteEvent("quick_form_submit_error", {
+        channel,
+        reason: error instanceof Error ? error.message : "unknown",
+        source,
+      });
     }
   };
 

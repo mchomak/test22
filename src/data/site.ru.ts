@@ -1258,7 +1258,7 @@ export const ui = {
   header: {
     backToTop: "Наверх",
     navAria: "Главная навигация",
-    contactCta: "Telegram",
+    contactCta: "Обсудить проект",
     languageAria: "Переключить язык",
     languageNames: {
       ru: "Русский",
@@ -1499,9 +1499,9 @@ export const ui = {
     outcomesAria: "Ключевые модули",
     details: "Подробнее",
     similar: "Хочу похожий проект",
-    nextStepTitle: "Превратите похожий кейс в первую конфигурацию проекта",
-    estimateCta: "Собрать заявку",
-    telegramCta: "Обсудить в Telegram",
+    nextStepTitle: "Обсудите похожий проект или посчитайте точнее",
+    estimateCta: "Обсудить похожий проект",
+    telegramCta: "Посчитать точнее",
   },
   casesPage: {
     backHome: "На главную",

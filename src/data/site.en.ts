@@ -1032,7 +1032,7 @@ const ui: SiteData["ui"] = {
   header: {
     backToTop: "Back to top",
     navAria: "Main navigation",
-    contactCta: "Telegram",
+    contactCta: "Discuss a project",
     languageAria: "Switch language",
     languageNames: {
       ru: "Русский",
@@ -1274,9 +1274,9 @@ const ui: SiteData["ui"] = {
     outcomesAria: "Key modules",
     details: "Details",
     similar: "I want a similar project",
-    nextStepTitle: "Turn a case into your first scope",
-    estimateCta: "Build my scope",
-    telegramCta: "Discuss in Telegram",
+    nextStepTitle: "Discuss a similar project or estimate it more precisely",
+    estimateCta: "Discuss a similar project",
+    telegramCta: "Get a tighter estimate",
   },
   casesPage: {
     backHome: "Back home",

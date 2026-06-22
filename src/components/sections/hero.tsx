@@ -83,6 +83,7 @@ export function Hero({
                 href="#quick-lead"
                 icon={<MessageCircle size={18} />}
                 className="sm:min-w-48"
+                data-site-event="hero_primary_cta_click"
               >
                 {ui.hero.primaryCta}
               </ButtonLink>

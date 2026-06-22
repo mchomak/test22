@@ -57,6 +57,7 @@ import {
   type ProjectTypeId,
   type SiteData,
 } from "@/data/site";
+import { trackSiteEvent } from "@/lib/site-events";
 
 type SubmitState = "idle" | "sending" | "success" | "error";
 
@@ -410,6 +411,9 @@ function ProjectEstimatorForm({
     if (!contact.telegram.trim() || !contact.comment.trim()) {
       setSubmitState("error");
       setSubmitMessage(copy.validationError);
+      trackSiteEvent("estimator_submit_error", {
+        reason: "validation",
+      });
       return;
     }
 
@@ -458,6 +462,10 @@ function ProjectEstimatorForm({
           ? copy.successDelivered
           : copy.successStub,
       );
+      trackSiteEvent("estimator_submit_success", {
+        category: activeType.id,
+        presetCase: activePresetCase?.slug ?? "",
+      });
     } catch (error) {
       setSubmitState("error");
       setSubmitMessage(
@@ -465,6 +473,10 @@ function ProjectEstimatorForm({
           ? error.message
           : copy.unknownSubmitError,
       );
+      trackSiteEvent("estimator_submit_error", {
+        category: activeType.id,
+        reason: error instanceof Error ? error.message : "unknown",
+      });
     }
   };
 
@@ -722,7 +734,16 @@ function ProjectEstimatorForm({
           fallbackHref="#quick-lead"
           fallbackLabel={copy.directFallback}
         >
-          <details className="estimator-module-details">
+          <details
+            className="estimator-module-details"
+            onToggle={(event) => {
+              if (event.currentTarget.open) {
+                trackSiteEvent("estimator_module_details_open", {
+                  category: selectedTypeId,
+                });
+              }
+            }}
+          >
             <summary>
               <span>
                 <span className="eyebrow-muted">{copy.modulesToggle}</span>
@@ -809,6 +830,8 @@ function ProjectEstimatorForm({
               <a
                 href="#quick-lead"
                 className="estimator-telegram-link"
+                data-site-event="estimator_direct_fallback_click"
+                data-site-event-payload='{"source":"success"}'
               >
                 <MessageCircle size={16} />
                 <span>{copy.directFallback}</span>
@@ -840,6 +863,8 @@ function ProjectEstimatorForm({
                     <a
                       href="#quick-lead"
                       className="estimator-telegram-link"
+                      data-site-event="estimator_direct_fallback_click"
+                      data-site-event-payload='{"source":"submit_error"}'
                     >
                       <MessageCircle size={16} />
                       <span>{copy.directFallback}</span>
@@ -927,6 +952,8 @@ function ProjectEstimatorForm({
           <a
             className="estimator-telegram-link"
             href="#quick-lead"
+            data-site-event="estimator_direct_fallback_click"
+            data-site-event-payload='{"source":"summary"}'
           >
             <MessageCircle size={16} />
             <span>{copy.directFallback}</span>
@@ -1001,7 +1028,17 @@ function ConfigBlock({
             {description}
           </p>
           {fallbackHref && fallbackLabel ? (
-            <a href={fallbackHref} className="estimator-step-fallback">
+            <a
+              href={fallbackHref}
+              className="estimator-step-fallback"
+              onClick={() =>
+                trackSiteEvent("estimator_direct_fallback_click", {
+                  source: "step",
+                  step: label,
+                  title,
+                })
+              }
+            >
               <ArrowRight size={14} />
               {fallbackLabel}
             </a>
