@@ -1042,7 +1042,7 @@ const ui: SiteData["ui"] = {
   header: {
     backToTop: "Back to top",
     navAria: "Main navigation",
-    contactCta: "Telegram",
+    contactCta: "Discuss a project",
     languageAria: "Switch language",
     languageNames: {
       ru: "Русский",
@@ -1270,6 +1270,8 @@ const ui: SiteData["ui"] = {
     outcomesAria: "Key modules",
     details: "Details",
     similar: "I want a similar project",
+    discussCta: "Discuss a similar project",
+    estimateCta: "Get a tighter estimate",
   },
   casesPage: {
     backHome: "Back home",

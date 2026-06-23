@@ -11,7 +11,7 @@ export function SiteHeader({
   locale: Locale;
   site: SiteData;
 }) {
-  const { contacts, navItems, ui } = site;
+  const { navItems, ui } = site;
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#050607]/80 backdrop-blur-md">
@@ -55,9 +55,7 @@ export function SiteHeader({
             />
           </Suspense>
           <ButtonLink
-            href={contacts.telegramUrl}
-            target="_blank"
-            rel="noreferrer"
+            href="#quick-lead"
             variant="secondary"
             className="hidden min-h-10 px-4 sm:inline-flex"
           >

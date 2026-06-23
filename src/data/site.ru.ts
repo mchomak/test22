@@ -1270,7 +1270,7 @@ export const ui = {
   header: {
     backToTop: "Наверх",
     navAria: "Главная навигация",
-    contactCta: "Telegram",
+    contactCta: "Обсудить проект",
     languageAria: "Переключить язык",
     languageNames: {
       ru: "Русский",
@@ -1498,6 +1498,8 @@ export const ui = {
     outcomesAria: "Ключевые модули",
     details: "Подробнее",
     similar: "Хочу похожий проект",
+    discussCta: "Обсудить похожий проект",
+    estimateCta: "Посчитать точнее",
   },
   casesPage: {
     backHome: "На главную",

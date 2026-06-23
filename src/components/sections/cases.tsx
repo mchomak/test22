@@ -2,6 +2,7 @@ import { Layers3 } from "lucide-react";
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
 import { CaseShowcaseLoader } from "@/components/sections/cases-showcase-loader";
+import { ButtonLink } from "@/components/ui/button-link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import type { Locale, SiteData } from "@/data/site";
 
@@ -44,6 +45,17 @@ export function Cases({
             copy={copy}
             locale={locale}
           />
+        </Reveal>
+
+        <Reveal>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <ButtonLink href="#quick-lead" variant="primary">
+              {copy.discussCta}
+            </ButtonLink>
+            <ButtonLink href="#estimator" variant="secondary">
+              {copy.estimateCta}
+            </ButtonLink>
+          </div>
         </Reveal>
       </div>
     </section>
