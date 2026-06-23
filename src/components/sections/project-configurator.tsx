@@ -11,6 +11,7 @@ export function ProjectConfigurator({ site }: { site: SiteData }) {
     urgencyOptions: site.urgencyOptions,
     projectModules: site.projectModules,
     ui: site.ui,
+    contacts: site.contacts,
   };
 
   return (

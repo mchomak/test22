@@ -1128,10 +1128,10 @@ const ui: SiteData["ui"] = {
     proofLabel: "proof",
   },
   configurator: {
-    eyebrow: "Project request estimator",
-    title: "Build your project configuration",
+    eyebrow: "Precise estimate",
+    title: "If you want a tighter number - configure the project",
     description:
-      "Choose the solution type, modules and timeline - the site will show a budget range and prepare a request.",
+      "This is an optional step. You can pick the solution type to get a budget orientation, and expand modules only if needed.",
   },
   quickLead: {
     title: "Briefly describe the task",
@@ -1168,14 +1168,13 @@ const ui: SiteData["ui"] = {
     whatsapp: "WhatsApp",
   },
   estimator: {
-    steps: [
-      "Project type",
-      "Complexity",
-      "Modules",
-      "Timeline",
-      "Contacts",
-      "Submit",
-    ],
+    steps: ["Type", "Estimate", "Contact"],
+    leadTitle: "You can get a tighter number or just write",
+    leadDescription:
+      "Choose a project type if you want a budget range. If you have little input, leave the short request above or write directly.",
+    directFallback: "Or just write to me",
+    blockFallback: "or leave a short request",
+    optionalLabel: "optional",
     moneyLocale: "en-US",
     currency: "$",
     currencyPosition: "prefix",
@@ -1204,7 +1203,8 @@ const ui: SiteData["ui"] = {
     fields: {
       name: "Name",
       namePlaceholder: "How should I address you",
-      telegram: "Telegram",
+      contact: "Where to reply",
+      contactPlaceholder: "Telegram, phone, WhatsApp or email",
       email: "Email",
       emailPlaceholder: "optional",
       fileUrl: "Spec / file link",
@@ -1217,7 +1217,7 @@ const ui: SiteData["ui"] = {
       "The calculator shows an orientation point. Final cost is fixed after a short discussion of the task, integrations, design and timeline.",
     submit: "Send configuration",
     sendAnother: "Send another",
-    validationError: "Please add Telegram and briefly describe the task.",
+    validationError: "Leave a contact and briefly describe the task.",
     fallbackSubmitError: "Could not submit the request.",
     unknownSubmitError:
       "Could not submit the request. Please try writing in Telegram.",

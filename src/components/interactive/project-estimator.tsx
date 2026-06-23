@@ -28,7 +28,7 @@ type SubmitState = "idle" | "sending" | "success" | "error";
 
 type ProjectEstimatorData = Pick<
   SiteData,
-  "projectTypes" | "complexityLevels" | "urgencyOptions" | "projectModules" | "ui"
+  "projectTypes" | "complexityLevels" | "urgencyOptions" | "projectModules" | "ui" | "contacts"
 >;
 
 const roundBudget = (value: number, step: number, min: number) =>
@@ -136,7 +136,8 @@ function ProjectEstimatorForm({
   data: ProjectEstimatorData;
   initialState: EstimatorInitialState;
 }) {
-  const { complexityLevels, projectModules, projectTypes, ui, urgencyOptions } = data;
+  const { complexityLevels, contacts, projectModules, projectTypes, ui, urgencyOptions } =
+    data;
   const copy = ui.estimator;
   const money = useMemo(
     () => new Intl.NumberFormat(copy.moneyLocale),
@@ -297,6 +298,7 @@ function ProjectEstimatorForm({
       },
       contact: {
         name: contact.name.trim(),
+        value: contact.telegram.trim(),
         telegram: contact.telegram.trim(),
         email: contact.email.trim(),
       },
@@ -339,8 +341,8 @@ function ProjectEstimatorForm({
     <div className="grid gap-5 rounded-[2rem] border border-white/10 bg-[#101311]/68 p-4 backdrop-blur-md sm:p-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <form onSubmit={handleSubmit} className="grid gap-6">
         <div className="rounded-3xl border border-white/10 bg-black/18 p-4 sm:p-5">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
+          <div className="mb-5 flex items-start gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-300/25 bg-emerald-300/10 text-emerald-200">
               <SlidersHorizontal size={20} />
             </span>
             <div>
@@ -348,12 +350,15 @@ function ProjectEstimatorForm({
                 {copy.kicker}
               </p>
               <h3 className="text-xl font-semibold text-white">
-                {copy.title}
+                {copy.leadTitle}
               </h3>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+                {copy.leadDescription}
+              </p>
             </div>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="grid gap-2 sm:grid-cols-3">
             {copy.steps.map((step, index) => (
               <div
                 key={step}
@@ -375,6 +380,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.typeTitle}
           description={copy.typeDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.blockFallback}
         >
           <div className="grid gap-3 md:grid-cols-2">
             {projectTypes.map((type) => {
@@ -422,6 +429,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.complexityTitle}
           description={copy.complexityDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.blockFallback}
         >
           <div className="grid gap-3 md:grid-cols-3">
             {complexityLevels.map((level) => {
@@ -454,6 +463,9 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.modulesTitle}
           description={copy.modulesDescription.replace("{category}", activeType.label)}
+          badge={copy.optionalLabel}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.blockFallback}
         >
           <div className="grid gap-3 md:grid-cols-2">
             {modules.map((module) => {
@@ -504,6 +516,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.urgencyTitle}
           description={copy.urgencyDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.blockFallback}
         >
           <div className="grid gap-3 md:grid-cols-3">
             {urgencyOptions.map((option) => {
@@ -536,6 +550,8 @@ function ProjectEstimatorForm({
           copy={copy}
           title={copy.contactsTitle}
           description={copy.contactsDescription}
+          fallbackHref="#quick-lead"
+          fallbackLabel={copy.blockFallback}
         >
           <div className="grid gap-3 md:grid-cols-2">
             <Field
@@ -547,9 +563,9 @@ function ProjectEstimatorForm({
             />
             <Field
               icon={<MessageCircle size={16} />}
-              label={copy.fields.telegram}
+              label={copy.fields.contact}
               value={contact.telegram}
-              placeholder="@username"
+              placeholder={copy.fields.contactPlaceholder}
               required
               onChange={(value) => updateContact("telegram", value)}
             />
@@ -714,6 +730,32 @@ ${copy.timelineLabel} ${estimate.timeline}`}
           </p>
         </div>
 
+        <div className="mt-6 border-t border-white/10 pt-5">
+          <p className="mb-3 text-xs font-medium text-zinc-400">
+            {copy.directFallback}
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href={contacts.telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 text-sm font-medium text-emerald-100 transition hover:border-emerald-300/45 hover:bg-emerald-300/15"
+            >
+              <Send size={15} />
+              Telegram
+            </a>
+            <a
+              href={contacts.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 text-sm font-medium text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.07]"
+            >
+              <MessageCircle size={15} />
+              WhatsApp
+            </a>
+          </div>
+        </div>
+
         <a
           href="#cases"
           className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.07]"
@@ -731,26 +773,46 @@ function ConfigBlock({
   copy,
   title,
   description,
+  badge,
+  fallbackHref,
+  fallbackLabel,
   children,
 }: {
   label: string;
   copy: ProjectEstimatorData["ui"]["estimator"];
   title: string;
   description: string;
+  badge?: string;
+  fallbackHref?: string;
+  fallbackLabel?: string;
   children: ReactNode;
 }) {
   return (
     <section className="rounded-3xl border border-white/10 bg-black/18 p-4 sm:p-5">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/75">
+          <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-emerald-300/75">
             {copy.stepPrefix} {label}
+            {badge ? (
+              <span className="rounded-full border border-white/15 bg-white/[0.04] px-2 py-0.5 text-[10px] tracking-[0.12em] text-zinc-400">
+                {badge}
+              </span>
+            ) : null}
           </p>
           <h3 className="mt-2 text-xl font-semibold text-white">{title}</h3>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
             {description}
           </p>
         </div>
+        {fallbackHref && fallbackLabel ? (
+          <a
+            href={fallbackHref}
+            className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-emerald-300/80 transition hover:text-emerald-200"
+          >
+            <ArrowRight size={13} />
+            {fallbackLabel}
+          </a>
+        ) : null}
       </div>
       {children}
     </section>
