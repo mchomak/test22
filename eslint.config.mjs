@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local artifacts (browser profiles, git worktrees) — not project source.
+    ".checks/**",
+    ".worktrees/**",
   ]),
 ]);
 
