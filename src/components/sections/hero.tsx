@@ -9,12 +9,11 @@ import { Reveal } from "@/components/reveal";
 import { ButtonLink } from "@/components/ui/button-link";
 import { EngineeringScene } from "@/components/interactive/engineering-scene";
 import { HeroHeadline } from "@/components/interactive/hero-headline";
-import { LiveTelemetry } from "@/components/interactive/live-telemetry";
 import { QuickLeadForm } from "@/components/interactive/quick-lead-form";
 import type { SiteData } from "@/data/site";
 
 export function Hero({ site }: { site: SiteData }) {
-  const { contacts, heroMetrics, stack, ui } = site;
+  const { contacts, heroMetrics, ui } = site;
 
   return (
     <section
@@ -37,7 +36,7 @@ export function Hero({ site }: { site: SiteData }) {
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_67%_46%,transparent_0%,rgba(5,6,7,0.2)_30%,rgba(5,6,7,0.84)_78%),linear-gradient(90deg,rgba(5,6,7,0.98)_0%,rgba(5,6,7,0.78)_40%,rgba(5,6,7,0.2)_100%)]" />
       <div className="absolute inset-x-0 bottom-0 z-[1] h-36 bg-gradient-to-t from-[#090a0a] to-transparent" />
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8 lg:py-18">
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-18">
         <Reveal className="max-w-3xl">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 font-mono text-xs uppercase tracking-[0.18em] text-zinc-300 shadow-2xl shadow-black/30 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,231,183,0.8)]" />
@@ -65,17 +64,25 @@ export function Hero({ site }: { site: SiteData }) {
               {ui.hero.secondaryCta}
             </ButtonLink>
           </div>
+        </Reveal>
 
-          <div id="quick-lead" className="mt-6 max-w-xl scroll-mt-24">
+        <Reveal
+          delay={0.12}
+          className="w-full lg:max-w-xl lg:justify-self-end"
+        >
+          <div id="quick-lead" className="scroll-mt-24">
             <QuickLeadForm
               contacts={contacts}
               copy={ui.quickLead}
               source="hero"
-              compact
             />
           </div>
+        </Reveal>
+      </div>
 
-          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
+        <Reveal>
+          <div className="grid gap-3 sm:grid-cols-3">
             {heroMetrics.map((metric) => (
               <div
                 key={metric.label}
@@ -91,26 +98,6 @@ export function Hero({ site }: { site: SiteData }) {
               </div>
             ))}
           </div>
-
-          <div className="mt-8 flex flex-wrap gap-2">
-            {stack.slice(0, 12).map((item, index) => (
-              <span
-                key={item}
-                className="stack-chip rounded-full border border-white/10 bg-black/35 px-3 py-1.5 font-mono text-xs text-zinc-400 backdrop-blur"
-                style={{ animationDelay: `${index * 95}ms` }}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </Reveal>
-
-        <Reveal
-          delay={0.12}
-          className="relative min-h-[560px] lg:min-h-[700px]"
-        >
-          <div className="absolute inset-0 rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_52%_48%,rgba(16,185,129,0.12),transparent_35%)] shadow-[0_0_120px_rgba(16,185,129,0.08)]" />
-          <LiveTelemetry copy={ui.liveTelemetry} />
         </Reveal>
       </div>
 

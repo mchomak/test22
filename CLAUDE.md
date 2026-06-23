@@ -4,56 +4,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
----
-
-# PROJECT CONTEXT — YClients Push Automation
-
-**Goal:** Server-side automation that reads leads from a Google Sheet and sends push
-notifications to clients through the YClients web cabinet, then writes the result back
-to the same sheet.
-
-**Why a browser, not pure API:** YClients exposes client-base operations via API, but
-push broadcasts are documented only through the web UI (push reaches clients who have the
-YClients app installed with notifications enabled). So client lookup/create *may* use the
-API, but the push-send step MUST go through the UI via Playwright.
-
-**Flow:**
-```
-Google Sheets (rows: phone, push text, extra fields, status)
-  → Python backend (polling every 15–60s; optional Apps Script webhook)
-  → task queue (1 task = 1 row; processed strictly serially)
-  → Playwright worker (persistent Chromium profile, logged-in YClients session)
-  → YClients UI: find client by phone → create if missing (no dupes) → send push
-  → write status back to the sheet
-```
-Result statuses written back: sent · client-created · client-already-existed · error
-(+message) · skipped · no-push-channel · reprocessed.
-
-**Stack:** Python · Playwright (persistent context, Chromium) · Google Sheets API (gspread
-or google-api-python-client) · FastAPI (webhook + manual trigger) · PostgreSQL (queue +
-state) · Docker / Docker Compose · loguru · healthcheck endpoint + Docker restart policy.
-Deployed on a Russian VPS (Ubuntu, Docker Compose).
-
-**Key invariants / risks:**
-- Process strictly one row at a time in the browser — prevents duplicate clients and UI
-  conflicts.
-- Idempotency via row status + internal `task_id`.
-- Persistent browser profile in a Docker volume so a container restart restores the
-  logged-in session.
-- Main fragility: YClients markup changes, modal dialogs, and slow loads — error handling
-  here is the core of the work.
-
-**Chosen approach (locked; detail in the Obsidian project note):** Variant 3 — a single
-persistent browser worker + task queue, with **every** action done through the YClients UI
-via Playwright (no API; variants 1 and 2 are dropped — the client's whole process is
-UI-based and testing runs on the client's own accounts). Built incrementally: MVP = Sheets
-polling + persistent Playwright worker + Docker, processing rows strictly one at a time;
-then add the Apps Script webhook (a reaction accelerator, not a replacement for polling)
-and a durable queue. Concurrency is always 1 to prevent duplicate clients and UI conflicts;
-idempotency via row status + internal `task_id`; the logged-in session lives in a persistent
-Chromium profile in a Docker volume.
-
----
+**Active working branch:** commit and push to **`dev-from-bf347aa`** (branched from `bf347aa`, the commit currently deployed on the VPS). This is the current base for new work.
 
 ## 1. Think Before Coding
 
@@ -298,67 +249,6 @@ minimum the subagent can't derive itself:
 
 Add a line of genuinely out-of-note context only if needed (e.g. an environment
 quirk). Never paste the note's checklist into the prompt.
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## ⚠️ This is Next.js 16 — not the version you were trained on
-
-APIs, conventions, and file structure differ from older Next.js. **Read the relevant guide in `node_modules/next/dist/docs/` before writing any Next.js code**, and heed deprecation notices. Confirmed breaking changes that already shape this repo:
-
-- **Middleware is renamed to "Proxy".** There is no `middleware.ts`. The locale logic lives in [src/proxy.ts](src/proxy.ts), which exports a `proxy(request)` function plus `config.matcher`. See `node_modules/next/dist/docs/01-app/01-getting-started/16-proxy.md`.
-- **`params` is async.** Page / layout / `generateMetadata` receive `params: Promise<{ lang: string }>` and must `await` it (see [src/app/[lang]/layout.tsx](src/app/[lang]/layout.tsx)).
-- **`images.qualities` must be allow-listed** in [next.config.ts](next.config.ts) (`next/image` rejects qualities not in the array).
-
-## Commands
-
-```bash
-npm run dev      # dev server on :3000 (predev runs sync:case-images first)
-npm run build    # production build (prebuild runs sync:case-images first)
-npm start        # prestart runs prepare-standalone.mjs, then serves .next/standalone/server.js
-npm run lint     # eslint (eslint-config-next: core-web-vitals + typescript)
-
-npm run sync:case-images      # copy img/<source>/<locale> → public/cases/<locale>/<slug>
-npm run optimize:case-images  # ffmpeg PNG/JPG → WebP in img/ and public/cases/ (needs ffmpeg on PATH)
-```
-
-There is **no test runner** configured. "Production check" is `npm run lint && npm run build && npm start`.
-
-Path alias: `@/*` → `src/*`.
-
-## Architecture
-
-Bilingual (ru/en) single-page marketing site for a freelance dev, plus a cases archive, a lead-capture API, and a private admin dashboard. App Router, React 19, Tailwind CSS v4 (`@tailwindcss/postcss`), TypeScript strict.
-
-### Localization is the backbone
-- Locales are `["ru", "en"]`, default `en` (defined in both [src/data/site.ts](src/data/site.ts) and [src/proxy.ts](src/proxy.ts) — keep them in sync).
-- [src/proxy.ts](src/proxy.ts) resolves the locale for every non-asset request: `site-locale` cookie → CIS country header (geo) → `Accept-Language`. It redirects `/` → `/{locale}`, persists the cookie, and sets an `x-site-locale` request header.
-- Localized routes live under [src/app/[lang]/](src/app/[lang]/). The `[lang]` segment is validated by `getLocaleFromParams` — an unknown lang triggers `notFound()`.
-- The [src/app/(redirects)/](src/app/(redirects)/) route group holds the bare `/` and `/cases` entries that redirect into the default locale (these paths are excluded from the proxy matcher).
-
-### Content lives in data files, not components
-- **All copy, cases, service packages, FAQ, and the estimator config** are in [src/data/site.ru.ts](src/data/site.ru.ts) and [src/data/site.en.ts](src/data/site.en.ts).
-- [src/data/site.ts](src/data/site.ts) is the aggregator. `SiteData = typeof ruSiteData` — **the Russian file is the canonical shape; the English file must structurally match it** or types break. Use `getSiteData(locale)` to read, `getLocalizedHref(locale, href)` to build locale-aware links.
-- Sections in [src/components/sections/](src/components/sections/) and interactive bits in [src/components/interactive/](src/components/interactive/) receive `site` data as props from [src/app/[lang]/page.tsx](src/app/[lang]/page.tsx); they don't fetch.
-
-### Case-image pipeline (two stages)
-1. **Build-time sync** ([scripts/sync-case-images.mjs](scripts/sync-case-images.mjs), runs in predev/prebuild): copies source images from `img/<sourceFolder>/[locale]/` into `public/cases/<locale>/<slug>/`. The `slug → sourceFolder` mapping table is hardcoded in that script — add new cases there.
-2. **Request-time resolution** ([src/data/case-images.ts](src/data/case-images.ts)): picks the best available extension (preference `avif > webp > jpg > png`), treats `preview_sq` as the cover and `preview_rec` + numeric-named files as the gallery, with fallbacks to the static `coverImage` in the data file.
-- `optimize:case-images` is a separate manual step that shells out to **ffmpeg** to generate `.webp` siblings.
-
-### Backend (API route handlers, `runtime = "nodejs"`)
-- [src/app/api/project-leads/route.ts](src/app/api/project-leads/route.ts): validates a lead → `insertProjectLead` (Postgres) → `sendTelegramMessage` → `updateLeadTelegramStatus`. Returns `502` on Telegram failure but still reports whether the lead was `stored`.
-- [src/app/api/analytics/page-view/route.ts](src/app/api/analytics/page-view/route.ts): records a visit per [src/components/analytics-tracker.tsx](src/components/analytics-tracker.tsx). Raw IP is never stored — only a salted SHA-256 hash (`ANALYTICS_SALT`). Skips `/admin` paths.
-
-### Persistence & integrations (`server-only`)
-- [src/lib/database.ts](src/lib/database.ts): one `pg` Pool cached on `globalThis`; schema is **auto-created lazily** (`CREATE TABLE IF NOT EXISTS`) on first query via `ensureSchema`. Tables: `project_leads`, `site_visits`. Every query goes through `withDatabase()`, **which returns `null` when `DATABASE_URL` is unset — the whole app degrades gracefully with no database.**
-- [src/lib/telegram.ts](src/lib/telegram.ts): raw `node:https` POST to the Bot API with an optional outbound proxy (`TELEGRAM_PROXY_URL` via `proxy-agent`, since the Bot API has no proxy field). Stubs to `console.info` when token/chat are unset.
-- [src/lib/admin-auth.ts](src/lib/admin-auth.ts): `/admin` is gated by an HMAC-signed (`ADMIN_SESSION_SECRET`) session cookie scoped to `/admin`; credentials come from `ADMIN_USERNAME`/`ADMIN_PASSWORD`. Login/logout are server actions in [src/app/admin/actions.ts](src/app/admin/actions.ts). `requireAdminSession()` redirects unauthenticated users to `/admin/login`.
-
-### Deployment
-`output: "standalone"`. `npm start` runs [scripts/prepare-standalone.mjs](scripts/prepare-standalone.mjs) to copy `.next/static` and `public/` into `.next/standalone/` (Next doesn't bundle those), then runs the standalone server. `deploymentId` comes from `DEPLOYMENT_VERSION`. Ships via [docker-compose.yml](docker-compose.yml) (app + a `postgres` service); see [README.md](README.md) for the full server/Nginx flow.
-
-### Environment variables
-Optional in dev, but feature-gating: `DATABASE_URL` (no DB → leads/analytics silently skip persistence), `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` (+ `TELEGRAM_PROXY_URL`), `ADMIN_USERNAME`/`ADMIN_PASSWORD`/`ADMIN_SESSION_SECRET`, `ANALYTICS_SALT`, `NEXT_PUBLIC_SITE_URL`, `DEPLOYMENT_VERSION`. Copy `.env.example` → `.env`. Full reference is in [README.md](README.md).
 
 ---
 
