@@ -29,115 +29,115 @@ const navItems: SiteData["navItems"] = [
 ];
 
 const heroMetrics: SiteData["heroMetrics"] = [
-  { value: "5 yrs", label: "production engineering" },
+  { value: "5 yrs", label: "commercial development" },
   { value: "30+", label: "bots, services and integrations" },
-  { value: "6 lanes", label: "Telegram / AI / Backend / Web / Parsing / Crypto" },
+  { value: "6 areas", label: "Telegram / AI / services / websites / data / crypto" },
 ];
 
 const specializations: SiteData["specializations"] = [
   {
-    title: "Telegram bots and Mini Apps",
+    title: "Telegram bots and mini apps",
     audience:
-      "For businesses that need a familiar Telegram interface for leads, sales, subscriptions, personal accounts and user support.",
+      "For businesses that need to take leads, sell, run subscriptions, personal accounts and support right inside Telegram - where the clients already are.",
     includes: [
       "bots for leads, stores, subscriptions and payments",
-      "Mini Apps with catalog, account area and referral mechanics",
-      "admin panel, notifications, analytics and exports",
+      "mini apps with catalog, personal account and friend invites",
+      "control panel, notifications, reports and exports",
     ],
     tech: "aiogram 3, Telegram Bot API, Telegram Web Apps, PostgreSQL, Redis",
     result:
-      "You get a working funnel inside Telegram: the user reaches payment, a lead or another target action without a manual operator in the middle.",
+      "You get more than a chat bot - a ready sales system inside Telegram: the client goes all the way to payment or the needed action on their own.",
   },
   {
-    title: "AI / ML / neural modules",
+    title: "Artificial intelligence and neural networks",
     audience:
-      "For teams that need AI inside a product, support flow, education product, document processing or internal operations.",
+      "For teams that want to add artificial intelligence to a product, support, education, document processing or everyday tasks.",
     includes: [
-      "AI assistants and workflows on OpenAI / Claude APIs",
-      "RAG knowledge bases, document processing and classification",
-      "history, roles, limits, logs and response control",
+      "smart assistants and workflows powered by ChatGPT and Claude",
+      "answers based on your documents, plus their processing and sorting",
+      "chat history, access rights, limits and response control",
     ],
     tech: "OpenAI SDK, Anthropic SDK, PyTorch, FastAPI, PostgreSQL",
     result:
-      "AI becomes part of the process: it answers using your data, speeds up routine work and avoids manual copying between services.",
+      "Artificial intelligence becomes part of the work: it answers using your data, speeds up routine and removes manual copying between services.",
   },
   {
-    title: "Parsing and automation",
+    title: "Data collection and automation",
     audience:
-      "For projects that need scheduled data collection, change tracking, table updates, alerts or removal of manual operations.",
+      "For projects that need to collect data regularly, track changes, update tables, send alerts and remove manual work.",
     includes: [
       "data collection from one or several websites",
-      "scheduled runs, proxies, authorization and anti-bot risk handling",
-      "export to CSV / Excel / Google Sheets or a database",
+      "scheduled runs and stable work even when sites block access",
+      "export to Excel, Google Sheets or a database",
     ],
     tech: "Python asyncio, Playwright, requests/httpx, PostgreSQL, cron/workers",
     result:
       "Data arrives on schedule and in the right format, while the team stops spending hours on copying, checking and manual notifications.",
   },
   {
-    title: "Web services and admin panels",
+    title: "Websites, services and control panels",
     audience:
-      "For teams that need a working web interface: account area, dashboard, lead form, admin panel or internal tool.",
+      "For teams that need a working website or service: personal account, summary panel, lead form or internal tool.",
     includes: [
-      "frontend, backend API and user roles",
-      "forms, tables, statuses, dashboards and analytics",
-      "payments, integrations, notifications and deployment",
+      "the visible part of the site, server logic and user roles",
+      "forms, tables, statuses, summaries and analytics",
+      "payments, connections to other services, notifications and launch",
     ],
     tech: "Next.js, React, FastAPI, PostgreSQL, Docker, Nginx",
     result:
-      "The result is a clear work surface for users, managers or operators, not a pile of disconnected scripts.",
+      "The result is a clear working tool for clients, managers or operators, not a pile of disconnected programs.",
   },
   {
-    title: "Crypto / trading / blockchain integrations",
+    title: "Crypto projects and trading bots",
     audience:
-      "For crypto products, exchangers and trading teams that need exchange APIs, monitoring, signals, payments or on-chain data.",
+      "For crypto projects, exchangers and trading teams that need connections to exchanges, price tracking, signals, payments or blockchain data.",
     includes: [
-      "Bybit / Binance / OKX APIs, DEX and crypto payments",
-      "price monitoring, trading signals and Telegram alerts",
-      "trade logging, risk limits and dry-run modes",
+      "connections to exchanges (Bybit, Binance, OKX) and crypto payments",
+      "price tracking, trading signals and Telegram alerts",
+      "trade logging, risk limits and a safe test mode",
     ],
     tech: "Bybit API, Binance API, Solana / Ethereum, PostgreSQL, Telegram Bot API",
     result:
-      "Automation watches the market, captures events and helps react faster without constant manual monitoring.",
+      "Automation watches the market, captures events and helps react faster without constant manual watching.",
   },
   {
-    title: "Backend APIs and databases",
+    title: "Server side and databases",
     audience:
-      "For products that need reliable server-side logic: APIs, data models, queues, statuses, integrations and maintainable deployment.",
+      "For products that need a reliable server foundation: data storage, statuses, task queues, connections to other services and a stable launch.",
     includes: [
-      "FastAPI services, databases, queues and background jobs",
-      "authorization, roles, webhooks and external APIs",
-      "logging, Docker deployment and a clear project structure",
+      "server services, databases and background jobs",
+      "login, access rights and connections to external services",
+      "work logs, launch via Docker and a clear project structure",
     ],
     tech: "FastAPI, SQLAlchemy 2.0 async, PostgreSQL, Redis, Docker",
     result:
-      "The server side survives real operations: stores state, handles errors and stays understandable for future development.",
+      "The server side handles real load: stores data, handles errors and stays understandable for future development.",
   },
 ];
 
 const proofItems: SiteData["proofItems"] = [
   {
-    title: "Telegram Mini App",
+    title: "Telegram mini app",
     summary:
-      "Catalog, payments, referrals, admin panel and authorization through Telegram.",
+      "Catalog, payments, friend invites, control panel and login through Telegram.",
     tags: ["Mini App", "payments", "admin"],
   },
   {
     title: "AI service",
     summary:
-      "Structure generation, tests, data processing and product integration.",
+      "Creating structure, tests, data processing and embedding into a product.",
     tags: ["OpenAI / Claude", "RAG", "logs"],
   },
   {
     title: "Crypto bot",
     summary:
-      "Monitoring, signals, exchange APIs, risk limits and Telegram alerts.",
+      "Price tracking, signals, connections to exchanges, risk limits and Telegram alerts.",
     tags: ["Bybit API", "signals", "alerts"],
   },
   {
-    title: "Backend system",
+    title: "Server system",
     summary:
-      "Database, roles, API, admin panel, statuses and production deployment.",
+      "Database, roles, server logic, control panel, statuses and launch on a server.",
     tags: ["FastAPI", "PostgreSQL", "Docker"],
   },
 ];
@@ -156,9 +156,9 @@ const projectTypes: SiteData["projectTypes"] = [
   },
   {
     id: "telegram-mini-app",
-    label: "Telegram Mini App",
+    label: "Telegram mini app",
     description:
-      "Interface inside Telegram: catalog, account area, cart, payment, referrals and admin panel.",
+      "App inside Telegram: catalog, personal account, cart, payment, friend invites and control panel.",
     baseLow: 70000,
     baseHigh: 115000,
     daysLow: 12,
@@ -167,9 +167,9 @@ const projectTypes: SiteData["projectTypes"] = [
   },
   {
     id: "ai-integration",
-    label: "AI integration",
+    label: "Artificial intelligence",
     description:
-      "AI assistant, RAG, document processing, content generation or an AI module inside a product.",
+      "Smart assistant, answers from your documents, file processing, text creation or AI inside a product.",
     baseLow: 60000,
     baseHigh: 105000,
     daysLow: 10,
@@ -178,9 +178,9 @@ const projectTypes: SiteData["projectTypes"] = [
   },
   {
     id: "parser-automation",
-    label: "Parser / automation",
+    label: "Data collection / automation",
     description:
-      "Data collection, scheduled jobs, export, notifications and integrations with tables or databases.",
+      "Data collection, scheduled jobs, exports, notifications and connections to tables or databases.",
     baseLow: 30000,
     baseHigh: 60000,
     daysLow: 5,
@@ -189,9 +189,9 @@ const projectTypes: SiteData["projectTypes"] = [
   },
   {
     id: "web-service",
-    label: "Web service / admin panel",
+    label: "Website / control panel",
     description:
-      "Frontend, backend API, roles, dashboard, admin panel, payments and external integrations.",
+      "Website or service, server logic, access rights, summaries, control panel, payments and connections to other services.",
     baseLow: 75000,
     baseHigh: 130000,
     daysLow: 14,
@@ -202,7 +202,7 @@ const projectTypes: SiteData["projectTypes"] = [
     id: "crypto-trading-bot",
     label: "Crypto / trading bot",
     description:
-      "Exchange APIs, price monitoring, signals, Telegram alerts, crypto payments and risk limits.",
+      "Connections to exchanges, price tracking, signals, Telegram alerts, crypto payments and risk limits.",
     baseLow: 65000,
     baseHigh: 120000,
     daysLow: 10,
@@ -225,8 +225,8 @@ const projectTypes: SiteData["projectTypes"] = [
 const complexityLevels: SiteData["complexityLevels"] = [
   {
     id: "mvp",
-    label: "MVP",
-    description: "One core scenario, minimal roles and integrations.",
+    label: "First version",
+    description: "One core scenario, minimal roles and connections.",
     priceFactor: 0.82,
     daysFactor: 0.86,
   },
@@ -234,7 +234,7 @@ const complexityLevels: SiteData["complexityLevels"] = [
     id: "business",
     label: "Business product",
     description:
-      "Several user scenarios, admin panel, data and day-to-day operation.",
+      "Several scenarios, control panel, data and real-world operation.",
     priceFactor: 1,
     daysFactor: 1,
   },
@@ -242,7 +242,7 @@ const complexityLevels: SiteData["complexityLevels"] = [
     id: "system",
     label: "Complex system",
     description:
-      "Many roles, integrations, states, payments or AI/crypto logic.",
+      "Many roles, connections, statuses, payments or AI and crypto logic.",
     priceFactor: 1.32,
     daysFactor: 1.24,
   },
@@ -278,78 +278,78 @@ const urgencyOptions: SiteData["urgencyOptions"] = [
 const projectModules: SiteData["projectModules"] = {
   "telegram-bot": [
     { id: "database", label: "Database", description: "Users, statuses, orders and action history.", price: 12000, days: 2 },
-    { id: "admin", label: "Admin panel", description: "Operators, settings, tables and manual actions.", price: 26000, days: 4 },
-    { id: "payments", label: "Card payments", description: "Invoices, statuses, webhooks and repeated checks.", price: 24000, days: 4 },
-    { id: "telegram-stars", label: "Telegram Stars", description: "Stars payments and correct event handling.", price: 18000, days: 3 },
-    { id: "crypto-payments", label: "Crypto payments", description: "CryptoBot or a custom crypto payment flow.", price: 26000, days: 4 },
-    { id: "referral", label: "Referral system", description: "Invites, bonuses, limits and accruals.", price: 18000, days: 3 },
+    { id: "admin", label: "Control panel", description: "Operators, settings, tables and manual actions.", price: 26000, days: 4 },
+    { id: "payments", label: "Card payments", description: "Invoices, payment statuses and automatic payment confirmation.", price: 24000, days: 4 },
+    { id: "telegram-stars", label: "Telegram Stars payments", description: "Telegram Stars payments and correct payment handling.", price: 18000, days: 3 },
+    { id: "crypto-payments", label: "Crypto payments", description: "Crypto payments via CryptoBot or a custom flow.", price: 26000, days: 4 },
+    { id: "referral", label: "Friend invites", description: "Invites, bonuses, limits and accruals.", price: 18000, days: 3 },
     { id: "profile", label: "User account", description: "Profile, balance, subscription and order history.", price: 18000, days: 3 },
-    { id: "notifications", label: "Notifications", description: "System messages, admin alerts and reminders.", price: 9000, days: 1 },
-    { id: "analytics", label: "Analytics", description: "Summaries, conversions, exports and key events.", price: 14000, days: 2 },
-    { id: "external-api", label: "External API integration", description: "CRM, payment provider, catalog or third-party service.", price: 22000, days: 4 },
-    { id: "deploy", label: "Deployment", description: "Docker, env, server, basic logs and handoff notes.", price: 12000, days: 2 },
+    { id: "notifications", label: "Notifications", description: "System messages, alerts to administrators and reminders.", price: 9000, days: 1 },
+    { id: "analytics", label: "Analytics", description: "Summaries, sales, exports and key events.", price: 14000, days: 2 },
+    { id: "external-api", label: "Connection to an external service", description: "CRM, payment service, catalog or another third-party service.", price: 22000, days: 4 },
+    { id: "deploy", label: "Launch on a server", description: "Hosting on a server, basic work logs and handoff notes.", price: 12000, days: 2 },
   ],
   "telegram-mini-app": [
     { id: "database", label: "Database", description: "Users, products, requests, payments and statuses.", price: 14000, days: 2 },
-    { id: "admin", label: "Admin panel", description: "Catalog, requests, users and settings.", price: 28000, days: 5 },
-    { id: "payments", label: "Card payments", description: "Payment inside the funnel, webhooks and statuses.", price: 26000, days: 4 },
-    { id: "telegram-stars", label: "Telegram Stars", description: "Stars, limits, receipts and Telegram events.", price: 18000, days: 3 },
-    { id: "crypto-payments", label: "Crypto payments", description: "CryptoBot, addresses, statuses and notifications.", price: 28000, days: 4 },
-    { id: "referral", label: "Referral system", description: "Links, bonuses, tiers and anti-fraud limits.", price: 18000, days: 3 },
+    { id: "admin", label: "Control panel", description: "Catalog, requests, users and settings.", price: 28000, days: 5 },
+    { id: "payments", label: "Card payments", description: "Payment right in the app, automatic confirmation and statuses.", price: 26000, days: 4 },
+    { id: "telegram-stars", label: "Telegram Stars payments", description: "Stars, limits, receipts and Telegram payment handling.", price: 18000, days: 3 },
+    { id: "crypto-payments", label: "Crypto payments", description: "Crypto payments: addresses, statuses and notifications.", price: 28000, days: 4 },
+    { id: "referral", label: "Friend invites", description: "Links, bonuses, tiers and anti-fraud protection.", price: 18000, days: 3 },
     { id: "profile", label: "User account", description: "Profile, history, balance, favorites or orders.", price: 20000, days: 3 },
-    { id: "notifications", label: "Notifications", description: "Bot events, request statuses and admin alerts.", price: 10000, days: 1 },
-    { id: "analytics", label: "Analytics", description: "Funnel, requests, payments, exports and summaries.", price: 16000, days: 2 },
-    { id: "external-api", label: "External API integration", description: "Catalog, CRM, warehouse, exchanger or payment gateway.", price: 24000, days: 4 },
-    { id: "deploy", label: "Deployment", description: "Build, server, nginx, env and production launch.", price: 14000, days: 2 },
+    { id: "notifications", label: "Notifications", description: "Bot messages, request statuses and alerts to administrators.", price: 10000, days: 1 },
+    { id: "analytics", label: "Analytics", description: "Customer path, requests, payments, exports and summaries.", price: 16000, days: 2 },
+    { id: "external-api", label: "Connection to an external service", description: "Catalog, CRM, warehouse, exchanger or payment intake.", price: 24000, days: 4 },
+    { id: "deploy", label: "Launch on a server", description: "Build, hosting on a server and a working launch.", price: 14000, days: 2 },
   ],
   "ai-integration": [
-    { id: "llm-api", label: "OpenAI / Claude API", description: "Model connection, limits, roles and error control.", price: 22000, days: 3 },
-    { id: "rag", label: "RAG knowledge base", description: "Document upload, chunks, search and answer context.", price: 42000, days: 7 },
-    { id: "documents", label: "Document processing", description: "PDFs, tables, classification and data extraction.", price: 28000, days: 5 },
-    { id: "classification", label: "Text classification", description: "Topics, statuses, routing and auto-checks.", price: 20000, days: 3 },
-    { id: "content-generation", label: "Content generation", description: "Prompts, templates, drafts and result control.", price: 22000, days: 3 },
-    { id: "ai-assistant", label: "AI assistant", description: "Dialogue, memory, tools, roles and constraints.", price: 32000, days: 5 },
-    { id: "existing-product", label: "Existing product integration", description: "API, webhooks, UI and safe embedding.", price: 28000, days: 5 },
-    { id: "admin-ai", label: "Admin panel", description: "Prompt settings, limits, users and diagnostics.", price: 24000, days: 4 },
-    { id: "history-logs", label: "History / logs", description: "Dialogues, events, errors, audit and export.", price: 14000, days: 2 },
+    { id: "llm-api", label: "ChatGPT / Claude connection", description: "Connecting the AI, limits, access rights and error control.", price: 22000, days: 3 },
+    { id: "rag", label: "Knowledge base from your documents", description: "Document upload, search across them and answers with a source link.", price: 42000, days: 7 },
+    { id: "documents", label: "Document processing", description: "PDFs, tables, sorting and extraction of the needed data.", price: 28000, days: 5 },
+    { id: "classification", label: "Text sorting", description: "Topics, statuses, sorting into categories and auto-checks.", price: 20000, days: 3 },
+    { id: "content-generation", label: "Text creation", description: "Templates, drafts and result quality control.", price: 22000, days: 3 },
+    { id: "ai-assistant", label: "Smart assistant", description: "Dialogue, memory, skills, access rights and limits.", price: 32000, days: 5 },
+    { id: "existing-product", label: "Embedding into your product", description: "Connection to your service, interface and safe embedding.", price: 28000, days: 5 },
+    { id: "admin-ai", label: "Control panel", description: "Answer settings, limits, users and work checks.", price: 24000, days: 4 },
+    { id: "history-logs", label: "History and logs", description: "Dialogues, events, errors, checks and exports.", price: 14000, days: 2 },
   ],
   "parser-automation": [
     { id: "single-site", label: "Single website", description: "Stable collection from one source.", price: 12000, days: 2 },
-    { id: "multi-site", label: "Multiple websites", description: "Data normalization across several sources.", price: 26000, days: 5 },
-    { id: "auth", label: "Authorization", description: "Account area, cookies, sessions and access refresh.", price: 18000, days: 3 },
-    { id: "captcha", label: "Captcha / anti-bot", description: "Risk assessment, fallback scenarios and resilience.", price: 26000, days: 5 },
-    { id: "proxies", label: "Proxies", description: "Rotation, limits, errors and block control.", price: 16000, days: 3 },
-    { id: "regular-run", label: "Scheduled runs", description: "Schedule, retries, reports and failure control.", price: 12000, days: 2 },
-    { id: "export", label: "Excel / CSV / Google Sheets", description: "Formatted exports for the team.", price: 12000, days: 2 },
-    { id: "database", label: "Database", description: "History storage, deduplication and statuses.", price: 14000, days: 2 },
+    { id: "multi-site", label: "Multiple websites", description: "Bringing data from several sources to one format.", price: 26000, days: 5 },
+    { id: "auth", label: "Login to an account", description: "Login, session keeping and access refresh.", price: 18000, days: 3 },
+    { id: "captcha", label: "Protection from blocks", description: "Risk assessment, fallback scenarios and stable work.", price: 26000, days: 5 },
+    { id: "proxies", label: "Bypassing limits", description: "Switching access points, bypassing limits and block control.", price: 16000, days: 3 },
+    { id: "regular-run", label: "Scheduled runs", description: "Schedule, repeated attempts, reports and failure control.", price: 12000, days: 2 },
+    { id: "export", label: "Export to Excel / Google Sheets", description: "Ready exports in a format convenient for the team.", price: 12000, days: 2 },
+    { id: "database", label: "Database", description: "History storage, removing duplicates and statuses.", price: 14000, days: 2 },
     { id: "telegram-alerts", label: "Telegram alerts", description: "Alerts for new data, errors and run summaries.", price: 9000, days: 1 },
   ],
   "web-service": [
-    { id: "frontend", label: "Frontend", description: "Product UI, forms, tables and states.", price: 32000, days: 6 },
-    { id: "backend-api", label: "Backend API", description: "Business logic, endpoints, statuses and integrations.", price: 30000, days: 6 },
-    { id: "auth", label: "Authorization", description: "Login, sessions, access rights and security.", price: 20000, days: 3 },
-    { id: "roles", label: "User roles", description: "Admin, operator, client and action limits.", price: 18000, days: 3 },
-    { id: "database-web", label: "Database", description: "Entities, migrations, relations and change history.", price: 18000, days: 3 },
-    { id: "admin", label: "Admin panel", description: "Data management, filters, actions and export.", price: 28000, days: 5 },
-    { id: "dashboard", label: "Dashboard / analytics", description: "Metrics, charts, summaries and operational control.", price: 24000, days: 4 },
-    { id: "payments", label: "Card payments", description: "Invoices, statuses, webhooks and financial events.", price: 26000, days: 4 },
-    { id: "external-integrations", label: "External integrations", description: "CRM, ERP, Telegram, tables or third-party APIs.", price: 24000, days: 4 },
+    { id: "frontend", label: "Visible part of the site", description: "Site interface: forms, tables and screens.", price: 32000, days: 6 },
+    { id: "backend-api", label: "Server logic", description: "Work logic, request handling, statuses and connections.", price: 30000, days: 6 },
+    { id: "auth", label: "Login and access", description: "Login, sessions, access rights and security.", price: 20000, days: 3 },
+    { id: "roles", label: "User roles", description: "Administrator, operator, client and action limits.", price: 18000, days: 3 },
+    { id: "database-web", label: "Database", description: "Data, relations between it and change history.", price: 18000, days: 3 },
+    { id: "admin", label: "Control panel", description: "Data management, filters, actions and export.", price: 28000, days: 5 },
+    { id: "dashboard", label: "Summaries and analytics", description: "Metrics, charts, summaries and operational control.", price: 24000, days: 4 },
+    { id: "payments", label: "Card payments", description: "Invoices, payment statuses and financial events.", price: 26000, days: 4 },
+    { id: "external-integrations", label: "Connections to other services", description: "CRM, accounting systems, Telegram, tables or other services.", price: 24000, days: 4 },
   ],
   "crypto-trading-bot": [
-    { id: "exchange-api", label: "Bybit / Binance / OKX API", description: "REST, WebSocket, limits and error handling.", price: 28000, days: 5 },
-    { id: "dex", label: "Solana / Ethereum DEX", description: "On-chain data, RPC, DEX APIs and transactions.", price: 42000, days: 8 },
-    { id: "price-monitoring", label: "Price monitoring", description: "Market scanner, filters, frequency and storage.", price: 20000, days: 3 },
+    { id: "exchange-api", label: "Connection to exchanges", description: "Getting data and placing trades, limits and error handling.", price: 28000, days: 5 },
+    { id: "dex", label: "Blockchain exchanges (Solana, Ethereum)", description: "Blockchain data, connection to exchanges and placing trades.", price: 42000, days: 8 },
+    { id: "price-monitoring", label: "Price tracking", description: "Market scanner, filters, frequency and storage.", price: 20000, days: 3 },
     { id: "signals", label: "Trading signals", description: "Entry conditions, rules, filters and test modes.", price: 26000, days: 5 },
     { id: "telegram-alerts", label: "Telegram alerts", description: "Signals, trades, errors and daily reports.", price: 9000, days: 1 },
     { id: "crypto-payments", label: "Crypto payments", description: "Payment intake, statuses, checks and notifications.", price: 26000, days: 4 },
-    { id: "trade-logs", label: "Trade logs", description: "History, PnL, dry-run, export and audit.", price: 16000, days: 3 },
-    { id: "risk-limits", label: "Risk limits", description: "Position limits, stops, shutdowns and duplicate protection.", price: 24000, days: 4 },
+    { id: "trade-logs", label: "Trade journal", description: "Trade history, profit and loss, test mode and exports.", price: 16000, days: 3 },
+    { id: "risk-limits", label: "Risk limits", description: "Trade limits, stop signals, shutdown and duplicate protection.", price: 24000, days: 4 },
   ],
   "not-sure": [
-    { id: "discovery", label: "Discovery", description: "Goal, scenarios, risks and constraints review.", price: 8000, days: 1 },
-    { id: "mvp-scope", label: "MVP scope", description: "What goes into the first version and what waits.", price: 10000, days: 2 },
-    { id: "architecture", label: "Architecture map", description: "Entities, roles, integrations and roadmap.", price: 14000, days: 2 },
-    { id: "prototype", label: "Scenario prototype", description: "Fast clickable or text outline of the solution.", price: 16000, days: 3 },
+    { id: "discovery", label: "Task review", description: "Goal, scenarios, risks and constraints review.", price: 8000, days: 1 },
+    { id: "mvp-scope", label: "First version scope", description: "What goes into the first version and what waits.", price: 10000, days: 2 },
+    { id: "architecture", label: "Solution map", description: "Data, roles, connections and a development plan.", price: 14000, days: 2 },
+    { id: "prototype", label: "Solution outline", description: "Fast clickable or text outline of the solution.", price: 16000, days: 3 },
   ],
 };
 
@@ -375,32 +375,32 @@ type CaseTranslation = Omit<Partial<CaseStudy>, "preview"> & {
 
 const caseTranslations: Record<string, CaseTranslation> = {
   "subscription-bot": {
-    title: "Subscription Bot - digital subscriptions with automatic access",
+    title: "Subscription Bot - selling subscriptions with automatic access delivery",
     type: "Subscription automation",
     category: "Telegram",
     shortSummary:
-      "Telegram bot for a subscription product: plans, four payment providers, automatic access delivery and a web admin panel for operators.",
+      "Telegram bot for selling subscriptions: plans, four payment methods, automatic access delivery and a control panel for operators.",
     problem:
-      "Leads, payments and access delivery were handled manually in chat: clients waited for an operator, plans got mixed up and audience growth broke the process.",
+      "Leads, payments and access delivery were handled manually in chat: clients waited for an operator, plans got mixed up and audience growth broke the manual process.",
     solution:
-      "One aiohttp service handles the Telegram bot, payment webhooks and a Jinja2 admin panel. The purchase flow is built as an FSM: plan, location, payment and automatic access delivery.",
+      "One service handles the Telegram bot, payment intake and a control panel. The purchase runs step by step: plan, location, payment and automatic access delivery.",
     result:
-      "The funnel from plan selection to access delivery works without a human, while the operator manages plans, payments, broadcasts and disputed cases in the admin panel.",
+      "The path from plan selection to access delivery runs without a human, while the operator manages plans, payments, broadcasts and disputed cases in the control panel.",
     metrics: ["4 payment providers", "automatic access", "broadcasts and reminders"],
     outcomes: ["card payments", "admin panel", "auto delivery", "broadcasts"],
-    timeframe: "MVP + production launch",
+    timeframe: "First version + production launch",
     keyResult:
       "A subscription purchase completes without an operator: from plan selection to access delivery.",
     context: [
-      "The client needed a Telegram sales funnel for digital subscriptions without manual credentials delivery in direct messages.",
+      "The client needed to sell subscriptions right inside Telegram, without delivering access manually in direct messages.",
       "The manual process did not scale: operators mixed up plans, locations and payment statuses.",
-      "A simple chat bot was not enough: payment webhooks, an admin panel, reminders and controlled edge cases were required.",
+      "A simple chat bot was not enough: payment intake, a control panel, reminders and handling of non-standard cases were required.",
     ],
     modules: [
-      "FSM purchase flow: plan, location, payment provider, invoice and access delivery.",
-      "Jinja2 admin panel for plans, users, payments, providers and broadcasts.",
-      "APScheduler for subscription expiration, reminders and background broadcast jobs.",
-      "Settings and button cache with invalidation after admin panel changes.",
+      "Step-by-step purchase: plan, location, payment method, invoice and access delivery.",
+      "Control panel for plans, users, payments, payment methods and broadcasts.",
+      "Automatic jobs: subscription expiration, reminders and bulk broadcasts.",
+      "Fast work thanks to cached settings that refresh after changes in the control panel.",
     ],
     architecture: ["User", "Telegram bot", "aiohttp backend", "PostgreSQL", "payment webhooks", "admin panel"],
     media: [
@@ -409,42 +409,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["purchase FSM", "APScheduler jobs", "webhook flow map"] },
     ],
     challenges: [
-      { title: "Many payment providers", text: "Events are normalized into one payment model so operators see statuses consistently regardless of source." },
-      { title: "Automatic access without chaos", text: "The purchase is split into FSM steps, and access delivery starts only after a confirmed payment event." },
-      { title: "Settings without redeploy", text: "Plans, locations and payment toggles live in the admin panel with controlled cache refresh." },
+      { title: "Several payment methods", text: "All payments are brought to one format so the operator sees statuses the same way, regardless of the payment method." },
+      { title: "Automatic access without chaos", text: "The purchase is split into clear steps, and access is delivered only after a confirmed payment." },
+      { title: "Settings without a developer", text: "Plans, locations and payment methods are changed right in the control panel, without reinstalling." },
     ],
     resultDetails: [
       "Operators only handle disputed cases and support.",
-      "Plans, locations and providers are managed through the admin panel.",
+      "Plans, locations and payment methods are managed through the control panel.",
       "The user receives access immediately after successful payment.",
     ],
   },
   "sapsanex-mini-app": {
-    title: "SapsanEx - Telegram Mini App for an exchanger",
+    title: "SapsanEx - a mini app for an exchanger inside Telegram",
     type: "Telegram Mini App / exchanger",
     category: "Mini App",
     shortSummary:
-      "Mini App for an exchanger: rate calculation, request creation, status polling and notifications stay inside Telegram.",
+      "Mini app for an exchanger: rate calculation, request creation, status tracking and notifications - all inside Telegram.",
     problem:
-      "A user came from Telegram, moved to a website, created a request and checked status on a separate screen. The mobile funnel lost people at every transition.",
+      "A user came from Telegram, moved to a website, created a request and checked status on a separate page. On a phone, people were lost at every transition.",
     solution:
-      "A Docker Compose stack combines a React Mini App, FastAPI gateway, aiogram bot and PostgreSQL. Authorization uses Telegram initData, while the exchanger API is wrapped in a typed layer.",
+      "A mini app, a server gateway, a Telegram bot and a database were built together. Login happens automatically through Telegram, with no separate account, while the connection to the exchanger service is hidden behind a reliable layer.",
     result:
-      "Rate calculation, request creation, status polling, timeout cancellation and status notifications stay inside Telegram with no separate login.",
+      "Rate calculation, request creation, status tracking, automatic cancellation of expired requests and status notifications - all inside Telegram, with no separate login.",
     metrics: ["Telegram WebApp auth", "typed exchanger gateway", "ru/en i18n"],
     outcomes: ["Mini App", "Telegram auth", "API gateway", "statuses"],
-    timeframe: "ready for production deployment",
+    timeframe: "ready for launch",
     keyResult: "The exchange flow runs in Telegram without sending the user to an external website.",
     context: [
       "Customers came from Telegram, but the key exchange steps happened on an external website.",
-      "The mobile funnel lost users between the bot, browser and status page.",
-      "The third-party exchanger API used form-data and lacked a convenient typed request model.",
+      "On a phone, users were lost between the bot, browser and status page.",
+      "The third-party exchanger service was inconvenient to connect to and gave no clean request structure.",
     ],
     modules: [
-      "React + TypeScript Mini App with calculator, request creation and history.",
-      "FastAPI gateway over the exchanger API with Pydantic models.",
-      "aiogram bot for WebApp launch and status change notifications.",
-      "Background timeout cancellation and status polling inside the interface.",
+      "Mini app with a calculator, request creation and history.",
+      "Server gateway to the exchanger service with data validation.",
+      "Telegram bot for launching the app and status change notifications.",
+      "Automatic cancellation of stuck requests and status updates right in the app.",
     ],
     architecture: ["User", "Telegram WebApp", "React Mini App", "FastAPI gateway", "Premium Exchanger API", "PostgreSQL", "aiogram bot"],
     media: [
@@ -453,42 +453,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["HMAC initData", "typed API wrapper", "WebApp flow map"] },
     ],
     challenges: [
-      { title: "Authorization without login", text: "Telegram initData is validated with HMAC-SHA256, so the user does not need a separate account." },
-      { title: "Unfriendly external API", text: "The form-data API is hidden behind a typed gateway layer, so the frontend works with clean DTOs." },
-      { title: "Stuck requests", text: "A background job closes timed-out requests, while the user sees current status directly in the Mini App." },
+      { title: "Login without a separate account", text: "Login happens automatically and securely through Telegram, so the user does not need a separate account." },
+      { title: "Inconvenient external service", text: "The connection to the exchanger service is hidden behind a clean layer, so the app works with understandable data." },
+      { title: "Stuck requests", text: "An automatic job closes expired requests, while the user sees the current status right in the app." },
     ],
     resultDetails: [
       "Calculation, request creation and tracking remain inside Telegram.",
-      "Statuses arrive through bot notifications and update inside the Mini App.",
-      "A local request journal stores history and reduces dependence on the external API.",
+      "Statuses arrive through bot notifications and update inside the app.",
+      "A local request journal stores history and reduces dependence on the external service.",
     ],
   },
   "seedream-tryon": {
-    title: "Seedream Bot - AI clothing try-on in Telegram",
+    title: "Seedream Bot - clothing try-on with a neural network in Telegram",
     type: "AI bot / e-commerce",
     category: "AI",
     shortSummary:
-      "Telegram bot for AI try-on: product upload, generation parameters, Seedream API, Telegram Stars, YooKassa and a FastAPI admin panel.",
+      "Telegram bot for virtual try-on: product upload, settings, the Seedream neural network, payment via Telegram Stars and YooKassa, plus a control panel.",
     problem:
-      "A store needed a try-on flow that felt like a product, not a demo: payments, balance, history, moderation and operator visibility had to be included.",
+      "A store needed a try-on flow that felt like a real product, not a demo: payments, balance, history and operator visibility had to be included.",
     solution:
-      "The bot guides the user through upload, generation settings and payment, then sends the job to Seedream. FastAPI admin covers users, tariffs, payments and manual balance changes.",
+      "The bot guides the user through upload, settings and payment, then sends the job to the Seedream neural network. The control panel covers users, plans, payments and manual balance changes.",
     result:
-      "A store gets AI try-on and monetization inside Telegram, with operator control over payments and user balances.",
+      "A store gets virtual try-on and earnings inside Telegram, with operator control over payments and user balances.",
     metrics: ["Seedream API", "Stars + YooKassa", "FastAPI admin"],
     outcomes: ["AI generation", "payments", "balance", "admin"],
-    timeframe: "own product / demo-ready",
-    keyResult: "The store gets AI try-on and monetization inside Telegram.",
+    timeframe: "own product / ready to show",
+    keyResult: "The store gets virtual try-on and earnings inside Telegram.",
     context: [
-      "The goal was to turn AI try-on into a paid Telegram product with a clean user flow.",
+      "The goal was to turn virtual try-on into a paid Telegram product with a clear user flow.",
       "Users needed history, balance and understandable limits, not a one-off generation command.",
-      "The operator needed visibility into users, payments, tariffs and manual credits.",
+      "The operator needed visibility into users, payments, plans and manual credits.",
     ],
     modules: [
-      "Telegram bot flow for product upload, parameters, generation and result history.",
-      "Seedream API integration with request validation and result delivery.",
+      "Telegram bot flow for product upload, settings, generation and result history.",
+      "Connection to the Seedream neural network with request validation and result delivery.",
       "Telegram Stars and YooKassa payments with balance accounting.",
-      "FastAPI admin panel for users, tariffs, payments and manual credits.",
+      "Control panel for users, plans, payments and manual credits.",
     ],
     architecture: ["User", "Telegram bot", "FastAPI backend", "Seedream API", "payments", "PostgreSQL", "admin panel"],
     media: [
@@ -497,42 +497,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Admin panel", items: ["users", "payments", "tariffs", "manual credits"] },
     ],
     challenges: [
-      { title: "AI as a product, not a demo", text: "Generation is embedded into a clear flow with balance, history and tariffs." },
-      { title: "Two payment rails in one bot", text: "Stars covers quick micro-purchases, while YooKassa covers larger packages and subscription scenarios." },
-      { title: "Operator control", text: "The admin panel shows payments, users and credits without database access." },
+      { title: "A neural network as a product, not a demo", text: "Generation is embedded into a clear user flow with balance, history and plans." },
+      { title: "Two payment methods in one bot", text: "Telegram Stars are handy for quick small purchases, while YooKassa is for packages and subscriptions." },
+      { title: "Operator control", text: "The control panel shows payments, users and credits without database access." },
     ],
     resultDetails: [
-      "A user can buy generations and receive AI try-on results inside Telegram.",
-      "The store can manage tariffs and balances without developer involvement.",
-      "The architecture is ready for product demos and further e-commerce integration.",
+      "A user can buy generations and receive try-on results inside Telegram.",
+      "The store can manage plans and balances without developer involvement.",
+      "The solution is ready for product demos and reuse in other online stores.",
     ],
   },
   "ai-reply-assistant": {
-    title: "AI Reply Assistant - Telegram bot with 7 AI scenarios",
+    title: "AI Reply Assistant - Telegram bot with 7 smart scenarios",
     type: "AI Telegram bot",
     category: "AI",
     shortSummary:
-      "AI assistant inside Telegram: seven scenarios, GPT-4o, YooKassa, referral flow and proxy rotation for stable model access.",
+      "Smart assistant inside Telegram: seven scenarios, the GPT-4o neural network, payment via YooKassa, friend invites and backup access channels for stable work.",
     problem:
-      "The product needed to package multiple AI reply scenarios into a simple Telegram flow with payments, trial limits and stable upstream access.",
+      "The product needed to pack several reply scenarios into a simple Telegram flow with payments, trial limits and stable access to the neural network.",
     solution:
-      "A scenario router builds prompts, tracks user limits and sends requests through a proxy pool. YooKassa, referrals and usage history are tied to the user account.",
+      "The bot picks the right scenario, tracks user limits and sends requests through backup access channels. Payment via YooKassa, friend invites and usage history are tied to the user account.",
     result:
-      "Users receive AI replies in Telegram, while model calls run through a resilient proxy pool.",
+      "Users receive replies from the neural network in Telegram, while access to it goes through resilient backup channels.",
     metrics: ["7 AI scenarios", "GPT-4o", "proxy rotation"],
     outcomes: ["prompt builder", "payments", "referrals", "limits"],
-    timeframe: "MVP ready for production",
-    keyResult: "The user gets AI replies in Telegram, and the model is called through a resilient proxy pool.",
+    timeframe: "First version ready for launch",
+    keyResult: "The user gets replies from the neural network in Telegram, and access to it goes through resilient backup channels.",
     context: [
-      "The product needed several AI scenarios without turning the bot into a confusing prompt editor.",
-      "Access to the model had to survive slow or failing proxy nodes.",
-      "Trial limits, packages, receipts and referral bonuses had to stay consistent in the database.",
+      "The product needed several reply scenarios without turning the bot into a confusing editor.",
+      "Access to the neural network had to survive slow or failing channels.",
+      "Trial limits, packages, receipts and invite bonuses had to stay consistent.",
     ],
     modules: [
-      "Telegram scenario menu with context upload and AI answer variants.",
-      "Prompt builder for seven use cases with shared safety and formatting rules.",
-      "YooKassa checkout, referral screen and user limits.",
-      "Proxy pool with cooldown for failed nodes and rotation for slow ones.",
+      "Telegram scenario menu with context upload and answer variants.",
+      "Seven scenarios, each with its own request preparation and answer parsing.",
+      "Payment via YooKassa, a free trial and an invite program.",
+      "A set of backup access channels with health checks and disabling of slow ones.",
     ],
     architecture: ["User", "Telegram bot", "scenario router", "prompt builder", "proxy pool", "GPT-4o", "PostgreSQL"],
     media: [
@@ -541,42 +541,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["prompt builder", "proxy rotation", "YooKassa webhook"] },
     ],
     challenges: [
-      { title: "Neutral UX", text: "Scenarios are framed as a universal messaging assistant without risky public wording." },
-      { title: "Unstable upstream", text: "The proxy pool picks a working node, cools down failed proxies and rotates slow ones." },
-      { title: "Payment funnel", text: "Trial, packages, fiscal receipt and referral bonuses are connected to user limits in the database." },
+      { title: "Neutral and clear interface", text: "Scenarios are framed as a universal messaging assistant, without questionable wording." },
+      { title: "Unstable external access", text: "The system itself picks a working channel, temporarily disables failing ones and skips slow ones." },
+      { title: "Clear payment", text: "Trial, packages, receipt and invites are connected to user limits." },
     ],
     resultDetails: [
-      "The bot can serve multiple AI reply scenarios from one clean menu.",
-      "Payments and limits are connected to user state.",
-      "Proxy rotation improves model access stability.",
+      "The user stays in Telegram and gets answer variants without manual copying.",
+      "The bot itself picks a working access channel to the neural network.",
+      "Payments and bonuses go into a single user balance.",
     ],
   },
   "bybit-trading-bot": {
-    title: "ByBit Trading Bot - 24/7 spot trading",
+    title: "ByBit Trading Bot - automated crypto trading 24/7",
     type: "Crypto trading automation",
     category: "Crypto",
     shortSummary:
-      "Trading automation: Bybit WebSocket/REST, Volume Spike + Price Acceleration strategy, risk manager and Telegram reports.",
+      "Trading automation: connection to the Bybit exchange, a strategy based on volume spikes and price acceleration, risk control and Telegram reports.",
     problem:
-      "The market had to be scanned continuously across hundreds of instruments, with signal logic separated from execution and risk controls.",
+      "The market had to be scanned continuously across hundreds of trading pairs, with signal logic separated from execution and risk control.",
     solution:
-      "The scanner receives market data through Bybit WebSocket/REST, the strategy detects volume and acceleration, and the risk manager controls entries, exits and dry-run behavior.",
+      "The scanner receives market data from the Bybit exchange, the strategy detects volume spikes and price acceleration, and risk control manages entries, exits and a test mode.",
     result:
       "Scanning, signal generation, position entry and exit run autonomously around the clock.",
     metrics: ["300+ instruments", "dry-run mode", "Telegram reports"],
     outcomes: ["market scanner", "strategy", "risk manager", "alerts"],
-    timeframe: "production-ready pipeline",
+    timeframe: "a ready-to-run system",
     keyResult: "Scanning, signal, entry and exit work autonomously 24/7.",
     context: [
-      "Manual monitoring was too slow for the number of spot instruments.",
-      "Signal logic needed to be testable without immediately placing real orders.",
-      "The operator needed Telegram reports and visibility into positions.",
+      "Manual watching was too slow for the number of trading pairs.",
+      "Signal logic needed to be testable without immediately placing real trades.",
+      "The operator needed Telegram reports and visibility into open trades.",
     ],
     modules: [
-      "Bybit WebSocket/REST market scanner with filtering.",
-      "Volume Spike + Price Acceleration strategy.",
-      "Position manager with limits, stops and exit conditions.",
-      "Telegram signals, close notifications and daily reports.",
+      "Market scanner on the Bybit exchange with selection by liquidity.",
+      "Trading strategy based on volume spikes and price acceleration.",
+      "Risk control: stop signals, profit taking and a limit on the number of open trades.",
+      "Telegram notifications about trades, positions and daily profit or loss.",
     ],
     architecture: ["Bybit market data", "scanner", "strategy", "risk manager", "order layer", "PostgreSQL", "Telegram reports"],
     media: [
@@ -585,42 +585,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["scanner log", "strategy code", "position manager"] },
     ],
     challenges: [
-      { title: "300+ instruments", text: "The scanner is separated from the strategy so market filtering does not mix with entry logic." },
-      { title: "Risk before live mode", text: "Dry-run allows the full flow to run on real data without placing account orders." },
-      { title: "Position control", text: "The risk manager tracks position limits, stops and exit conditions." },
+      { title: "Over 300 trading pairs", text: "The scanner is separated from the strategy so market selection does not mix with the entry rules." },
+      { title: "Testing without risk", text: "Test mode lets everything run on real data without real trades on the account." },
+      { title: "Trade control", text: "The system tracks the limit of open trades, stop signals and exit conditions." },
     ],
     resultDetails: [
-      "The system scans markets and sends signals without manual watching.",
-      "Dry-run and logging make strategy checks safer before live mode.",
-      "Telegram reports keep the operator informed about entries, exits and health.",
+      "The bot does not need constant manual watching of the market.",
+      "All key events go to Telegram.",
+      "Test mode reduces risk before turning on real trading.",
     ],
   },
   "eps-bot": {
-    title: "EPS Bot - ML trading on Solana DEX",
+    title: "EPS Bot - trading on the Solana blockchain with trainable models",
     type: "DEX trading / ML pipeline",
     category: "Crypto",
     shortSummary:
-      "R&D pipeline for Solana DEX: OHLCV collection, ML model training, strategy, on-chain execution and Telegram reports.",
+      "Research system for exchanges on the Solana blockchain: collecting price data, training models, strategy, placing trades on the blockchain and Telegram reports.",
     problem:
-      "A trading hypothesis needed a single pipeline from market data collection to model training and on-chain execution.",
+      "A trading idea needed a single system from collecting market data to training models and placing trades on the blockchain.",
     solution:
-      "The project separates data collection, model training, strategy thresholds and Solana transaction tooling into distinct layers.",
+      "The project separates data collection, model training, strategy settings and trade placement on the Solana blockchain into distinct layers.",
     result:
-      "The hypothesis can be tested from raw data to an on-chain trade inside one pipeline.",
+      "The idea can be tested from collecting data to a trade on the blockchain inside one system.",
     metrics: ["OHLCV collection", "model compare", "Raydium tx layer"],
     outcomes: ["data pipeline", "ML training", "backtest", "on-chain"],
-    timeframe: "R&D / technology case",
-    keyResult: "The hypothesis is tested from data to an on-chain trade in one pipeline.",
+    timeframe: "research / technology project",
+    keyResult: "The idea is tested from collecting data to a trade on the blockchain in one system.",
     context: [
-      "The goal was not only to trigger trades, but to test the full path from data to execution.",
-      "Models and thresholds had to be replaceable without rewriting API clients.",
-      "Solana RPC and DEX transaction details needed isolation from strategy code.",
+      "The goal was not only to place trades, but to test the full path from data to execution.",
+      "Models and settings had to be replaceable without redoing the connections to exchanges.",
+      "The technical details of the blockchain needed to be isolated from the strategy.",
     ],
     modules: [
-      "OHLCV collection for Solana pools.",
-      "Training pipeline with model comparison and backtest reports.",
-      "Strategy threshold layer for different market regimes.",
-      "Raydium / Solana transaction tools separated from strategy logic.",
+      "Connections to exchanges for collecting price data.",
+      "Storage for samples and history.",
+      "A set of trainable models of different types.",
+      "A layer for placing trades on the Solana blockchain and Telegram reports.",
     ],
     architecture: ["DEX data", "collector", "training pipeline", "strategy", "tx_tools", "Solana RPC", "Telegram reports"],
     media: [
@@ -629,42 +629,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["LSTM snippet", "strategy threshold", "Raydium tx"] },
     ],
     challenges: [
-      { title: "Data before model", text: "Market collection and training are separated so the model can change without rewriting API clients." },
-      { title: "Different models", text: "The pipeline allows comparing several architectures and thresholds for different market regimes." },
-      { title: "On-chain execution", text: "tx_tools are isolated so the strategy does not depend on Solana RPC details." },
+      { title: "Data first, then the model", text: "Data collection and training are separated so the model can change without redoing the connections to exchanges." },
+      { title: "Different models", text: "The system allows comparing several models and settings for different market conditions." },
+      { title: "Trades on the blockchain", text: "Trade placement is isolated so the strategy does not depend on the technical details of the blockchain." },
     ],
     resultDetails: [
-      "The R&D loop covers data, training, backtest and execution.",
-      "Models and thresholds can be changed independently.",
-      "On-chain execution is separated from strategy logic.",
+      "The system became the basis for the next crypto projects and automations.",
+      "Models and settings can be changed without breaking the whole system.",
+      "Telegram reports give the full picture without a separate panel.",
     ],
   },
   "frax-redesign": {
-    title: "Frax - WordPress crypto exchanger redesign",
+    title: "Frax - design update for a WordPress crypto exchanger",
     type: "Crypto exchanger redesign",
     category: "Web",
     shortSummary:
-      "Frontend redesign for a WordPress exchanger: new UI, mobile calculator and careful integration over the existing plugin.",
+      "Visual update for a WordPress exchanger: new design, a convenient calculator on phones and careful work on top of the existing plugin.",
     problem:
-      "The exchanger needed a more mature interface without replacing the CMS or risking the existing exchange backend.",
+      "The exchanger needed a more mature look without replacing the platform or risking the existing exchange logic.",
     solution:
-      "The redesign wraps existing plugin outputs with a new layout, component CSS layer and mobile-first calculator flow.",
+      "The page templates were redone, a new unified style was built, the main screen and calculator were reworked, and the plugin data was neatly placed into the new design.",
     result:
-      "The new interface was rolled out without replacing the CMS or disturbing the exchange backend.",
+      "The working site started matching the expectations of the exchanger market, the phone version became convenient, and the existing exchange logic stayed stable.",
     metrics: ["WordPress layer", "mobile calculator", "no backend rewrite"],
     outcomes: ["redesign", "mobile UX", "shortcode wrapper", "safe rollout"],
-    timeframe: "production rollout",
-    keyResult: "The new interface was shipped without replacing the CMS or risking the exchange backend.",
+    timeframe: "launch on the live site",
+    keyResult: "The new design launched without changing the platform and without risk to the exchange logic.",
     context: [
-      "The business logic already worked inside WordPress and could not be replaced quickly.",
-      "The old interface reduced trust and was uncomfortable on mobile.",
-      "The client needed maintainable templates without heavy build infrastructure.",
+      "The client already had a working exchanger on WordPress with a specialized plugin.",
+      "The plugin stored rates, directions, limits, requests and partner connections.",
+      "A full move was expensive and risky, so the look had to be updated on top of the existing logic.",
     ],
     modules: [
-      "New landing and exchange direction screens.",
-      "Mobile calculator and application form improvements.",
-      "PHP shortcode wrapper around existing plugin output.",
-      "CSS component layer for maintainable visual updates.",
+      "New unified style and reworked page templates.",
+      "Main screen and exchange calculator, convenient on phones.",
+      "Neat embedding of the plugin data into the new design.",
+      "Lightweight styling code without complex tools, so the site is easier to maintain.",
     ],
     architecture: ["User", "WordPress page", "shortcode wrapper", "existing plugin", "exchange backend", "operator"],
     media: [
@@ -673,42 +673,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["PHP shortcode wrapper", "CSS component layer"] },
     ],
     challenges: [
-      { title: "Do not break the plugin", text: "Business logic was not rewritten: the new markup wrapped existing outputs." },
-      { title: "Mobile calculator", text: "Fields, buttons and action order were redesigned for one-handed use." },
-      { title: "Client support", text: "Styles and templates stayed in a simple WordPress layer without unnecessary tooling." },
+      { title: "Do not break the plugin", text: "The exchange logic was not rewritten: the new design simply wrapped the existing plugin data." },
+      { title: "Calculator on phones", text: "Fields, buttons and action order were redesigned for comfortable one-handed use." },
+      { title: "Client support", text: "Styling and templates were kept simple, so the client can maintain the site without complex tools." },
     ],
     resultDetails: [
-      "The exchanger received a more trustworthy interface.",
-      "The rollout did not require backend replacement.",
-      "The client can maintain the visual layer in WordPress.",
+      "The site became visually closer to the 2026 exchanger market.",
+      "On phones, placing a request became clearer and larger.",
+      "The existing exchange logic stayed stable and familiar to the client.",
     ],
   },
   "tech-rise-academy": {
-    title: "Tech Rise Academy - landing with Telegram leads",
+    title: "Tech Rise Academy - a site with leads straight to Telegram",
     type: "Landing / lead automation",
     category: "Backend",
     shortSummary:
-      "Multi-page academy landing with a FastAPI endpoint: leads are validated and sent to the owner in Telegram within seconds.",
+      "Multi-page academy site: leads are checked and sent to the owner in Telegram within seconds.",
     problem:
-      "The academy needed a fast domain launch and a reliable lead path without a separate CRM.",
+      "The academy needed a fast site without complex client systems: leads were getting lost in direct messages and email, and reply speed in the first minutes decides whether a course is bought.",
     solution:
-      "Static pages are connected to a FastAPI lead endpoint. The backend validates the form and sends a structured lead card to Telegram.",
+      "The main page and course pages were built, a single settings file for texts, and a small service that checks the lead and sends it to the owner in Telegram.",
     result:
-      "A lead reaches the owner in Telegram a few seconds after form submission.",
+      "The site launched on its own domain, leads arrive in Telegram within seconds, and contacts and links can be changed without a developer.",
     metrics: ["FastAPI endpoint", "Telegram inbox", "Docker + Nginx"],
     outcomes: ["landing", "lead handler", "Telegram alerts", "deployment"],
-    timeframe: "fast domain launch",
+    timeframe: "fast launch on a domain",
     keyResult: "A lead reaches the owner in Telegram within seconds after the form.",
     context: [
-      "The academy needed to launch pages and start collecting leads quickly.",
-      "A separate CRM would add overhead for the first version.",
-      "Contacts, links and offer details had to be editable without code changes.",
+      "The academy had no site and no separate budget for a client management system.",
+      "Leads were getting lost between direct messages, email and manual chats.",
+      "A lightweight solution was needed that could be maintained without a complex server part and database.",
     ],
     modules: [
-      "Multi-page landing with hero, program sections, course page and lead form.",
-      "FastAPI endpoint for validation and Telegram delivery.",
-      "config.js for contacts, links and offer settings.",
-      "Docker Compose and Nginx deployment setup.",
+      "Main page and two course pages.",
+      "A single settings file for links, contacts and the offer.",
+      "A small lead intake service with data validation.",
+      "Sending a ready lead card to Telegram.",
     ],
     architecture: ["Visitor", "landing form", "FastAPI endpoint", "Telegram Bot API", "owner chat", "Nginx", "Docker"],
     media: [
@@ -717,14 +717,14 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["Docker Compose", "Nginx", "FastAPI endpoint"] },
     ],
     challenges: [
-      { title: "No CRM", text: "A Telegram chat became the single inbox for leads without a separate database or paid CRM." },
-      { title: "Edits without developer", text: "Contacts, links and offer copy were moved into config.js." },
-      { title: "Fast reaction", text: "The backend sends the lead to the owner immediately after form validation." },
+      { title: "Without a client system", text: "A Telegram chat became the single place for all leads, without a separate database or paid systems." },
+      { title: "Edits without a developer", text: "Contacts, links and the offer were moved into a separate settings file." },
+      { title: "Fast reaction", text: "The lead goes to the owner immediately after the form is checked." },
     ],
     resultDetails: [
-      "The academy can collect leads immediately after launch.",
-      "The owner gets structured Telegram notifications.",
-      "Basic content settings can be changed without touching backend logic.",
+      "The owner gets the lead right away in the familiar Telegram.",
+      "Text changes are made precisely in the settings file.",
+      "The site works without heavy technology and a separate client system.",
     ],
   },
   "gym-progres": {
@@ -732,27 +732,27 @@ const caseTranslations: Record<string, CaseTranslation> = {
     type: "Niche web app",
     category: "Backend",
     shortSummary:
-      "Personal workout tracker: SSR on FastAPI, Alpine.js auto-save, public templates and progress history.",
+      "Personal site for tracking workouts: auto-save, ready templates via a link and progress history.",
     problem:
-      "Workout logging needed to be fast on one screen and should not lose sets while the user trains.",
+      "Notes and spreadsheets quickly turned into a mess, while ready fitness apps were overloaded with ads, subscriptions and extra features.",
     solution:
-      "SSR screens provide a lightweight interface, while Alpine.js sends debounced auto-save updates to JSON endpoints.",
+      "Pages are built on the server, data saves automatically as you type, exercises are stored in an expandable catalog, and workout templates are added via a regular link.",
     result:
-      "A workout can be logged on one screen: the user enters sets and the data saves itself.",
+      "The user logs sets without a Save button, sees progress history and can add someone else's workout template without duplicates.",
     metrics: ["SSR + Alpine.js", "auto-save", "public templates"],
     outcomes: ["workout form", "auto-save", "templates", "progress"],
     timeframe: "own product",
     keyResult: "A workout can be tracked on one screen: enter sets and the data saves automatically.",
     context: [
-      "A training tracker needed a fast interface without heavy client-side infrastructure.",
-      "Set data had to persist while the user was still editing.",
-      "Shared templates needed import without duplicates.",
+      "Notes and spreadsheets are a poor fit for regularly logging sets and progress.",
+      "Ready apps are overloaded with extra features and subscriptions.",
+      "A lightweight product was needed with ready templates via a link and saving without a button.",
     ],
     modules: [
-      "FastAPI SSR dashboard, workout form and exercise catalog.",
-      "Alpine.js auto-save with debounced JSON API updates.",
-      "Public templates, import confirmation and share modal.",
-      "Progress history and charts.",
+      "App pages that are built on the server.",
+      "Auto-save as you type, without a Save button.",
+      "An exercise catalog that can be expanded without a restart.",
+      "Ready workout templates and adding them without duplicates.",
     ],
     architecture: ["User", "SSR page", "Alpine.js", "JSON API", "database", "templates", "progress view"],
     media: [
@@ -761,42 +761,42 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["auto-save snippet", "template import", "SSR + JSON architecture"] },
     ],
     challenges: [
-      { title: "Auto-save without surprises", text: "Changes are debounced on the client and sent to a JSON API, so the user simply enters data." },
-      { title: "Templates without duplicates", text: "Import is idempotent: existing elements do not multiply." },
-      { title: "Niche app without React", text: "SSR + Alpine.js gave a fast interface without a heavy client stack." },
+      { title: "Auto-save without surprises", text: "Changes save automatically as you type, so the user simply enters data." },
+      { title: "Templates without duplicates", text: "Adding a template is set up so existing exercises are not duplicated." },
+      { title: "Lightweight app without heavy technology", text: "A simple approach gave a fast interface without bulky tools." },
     ],
     resultDetails: [
-      "Workout entry is fast and resilient to missed save clicks.",
-      "Templates can be shared and imported safely.",
-      "The product stays lightweight and easy to maintain.",
+      "Sets are saved without a button and manual control.",
+      "Templates can be shared with a regular link.",
+      "History and charts give a quick overview of progress.",
     ],
   },
   "skillup": {
-    title: "SkillUp - AI learning platform",
+    title: "SkillUp - a learning platform powered by a neural network",
     type: "AI education product",
     category: "AI",
     shortSummary:
-      "Full-stack AI service: onboarding, personal roadmap generation, progress tree, Celery/Redis and Anthropic API.",
+      "A complete learning service with a neural network: getting to know the user, a personal development plan, a progress tree and background task processing.",
     problem:
-      "Learners needed a structured plan instead of a long AI text answer, with progress, explanations and quizzes.",
+      "Ordinary neural network answers are chaotic walls of text, while ready learning-plan sites do not account for the level and goal of a specific person.",
     solution:
-      "Onboarding data is sent to an AI pipeline that generates a four-tier roadmap. Long jobs run through Celery, and the frontend renders the plan as an interactive tree.",
+      "A complete product was built: a site, a server part, background processing of heavy tasks and the Claude neural network for getting to know the user, the plan, explanations and tests.",
     result:
-      "The user receives a personal learning plan and sees progress as an interactive tree.",
+      "In a few minutes the user gets a personal learning plan with 4 levels, where progress is shown as an interactive tree with open and locked steps.",
     metrics: ["4-tier roadmap", "Celery/Redis", "Claude API"],
     outcomes: ["onboarding", "AI roadmap", "progress tree", "quiz"],
-    timeframe: "own AI product",
+    timeframe: "own product with a neural network",
     keyResult: "The user gets a personal learning plan and sees progress as an interactive tree.",
     context: [
-      "The product had to turn a vague learning goal into a concrete path.",
-      "Long AI tasks needed progress feedback instead of a frozen interface.",
-      "The roadmap had to remain structured for explanations, statuses and quizzes.",
+      "Ordinary neural network answers turn poorly into a clear step-by-step plan.",
+      "Ready learning-plan sites are too general and do not account for the user's level.",
+      "A complete scenario was needed: getting to know the user, building a plan, progress, explanations and tests.",
     ],
     modules: [
-      "Onboarding chat that collects goals and current level.",
-      "AI roadmap generation with tiered nodes.",
-      "Interactive progress tree with node statuses.",
-      "Celery/Redis background tasks and Claude API calls.",
+      "A site with an interactive progress tree.",
+      "A server part with a database and work logic.",
+      "Background processing of heavy neural network tasks with progress display.",
+      "The Claude neural network for getting to know the user, the plan, explanations and tests.",
     ],
     architecture: ["User", "onboarding", "AI pipeline", "Celery worker", "Claude API", "database", "progress tree"],
     media: [
@@ -805,14 +805,14 @@ const caseTranslations: Record<string, CaseTranslation> = {
       { title: "Engineering", items: ["Celery task", "canvas layout", "Claude API call"] },
     ],
     challenges: [
-      { title: "Plan instead of text wall", text: "The AI answer is structured into four tiers with nodes, statuses and order." },
-      { title: "Long AI jobs", text: "Generation runs in Celery so the frontend can show progress and stay responsive." },
-      { title: "Flexible tree layout", text: "Node positions are calculated on the frontend from tier and order_index without storing coordinates in the database." },
+      { title: "A plan instead of a wall of text", text: "The neural network's answer is turned into a plan of 4 levels with steps, statuses and order." },
+      { title: "Long neural network tasks", text: "Building the plan runs in the background so the site shows progress and does not freeze." },
+      { title: "Convenient progress tree", text: "The position of the steps is calculated automatically, without storing coordinates in the database." },
     ],
     resultDetails: [
-      "The learner receives a structured roadmap instead of generic advice.",
-      "Long AI generation does not block the interface.",
-      "The tree can grow with new node types and quizzes.",
+      "The user answers a couple of questions and gets a personal learning plan in a few minutes.",
+      "Progress is clearly visible through open and locked steps.",
+      "The neural network's work is split into building the plan, explanations and tests.",
     ],
   },
 };
@@ -834,49 +834,49 @@ const cases: SiteData["cases"] = ruCases.map((item) => {
 const packages: SiteData["packages"] = [
   {
     title: "Basic",
-    subtitle: "Small Telegram bot, MVP or one integration.",
+    subtitle: "Small Telegram bot, first version or one connection.",
     price: `from ${formatDiscountedUsdPrice(48000)}`,
     firstProjectPrice: `first project from ${formatDiscountedUsdPrice(38400)}`,
     term: "1-2 weeks",
     includes: [
-      "task diagnostics and a short technical brief",
+      "task review and a short technical brief",
       "one core user scenario",
-      "bot or backend integration",
-      "basic database or state storage",
-      "deployment and short handoff notes",
+      "bot or server connection",
+      "a simple database or data storage",
+      "launch on a server and short handoff notes",
     ],
-    excludes: ["complex roles and admin panel", "multiple payment providers", "long post-release support"],
+    excludes: ["complex roles and control panel", "multiple payment methods", "long support after launch"],
     featured: false,
   },
   {
     title: "Standard",
     subtitle:
-      "Full bot/backend service with payments, database, admin panel and deployment.",
+      "Full bot or service with payments, database, control panel and launch.",
     price: `from ${formatDiscountedUsdPrice(112000)}`,
     firstProjectPrice: `first project from ${formatDiscountedUsdPrice(89600)}`,
     term: "3-5 weeks",
     includes: [
-      "technical scheme and architecture",
+      "technical scheme of the solution",
       "several user scenarios",
       "payments, database and roles",
-      "admin actions and notifications",
-      "Docker deployment, logging and testing",
+      "administrator actions and notifications",
+      "launch on a server, work logs and testing",
     ],
-    excludes: ["complex ML pipeline", "multi-stage analytics", "24/7 support"],
+    excludes: ["complex model training", "multi-stage analytics", "24/7 support"],
     featured: true,
   },
   {
     title: "Premium",
     subtitle:
-      "Complex system: AI, integrations, payments, queues, monitoring and launch support.",
+      "Complex system: artificial intelligence, connections, payments, task queues, monitoring and launch support.",
     price: `from ${formatDiscountedUsdPrice(224000)}`,
     firstProjectPrice: `first project from ${formatDiscountedUsdPrice(179200)}`,
     term: "6-10 weeks",
     includes: [
-      "detailed architecture and project constraints",
-      "AI/LLM or several external integrations",
-      "payments, queues, monitoring and roles",
-      "documentation, staging and production environments",
+      "detailed scheme and project constraints",
+      "artificial intelligence or several external connections",
+      "payments, task queues, monitoring and roles",
+      "documentation, test and production environments",
       "launch support and stabilization",
     ],
     excludes: ["third-party service purchases", "full custom UI design from scratch", "legal payment setup"],
@@ -888,58 +888,58 @@ const retainer: SiteData["retainer"] = {
   title: "Support and development",
   price: `from ${formatDiscountedUsdPrice(10000)} / month`,
   description:
-    "Bug fixes, small improvements, integration updates, error control, post-release help and planning for next iterations.",
+    "Bug fixes, small improvements, connection updates, error control, help after launch and planning the next steps.",
 };
 
 const budgetGuides: SiteData["budgetGuides"] = [
   {
-    title: "Small bot / script",
+    title: "Small bot / simple program",
     price: `from ${formatDiscountedUsdPrice(15000)}`,
     description:
       "Simple automation, notifications and basic logic.",
   },
   {
-    title: "Business bot / parser / backend module",
+    title: "Business bot / data collection / server module",
     price: `from ${formatDiscountedUsdPrice(40000)}`,
     description:
-      "Database, roles, integrations, API and scheduled jobs.",
+      "Database, roles, connections and scheduled jobs.",
   },
   {
-    title: "Mini App / AI service / turnkey system",
+    title: "Mini app / AI service / turnkey system",
     price: `from ${formatDiscountedUsdPrice(100000)}`,
     description:
-      "Frontend, backend, admin panel, payments, analytics and AI modules.",
+      "Website, server part, control panel, payments, analytics and neural networks.",
   },
 ];
 
 const processSteps: SiteData["processSteps"] = [
   {
-    title: "You send the configuration",
+    title: "You send a request with parameters",
     text:
-      "You choose the solution type, complexity, modules and leave a contact. At this stage the site already shows an initial budget and timeline range.",
+      "You choose the solution type, complexity, the parts you need and leave a contact. At this stage the site already shows an approximate budget and timeline range.",
   },
   {
     title: "I clarify the details",
     text:
-      "I quickly review scenarios, integrations, payments, data, existing materials and risks that may affect the estimate.",
+      "I quickly review scenarios, connections, payments, data, existing materials and risks that may affect the estimate.",
   },
   {
-    title: "We fix the MVP and work boundaries",
+    title: "We fix the first version and work boundaries",
     text:
-      "We define what goes into the first version, which scenarios are critical and what can wait for the next stage.",
+      "We define what goes into the first version, which scenarios matter most and what can wait for the next stage.",
   },
   {
     title: "Final estimate and timeline",
     text:
-      "After clarification I provide a clear estimate, stages, acceptance criteria and start conditions for the actual scope.",
+      "After clarification I provide a clear estimate, stages, acceptance terms and start conditions for the actual scope.",
   },
   {
-    title: "Development, testing, launch",
+    title: "Development, checks, launch",
     text:
-      "I assemble a working product: backend, bot or interface, integrations, scenario checks, deployment and launch.",
+      "I assemble a working product: the server part, a bot or interface, connections, scenario checks and launch on a server.",
   },
   {
-    title: "Post-release support",
+    title: "Support after launch",
     text:
       "After launch we can add support: bug fixes, small improvements, error control and next-version development.",
   },
@@ -948,27 +948,27 @@ const processSteps: SiteData["processSteps"] = [
 const trustItems: SiteData["trustItems"] = [
   "5 years of commercial Python development",
   "30+ completed turnkey projects",
-  "Experience with payments, refunds, statuses and webhooks",
-  "AI/LLM integrations with constraints, roles and knowledge bases",
-  "Backend-first approach: data, statuses and errors are planned early",
-  "Deployment, logging and post-launch support",
+  "Experience with payments, refunds, statuses and payment notifications",
+  "Artificial intelligence integrations with limits, roles and knowledge bases",
+  "A reliable server foundation: data, statuses and errors are planned early",
+  "Launch on a server, work logs and post-launch support",
   "Clear work boundaries, timelines and project-specific conditions",
 ];
 
 const testimonials: SiteData["testimonials"] = [
   {
     quote:
-      "We needed not just a bot, but a working service with payments, statuses and admin actions. Ramil quickly mapped the task, showed risks and brought it to launch without extra drama.",
+      "We needed not just a bot, but a working service with payments, statuses and administrator actions. Ramil quickly mapped the task, showed risks and brought it to launch without extra drama.",
     author: "Founder of a Telegram service",
   },
   {
     quote:
-      "We did not want to break the existing exchanger. We got a careful redesign, a clearer request flow and a more mature product feel without rewriting the whole backend.",
+      "We did not want to break the existing exchanger. We got a careful design update, a clearer request flow and a more mature product feel without rewriting the whole server part.",
     author: "Owner of an exchange project",
   },
   {
     quote:
-      "The value was in the engineering thinking: where to store states, how to limit access, what to monitor after release. The internal tool became predictable in operation.",
+      "The value was in the engineering approach: where to store data, how to limit access, what to track after launch. The internal tool became predictable in operation.",
     author: "Product manager of an internal tool",
   },
 ];
@@ -977,49 +977,49 @@ const faqs: SiteData["faqs"] = [
   {
     question: "Can I start without a ready technical specification?",
     answer:
-      "Yes. It is enough to describe the task, users, desired result and constraints. I will help shape the MVP, scenarios, integrations and first-version boundaries.",
+      "Yes. It is enough to describe the task, users, desired result and constraints. I will help define the first version, scenarios, connections and the boundaries of the first stage.",
   },
   {
     question: "Why is the calculator estimate preliminary?",
     answer:
-      "The calculator cannot see details such as design, existing code quality, API complexity, payments, data volume, deadlines and hidden edge cases. The final cost is fixed after a short task review.",
+      "The calculator cannot see details such as design, existing code quality, complexity of connections, payments, data volume, deadlines and hidden non-standard cases. The final cost is fixed after a short task review.",
   },
   {
-    question: "Can we start with an MVP?",
+    question: "Can we start with a first version?",
     answer:
-      "Yes. Usually an MVP fixes one main scenario, a minimal set of integrations and a clear hypothesis check. After launch, roles, payments, admin panel and analytics can expand.",
+      "Yes. Usually a first version covers one main scenario, a minimum of connections and a clear point to test the idea. After launch, roles, payments, control panel and analytics can expand.",
   },
   {
-    question: "Do you build Telegram Mini Apps?",
+    question: "Do you build mini apps for Telegram?",
     answer:
-      "Yes. I can build a Mini App with Telegram initData authorization, catalog, account area, payments, referrals, admin panel and backend API.",
+      "Yes. I can build a mini app with login through Telegram, catalog, personal account, payments, friend invites, control panel and a server part.",
   },
   {
-    question: "Can AI be added to an existing project?",
+    question: "Can artificial intelligence be added to an existing project?",
     answer:
-      "Yes, if the project can be deployed or has a clear API. Possible options include an AI assistant, RAG knowledge base, document processing, text classification, content generation and history logging.",
+      "Yes, if the project can be launched or has a clear way to connect. Options include a smart assistant, a knowledge base from your documents, document processing, text sorting, text creation and history logging.",
   },
   {
     question: "Do you work with payments, Telegram Stars and crypto?",
     answer:
-      "Yes. YooKassa, Telegram Stars, CryptoBot, crypto payments and custom payment flows are possible. Webhooks, statuses, repeated payments and admin operations are checked separately.",
+      "Yes. YooKassa, Telegram Stars, CryptoBot, crypto payments and custom payment flows are possible. Payment confirmations, statuses, repeated payments and administrator operations are checked separately.",
   },
   {
     question: "Can you improve an existing project?",
     answer:
-      "Yes, if there is access to code, environment and data for testing. I start with diagnostics: dependencies, architecture, database, deployment and change risks.",
+      "Yes, if there is access to the code, run environment and data for testing. I start with a review: dependencies, project structure, database, launch and change risks.",
   },
   {
     question: "What happens after I send a request?",
     answer:
-      "I review the selected configuration, ask clarifying questions, suggest MVP boundaries and return with a final budget range, timeline and stages after a short discussion.",
+      "I review the selected parameters, ask clarifying questions, suggest first-version boundaries and return with a final budget range, timeline and stages after a short discussion.",
   },
 ];
 
 const siteMeta: SiteData["meta"] = {
-  title: "Ramil Kaneev - turnkey AI, backend and Telegram development",
+  title: "Ramil Kaneev - turnkey Telegram bots, neural networks and server development",
   description:
-    "Telegram bots, Mini Apps, AI/ML integrations, backend APIs, parsing, web services, crypto/trading tools, deployment and support.",
+    "Telegram bots, mini apps, neural network integration, server services, data collection, websites, crypto tools, launch and support.",
   keywords: [
     "Ramil Kaneev",
     "mchomak",
@@ -1032,9 +1032,9 @@ const siteMeta: SiteData["meta"] = {
     "parsing",
     "crypto bot",
   ],
-  openGraphTitle: "Ramil Kaneev - AI, backend and Telegram development",
+  openGraphTitle: "Ramil Kaneev - Telegram bots, neural networks and server development",
   openGraphDescription:
-    "Telegram bots, Mini Apps, AI modules, backend systems, parsers and integrations from MVP to production.",
+    "Telegram bots, mini apps, neural networks, server systems, data collection and connections - from first version to launch.",
 };
 
 const ui: SiteData["ui"] = {
@@ -1064,7 +1064,7 @@ const ui: SiteData["ui"] = {
     badge: "For small businesses, experts and product teams",
     headline: ["Telegram bots and services", "for leads and payments"],
     description:
-      "I build bots, Mini Apps, backend systems, AI modules, admin panels and payments - from idea to production launch.",
+      "I build bots, mini apps, server systems, neural networks, control panels and payments - from idea to launch on a server.",
     primaryCta: "Discuss a project",
     secondaryCta: "Get a tighter estimate",
     bottomNote: "Real projects below",
@@ -1111,18 +1111,18 @@ const ui: SiteData["ui"] = {
   specialization: {
     eyebrow: "What I help with",
     title:
-      "Product work without chaos: Telegram, AI, backend, web, parsing and crypto",
+      "A clear set of solutions: Telegram, neural networks, server side, websites, data collection and crypto",
     description:
-      "Each direction is framed around a business result: leads, payments, data, automation, interfaces, integrations and launch.",
+      "Each direction is built around a business result: leads, payments, data, automation, interfaces, connections and launch.",
     taskLabel: "task",
     audienceLabel: "Business task:",
     includesLabel: "What can be built",
-    techLabel: "Stack / integrations",
+    techLabel: "Technologies",
   },
   trust: {
     eyebrow: "Already in practice",
     title:
-      "Before the estimate - a quick slice of tasks already close to real production projects",
+      "Before the estimate - a short overview of tasks already close to real working projects",
     description:
       "This is not the full case archive, but a compact proof of experience across the solution types that most often arrive as requests.",
     proofLabel: "proof",
@@ -1131,7 +1131,7 @@ const ui: SiteData["ui"] = {
     eyebrow: "Precise estimate",
     title: "If you want a tighter number - configure the project",
     description:
-      "This is an optional step. You can pick the solution type to get a budget orientation, and expand modules only if needed.",
+      "This is an optional step. You can pick the solution type to get a budget orientation, and expand the details only if needed.",
   },
   quickLead: {
     title: "Briefly describe the task",
@@ -1154,7 +1154,7 @@ const ui: SiteData["ui"] = {
     },
     comment: "What needs to be done",
     commentPlaceholder:
-      "For example: I need a Telegram bot with payments and an admin panel for requests.",
+      "For example: I need a Telegram bot with payments and a control panel for requests.",
     submit: "Discuss a project",
     sending: "Sending",
     success: "Request sent. I will get back with a few clarifying questions.",
@@ -1184,22 +1184,22 @@ const ui: SiteData["ui"] = {
     dayShort: "d",
     timelineSuffix: "business days",
     kicker: "Project config",
-    title: "Project type -> modules -> request",
+    title: "Project type -> add-ons -> request",
     stepPrefix: "step",
     typeTitle: "Choose solution type",
     typeDescription:
-      "After choosing the type, only relevant modules remain below.",
+      "After choosing the type, only the relevant add-ons remain below.",
     complexityTitle: "Complexity",
     complexityDescription:
-      "This affects budget and timeline: MVP, business product or complex system.",
-    modulesTitle: "Modules",
+      "This affects budget and timeline: first version, business product or complex system.",
+    modulesTitle: "Add-ons",
     modulesDescription: "Options are shown for the {category} category.",
     urgencyTitle: "Timeline",
     urgencyDescription:
       "Choose a comfortable pace. Urgency increases cost, but compresses the work plan.",
     contactsTitle: "Contacts and description",
     contactsDescription:
-      "These details will be included in the request together with the selected configuration and estimate.",
+      "These details will be included in the request together with the selected parameters and estimate.",
     fields: {
       name: "Name",
       namePlaceholder: "How should I address you",
@@ -1207,15 +1207,15 @@ const ui: SiteData["ui"] = {
       contactPlaceholder: "Telegram, phone, WhatsApp or email",
       email: "Email",
       emailPlaceholder: "optional",
-      fileUrl: "Spec / file link",
+      fileUrl: "Technical brief / file link",
       fileUrlPlaceholder: "Google Docs, Figma, archive",
       comment: "Short task description",
       commentPlaceholder:
-        "For example: we need a mini app for a clothing store with catalog, payments and referrals.",
+        "For example: we need a mini app for a clothing store with a catalog, payments and friend invites.",
     },
     note:
-      "The calculator shows an orientation point. Final cost is fixed after a short discussion of the task, integrations, design and timeline.",
-    submit: "Send configuration",
+      "The calculator shows an orientation point. Final cost is fixed after a short discussion of the task, connections, design and timeline.",
+    submit: "Send request",
     sendAnother: "Send another",
     validationError: "Leave a contact and briefly describe the task.",
     fallbackSubmitError: "Could not submit the request.",
@@ -1232,12 +1232,12 @@ const ui: SiteData["ui"] = {
       complexity: "Complexity",
       urgency: "Pace",
     },
-    selectedModules: "Selected modules",
+    selectedModules: "Selected add-ons",
     noModules:
-      "No modules selected. The estimate is based only on base development.",
+      "No add-ons selected. The estimate is based only on base development.",
     requestFormat: "Request format",
     requestTitle: "New website request",
-    requestOptions: "Options",
+    requestOptions: "Add-ons",
     requestEstimate: "Estimate",
     baseDevelopment: "base development",
     viewCases: "View cases",
@@ -1246,20 +1246,20 @@ const ui: SiteData["ui"] = {
     eyebrow: "How the work goes",
     title: "After the request, the next steps are clear",
     description:
-      "The process reduces uncertainty: configuration and clarification first, then MVP boundaries, final estimate, development, launch and support.",
+      "A clear process reduces uncertainty: parameters and clarification first, then first-version boundaries, final estimate, development, launch and support.",
     metrics: [
       { label: "Architecture", value: "scheme before code" },
       { label: "Delivery", value: "iterations and checks" },
-      { label: "Launch", value: "deployment and stabilization" },
+      { label: "Launch", value: "launch and stabilization" },
     ],
   },
   cases: {
     eyebrow: "Cases",
     title: "Real project showcase: quickly understand the task type and result",
     description:
-      "The homepage contains a compact selection across work types: Telegram, AI, crypto, backend, Mini App and web. Details, flows and technical decisions live on a separate page.",
+      "The homepage contains a compact selection across work types: Telegram, neural networks, crypto, server services, mini apps and websites. Details, flows and technical decisions live on a separate page.",
     intro:
-      "Each card shows the task, assembled modules and final outcomes. Open the full case for the detailed proof base.",
+      "Each card shows the task, assembled parts and the final result. Open the full case to see the details.",
     allCases: "All cases",
     carouselAria:
       "Case carousel. Cards can be rotated with the mouse or navigation buttons.",
@@ -1267,7 +1267,7 @@ const ui: SiteData["ui"] = {
     previous: "Previous case",
     next: "Next case",
     openCase: "Open case",
-    outcomesAria: "Key modules",
+    outcomesAria: "Key features",
     details: "Details",
     similar: "I want a similar project",
     discussCta: "Discuss a similar project",
@@ -1281,22 +1281,22 @@ const ui: SiteData["ui"] = {
       "On the homepage, cases work as a showcase. Here each project is expanded as a proof base: why it was needed, what was built, where the technical risks were and what working result came after launch.",
     countLabel: "cases",
     countDescription:
-      "Telegram bots, Mini Apps, AI modules, crypto automation, backend services and web interfaces in one format.",
+      "Telegram bots, mini apps, neural networks, crypto automation, server services and websites in one format.",
     estimateSimilar: "Estimate a similar project",
     navAria: "Case navigation",
     timeframe: "Timeline",
     keyResult: "Key result",
-    stack: "Stack",
+    stack: "Technologies",
     sections: {
       context: "Task context",
       modules: "What was implemented",
-      integrations: "Integrations and business logic",
-      architecture: "Architecture / workflow",
-      media: "Screens / video / interfaces",
+      integrations: "Connections and work logic",
+      architecture: "Workflow",
+      media: "Screenshots and interfaces",
       challenges: "Challenges and solutions",
       result: "Result",
     },
-    mediaNote: "real or stylized mockups",
+    mediaNote: "real or sample mockups",
     outcomes: "outcomes",
     cta: "CTA",
     wantSimilar: "I want a similar project",
@@ -1306,36 +1306,36 @@ const ui: SiteData["ui"] = {
   },
   services: {
     eyebrow: "Budget guide",
-    title: "A short price frame without competing with the estimator",
+    title: "Short price guides - in addition to the calculator",
     description:
-      "These amounts help understand the budget order. The exact range is better calculated through the configurator above, because modules, timeline and integrations change the scope a lot.",
+      "These amounts help understand the budget order. The exact range is better calculated through the configurator above, because the scope of work, timeline and connections change the size of the project a lot.",
     budgetLabel: "budget",
     finalTitle: "Final cost depends on the details",
     finalDescription:
-      "Final cost depends on scenarios, design, integrations, payments, data volume and timeline. After launch, support can be connected separately:",
+      "Final cost depends on scenarios, design, connections, payments, data volume and timeline. After launch, support can be connected separately:",
     estimateCta: "Estimate a project",
   },
   faq: {
     eyebrow: "FAQ",
     title: "Questions worth closing before the start",
     description:
-      "The clearer the scenarios, integrations and constraints are at the start, the fewer surprises appear during development.",
+      "The clearer the scenarios, connections and constraints are at the start, the fewer surprises appear during development.",
   },
   testimonials: {
     eyebrow: "Testimonials",
     title: "Calm engineering work without extra noise",
     description:
-      "The wording is anonymized, but reflects a typical request: bring the product to a working state, not just write a separate script.",
+      "The wording is anonymized, but reflects a typical request: bring the product to a working state, not just write a separate program.",
   },
   finalCta: {
     eyebrow: "Next step",
     title: "Tell me what you need to automate or launch.",
     description:
-      "A short description without a spec is enough. I will come back with questions and propose a first scope of work, timeline and budget range.",
+      "A short description without a technical brief is enough. I will come back with questions and propose a first scope of work, timeline and budget range.",
     estimateCta: "Get a tighter estimate",
     telegramCta: "Write in Telegram",
     footer:
-      "Telegram bots, Mini Apps, AI integrations, backend and turnkey launch.",
+      "Telegram bots, mini apps, neural networks, server part and turnkey launch.",
   },
   gallery: {
     previous: "Previous screen",
