@@ -15,7 +15,6 @@ export const navItems = [
   { label: "Конфигуратор", href: "#estimator" },
   { label: "Процесс", href: "#process" },
   { label: "Кейсы", href: "#cases" },
-  { label: "Бюджет", href: "#budget" },
   { label: "Вопросы", href: "#faq" },
 ];
 

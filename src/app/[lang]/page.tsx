@@ -8,7 +8,6 @@ import { Hero } from "@/components/sections/hero";
 import { MobileContactBar } from "@/components/sections/mobile-contact-bar";
 import { Process } from "@/components/sections/process";
 import { ProjectConfigurator } from "@/components/sections/project-configurator";
-import { Services } from "@/components/sections/services";
 import { SiteHeader } from "@/components/sections/site-header";
 import { Specialization } from "@/components/sections/specialization";
 import { Trust } from "@/components/sections/trust";
@@ -45,7 +44,6 @@ export default async function Home({
         <ProjectConfigurator site={site} />
         <Process site={site} />
         <Cases data={casesData} locale={locale} />
-        <Services site={site} />
         <FAQ site={site} />
         <FinalCTA site={site} />
       </main>

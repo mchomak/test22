@@ -24,7 +24,6 @@ const navItems: SiteData["navItems"] = [
   { label: "Estimator", href: "#estimator" },
   { label: "Process", href: "#process" },
   { label: "Cases", href: "#cases" },
-  { label: "Budget", href: "#budget" },
   { label: "FAQ", href: "#faq" },
 ];
 
