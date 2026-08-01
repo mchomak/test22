@@ -70,7 +70,7 @@ export function QuickLeadForm({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!contactValue.trim() || !comment.trim()) {
+    if (!name.trim() || !contactValue.trim() || !comment.trim()) {
       setSubmitState("error");
       return;
     }
@@ -125,7 +125,7 @@ export function QuickLeadForm({
     return (
       <div className="rounded-3xl border border-emerald-300/25 bg-emerald-300/10 p-5">
         <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-300 text-zinc-950">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-300 text-black">
             <Check size={22} />
           </span>
           <p className="text-sm font-semibold leading-6 text-emerald-100">
@@ -185,6 +185,7 @@ export function QuickLeadForm({
         </span>
         <input
           type="text"
+          required
           value={name}
           onChange={(event) => {
             setName(event.target.value);
@@ -234,7 +235,7 @@ export function QuickLeadForm({
       <button
         type="submit"
         disabled={submitState === "sending"}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-zinc-950 transition duration-300 hover:bg-emerald-200 disabled:cursor-wait disabled:opacity-70"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-black transition duration-300 hover:bg-emerald-200 disabled:cursor-wait disabled:opacity-70"
       >
         {submitState === "sending" ? (
           <Loader2 size={18} className="animate-spin" />

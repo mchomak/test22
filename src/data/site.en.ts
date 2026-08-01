@@ -20,97 +20,46 @@ function formatDiscountedUsdPrice(value: number) {
 }
 
 const navItems: SiteData["navItems"] = [
-  { label: "Work", href: "#specialization" },
+  { label: "Services", href: "#specialization" },
+  { label: "Cases", href: "#cases" },
   { label: "Estimator", href: "#estimator" },
   { label: "Process", href: "#process" },
-  { label: "Cases", href: "#cases" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const heroMetrics: SiteData["heroMetrics"] = [
   { value: "5 yrs", label: "commercial development" },
   { value: "30+", label: "bots, services and integrations" },
-  { value: "6 areas", label: "Telegram / AI / services / websites / data / crypto" },
+  { value: "3 areas", label: "AI / Telegram / backend and integrations" },
 ];
 
 const specializations: SiteData["specializations"] = [
   {
-    title: "Telegram bots and mini apps",
+    title: "AI and process automation",
     audience:
-      "For businesses that need to take leads, sell, run subscriptions, personal accounts and support right inside Telegram - where the clients already are.",
-    includes: [
-      "bots for leads, stores, subscriptions and payments",
-      "mini apps with catalog, personal account and friend invites",
-      "control panel, notifications, reports and exports",
-    ],
-    tech: "aiogram 3, Telegram Bot API, Telegram Web Apps, PostgreSQL, Redis",
+      "I remove manual routine from document processing, data work, replies and recurring team tasks.",
+    includes: [],
+    tech: "",
     result:
-      "You get more than a chat bot - a ready sales system inside Telegram: the client goes all the way to payment or the needed action on their own.",
+      "The process becomes transparent, manageable and no longer relies on someone handling every step manually.",
   },
   {
-    title: "Artificial intelligence and neural networks",
+    title: "Telegram services and Mini Apps",
     audience:
-      "For teams that want to add artificial intelligence to a product, support, education, document processing or everyday tasks.",
-    includes: [
-      "smart assistants and workflows powered by ChatGPT and Claude",
-      "answers based on your documents, plus their processing and sorting",
-      "chat history, access rights, limits and response control",
-    ],
-    tech: "OpenAI SDK, Anthropic SDK, PyTorch, FastAPI, PostgreSQL",
+      "I build bots and mini apps for leads, subscriptions, sales, accounts and support inside Telegram.",
+    includes: [],
+    tech: "",
     result:
-      "Artificial intelligence becomes part of the work: it answers using your data, speeds up routine and removes manual copying between services.",
+      "Clients follow the needed flow in a familiar channel, while the team gets a practical management tool.",
   },
   {
-    title: "Data collection and automation",
+    title: "Backend, integrations and admin panels",
     audience:
-      "For projects that need to collect data regularly, track changes, update tables, send alerts and remove manual work.",
-    includes: [
-      "data collection from one or several websites",
-      "scheduled runs and stable work even when sites block access",
-      "export to Excel, Google Sheets or a database",
-    ],
-    tech: "Python asyncio, Playwright, requests/httpx, PostgreSQL, cron/workers",
+      "I build the server foundation, connect external services and create panels for working with data and statuses.",
+    includes: [],
+    tech: "",
     result:
-      "Data arrives on schedule and in the right format, while the team stops spending hours on copying, checking and manual notifications.",
-  },
-  {
-    title: "Websites, services and control panels",
-    audience:
-      "For teams that need a working website or service: personal account, summary panel, lead form or internal tool.",
-    includes: [
-      "the visible part of the site, server logic and user roles",
-      "forms, tables, statuses, summaries and analytics",
-      "payments, connections to other services, notifications and launch",
-    ],
-    tech: "Next.js, React, FastAPI, PostgreSQL, Docker, Nginx",
-    result:
-      "The result is a clear working tool for clients, managers or operators, not a pile of disconnected programs.",
-  },
-  {
-    title: "Crypto projects and trading bots",
-    audience:
-      "For crypto projects, exchangers and trading teams that need connections to exchanges, price tracking, signals, payments or blockchain data.",
-    includes: [
-      "connections to exchanges (Bybit, Binance, OKX) and crypto payments",
-      "price tracking, trading signals and Telegram alerts",
-      "trade logging, risk limits and a safe test mode",
-    ],
-    tech: "Bybit API, Binance API, Solana / Ethereum, PostgreSQL, Telegram Bot API",
-    result:
-      "Automation watches the market, captures events and helps react faster without constant manual watching.",
-  },
-  {
-    title: "Server side and databases",
-    audience:
-      "For products that need a reliable server foundation: data storage, statuses, task queues, connections to other services and a stable launch.",
-    includes: [
-      "server services, databases and background jobs",
-      "login, access rights and connections to external services",
-      "work logs, launch via Docker and a clear project structure",
-    ],
-    tech: "FastAPI, SQLAlchemy 2.0 async, PostgreSQL, Redis, Docker",
-    result:
-      "The server side handles real load: stores data, handles errors and stays understandable for future development.",
+      "You get a reliable system that can grow without chaos in processes and data.",
   },
 ];
 
@@ -143,32 +92,10 @@ const proofItems: SiteData["proofItems"] = [
 
 const projectTypes: SiteData["projectTypes"] = [
   {
-    id: "telegram-bot",
-    label: "Telegram bot",
-    description:
-      "Leads, payments, subscriptions, notifications, personal accounts and operator workflows.",
-    baseLow: 35000,
-    baseHigh: 65000,
-    daysLow: 7,
-    daysHigh: 12,
-    defaultModules: ["database", "admin", "notifications"],
-  },
-  {
-    id: "telegram-mini-app",
-    label: "Telegram mini app",
-    description:
-      "App inside Telegram: catalog, personal account, cart, payment, friend invites and control panel.",
-    baseLow: 70000,
-    baseHigh: 115000,
-    daysLow: 12,
-    daysHigh: 20,
-    defaultModules: ["database", "admin", "payments", "profile"],
-  },
-  {
     id: "ai-integration",
-    label: "Artificial intelligence",
+    label: "AI and process automation",
     description:
-      "Smart assistant, answers from your documents, file processing, text creation or AI inside a product.",
+      "Document processing, data work, AI workflows and recurring tasks without manual routine.",
     baseLow: 60000,
     baseHigh: 105000,
     daysLow: 10,
@@ -176,48 +103,26 @@ const projectTypes: SiteData["projectTypes"] = [
     defaultModules: ["llm-api", "history-logs", "admin-ai"],
   },
   {
-    id: "parser-automation",
-    label: "Data collection / automation",
+    id: "telegram-mini-app",
+    label: "Telegram service or Mini App",
     description:
-      "Data collection, scheduled jobs, exports, notifications and connections to tables or databases.",
-    baseLow: 30000,
-    baseHigh: 60000,
-    daysLow: 5,
-    daysHigh: 12,
-    defaultModules: ["single-site", "regular-run", "export"],
+      "Bots and apps inside Telegram for leads, subscriptions, sales, payments and personal accounts.",
+    baseLow: 70000,
+    baseHigh: 115000,
+    daysLow: 12,
+    daysHigh: 20,
+    defaultModules: ["database", "admin", "payments", "profile"],
   },
   {
     id: "web-service",
-    label: "Website / control panel",
+    label: "Backend, integrations and admin panels",
     description:
-      "Website or service, server logic, access rights, summaries, control panel, payments and connections to other services.",
+      "Server logic, integrations, databases, personal accounts and practical panels for the team.",
     baseLow: 75000,
     baseHigh: 130000,
     daysLow: 14,
     daysHigh: 24,
     defaultModules: ["frontend", "backend-api", "auth", "database-web"],
-  },
-  {
-    id: "crypto-trading-bot",
-    label: "Crypto / trading bot",
-    description:
-      "Connections to exchanges, price tracking, signals, Telegram alerts, crypto payments and risk limits.",
-    baseLow: 65000,
-    baseHigh: 120000,
-    daysLow: 10,
-    daysHigh: 20,
-    defaultModules: ["exchange-api", "price-monitoring", "telegram-alerts"],
-  },
-  {
-    id: "not-sure",
-    label: "Not sure yet",
-    description:
-      "Useful when you have an idea or problem, but the exact solution format is not fixed yet.",
-    baseLow: 20000,
-    baseHigh: 45000,
-    daysLow: 4,
-    daysHigh: 9,
-    defaultModules: ["discovery", "mvp-scope"],
   },
 ];
 
@@ -1061,9 +966,9 @@ const ui: SiteData["ui"] = {
   },
   hero: {
     badge: "For small businesses, experts and product teams",
-    headline: ["Telegram bots and services", "for leads and payments"],
+    headline: ["I build AI services and", "business automation systems", ""],
     description:
-      "I build bots, mini apps, server systems, neural networks, control panels and payments - from idea to launch on a server.",
+      "Telegram Mini Apps, internal dashboards, document processing, integrations and backend — from planning to launch.",
     primaryCta: "Discuss a project",
     secondaryCta: "Get a tighter estimate",
     bottomNote: "Real projects below",
@@ -1108,11 +1013,10 @@ const ui: SiteData["ui"] = {
     ],
   },
   specialization: {
-    eyebrow: "What I help with",
-    title:
-      "A clear set of solutions: Telegram, neural networks, server side, websites, data collection and crypto",
+    eyebrow: "Core services",
+    title: "Three directions for automation and product delivery",
     description:
-      "Each direction is built around a business result: leads, payments, data, automation, interfaces, connections and launch.",
+      "From the first map to a working system — without unnecessary complexity and with a clear outcome for your team and clients.",
     taskLabel: "task",
     audienceLabel: "Business task:",
     includesLabel: "What can be built",
@@ -1127,10 +1031,10 @@ const ui: SiteData["ui"] = {
     proofLabel: "proof",
   },
   configurator: {
-    eyebrow: "Precise estimate",
-    title: "If you want a tighter number - configure the project",
+    eyebrow: "Project estimator",
+    title: "Estimate a project by its core direction",
     description:
-      "This is an optional step. You can pick the solution type to get a budget orientation, and expand the details only if needed.",
+      "Choose a direction and the needed parts of the system for a budget and timeline guide. The exact estimate comes after discussing the task.",
   },
   quickLead: {
     title: "Briefly describe the task",

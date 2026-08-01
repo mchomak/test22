@@ -1,16 +1,13 @@
 import {
-  Bitcoin,
   Bot,
   BrainCircuit,
   DatabaseZap,
-  Globe2,
-  Repeat2,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import type { SiteData } from "@/data/site";
 
-const icons = [Bot, BrainCircuit, Repeat2, Globe2, Bitcoin, DatabaseZap];
+const icons = [BrainCircuit, Bot, DatabaseZap];
 
 export function Specialization({ site }: { site: SiteData }) {
   const { specializations, ui } = site;
@@ -43,42 +40,15 @@ export function Specialization({ site }: { site: SiteData }) {
                   <h3 className="text-2xl font-semibold leading-tight text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-4 text-sm leading-6 text-zinc-400">
-                    <span className="text-zinc-200">
-                      {ui.specialization.audienceLabel}{" "}
-                    </span>
+                  <p className="mt-4 text-base leading-7 text-zinc-300">
                     {item.audience}
                   </p>
 
-                  <div className="mt-6 space-y-3">
-                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                      {ui.specialization.includesLabel}
-                    </p>
-                    <ul className="space-y-2">
-                      {item.includes.map((point) => (
-                        <li
-                          key={point}
-                          className="flex gap-3 text-sm leading-6 text-zinc-300"
-                        >
-                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-6 border-t border-white/10 pt-5">
-                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
-                      {ui.specialization.techLabel}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-zinc-300">
-                      {item.tech}
+                  <div className="mt-7 border-t border-white/10 pt-5">
+                    <p className="text-sm leading-6 text-emerald-100/85">
+                      {item.result}
                     </p>
                   </div>
-
-                  <p className="mt-5 text-sm leading-6 text-emerald-100/85">
-                    {item.result}
-                  </p>
                 </article>
               </Reveal>
             );

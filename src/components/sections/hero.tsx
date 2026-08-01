@@ -75,6 +75,7 @@ export function Hero({ site }: { site: SiteData }) {
               contacts={contacts}
               copy={ui.quickLead}
               source="hero"
+              compact
             />
           </div>
         </Reveal>
