@@ -52,20 +52,20 @@ export function FinalCTA({ site }: { site: SiteData }) {
   ];
 
   return (
-    <section id="contact" className="section-shell bg-[#0b0d0c]">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/25 bg-[#0d1713]/72 p-6 backdrop-blur-md sm:p-10 lg:p-12">
-            <div className="cta-grid absolute inset-0 opacity-50" />
-            <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:items-start">
-              <div>
+    <>
+      <section id="contact" className="section-shell bg-[#0b0d0c]">
+        <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/25 bg-[#0d1713]/72 p-6 backdrop-blur-md sm:p-10 lg:p-12">
+              <div className="cta-grid absolute inset-0 opacity-50" />
+              <div className="relative z-10 max-w-3xl">
                 <p className="font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
                   {ui.finalCta.eyebrow}
                 </p>
-                <h2 className="mt-4 max-w-xl text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl">
+                <h2 className="mt-4 text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl">
                   {ui.finalCta.title}
                 </h2>
-                <p className="mt-5 max-w-xl text-base leading-7 text-zinc-300">
+                <p className="mt-5 text-base leading-7 text-zinc-300">
                   {ui.finalCta.description}
                 </p>
 
@@ -76,16 +76,8 @@ export function FinalCTA({ site }: { site: SiteData }) {
                   {ui.finalCta.estimateCta}
                   <ArrowRight size={16} />
                 </a>
-              </div>
 
-              <div className="w-full max-w-full">
-                <QuickLeadForm
-                  contacts={contacts}
-                  copy={ui.quickLead}
-                  source="final"
-                />
-
-                <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 border-t border-white/10 pt-6 text-sm text-zinc-400">
+                <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 border-t border-white/10 pt-6 text-sm text-zinc-300">
                   {directLinks.map((link) => (
                     <a
                       key={link.key}
@@ -102,10 +94,26 @@ export function FinalCTA({ site }: { site: SiteData }) {
                 </div>
               </div>
             </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
+          </Reveal>
+        </div>
+      </section>
+
+      <section id="request" className="section-shell bg-[#0b0d0c]">
+        <div className="mx-auto max-w-7xl px-4 py-8 pb-24 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="rounded-[2rem] border border-white/10 bg-[#101311]/68 p-5 backdrop-blur-md sm:p-8">
+              <div className="mx-auto max-w-3xl">
+                <QuickLeadForm
+                  contacts={contacts}
+                  copy={ui.quickLead}
+                  source="final"
+                />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </>
   );
 }
 
