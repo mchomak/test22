@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 test("the portfolio catalogue exposes all six requested localized cases", async () => {
-  const catalogue = await import("./portfolio-cases.ts").catch(() => null);
+  const catalogue = await import("./portfolio-cases").catch(() => null);
 
   assert.ok(catalogue, "the portfolio case catalogue must exist");
   assert.equal(catalogue.portfolioCases.length, 6);
@@ -16,7 +16,7 @@ test("the portfolio catalogue exposes all six requested localized cases", async 
 });
 
 test("the catalogue distinguishes commercial work from the personal product", async () => {
-  const { getPortfolioCase } = await import("./portfolio-cases.ts");
+  const { getPortfolioCase } = await import("./portfolio-cases");
 
   assert.equal(getPortfolioCase("tg-manager")?.projectKind, "personal");
   assert.equal(getPortfolioCase("yandex-zen-automation")?.projectKind, "commercial");
