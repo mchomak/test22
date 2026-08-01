@@ -8,6 +8,7 @@ import {
   locales,
 } from "@/data/site";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { ReferenceLeadModalProvider } from "@/components/interactive/reference-lead-modal";
 import { YandexMetrika } from "@/components/yandex-metrika";
 import "../globals.css";
 
@@ -88,7 +89,9 @@ export default async function LocaleLayout({
         <Suspense fallback={null}>
           <AnalyticsTracker locale={locale} />
         </Suspense>
-        {children}
+        <ReferenceLeadModalProvider locale={locale}>
+          {children}
+        </ReferenceLeadModalProvider>
       </body>
     </html>
   );

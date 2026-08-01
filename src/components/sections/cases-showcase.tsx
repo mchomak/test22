@@ -16,6 +16,7 @@ import {
   type PointerEvent,
 } from "react";
 import type { Locale, SiteData } from "@/data/site";
+import { ReferenceLeadButton } from "@/components/interactive/reference-lead-modal";
 
 const dragThreshold = 78;
 
@@ -294,14 +295,14 @@ function CaseCardContent({
             <FileText size={16} />
             {copy.details}
           </Link>
-          <Link
-            href={buildLocalizedEstimatorHref(locale, item)}
+          <ReferenceLeadButton
+            caseTitle={item.title}
             className="case-wheel-card-action case-wheel-card-action-secondary"
             onPointerDown={stopCarouselDrag}
           >
             <Calculator size={16} />
             {copy.similar}
-          </Link>
+          </ReferenceLeadButton>
         </div>
       </div>
 
@@ -427,20 +428,6 @@ function PreviewHeader({ title, stats }: { title: string; stats: string[] }) {
       </span>
     </span>
   );
-}
-
-function buildLocalizedEstimatorHref(
-  locale: Locale,
-  item: SiteData["cases"][number],
-) {
-  const params = new URLSearchParams({
-    estimateType: item.estimatorPreset.type,
-    estimateComplexity: item.estimatorPreset.complexity,
-    estimateModules: item.estimatorPreset.modules.join(","),
-    estimateCase: item.slug,
-  });
-
-  return `/${locale}/?${params.toString()}#estimator`;
 }
 
 function getCircularOffset(index: number, activeIndex: number, total: number) {

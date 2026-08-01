@@ -3,9 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, ImageIcon } from "lucide-react";
 import { CaseGallery } from "@/components/case-gallery";
+import { ReferenceLeadButton } from "@/components/interactive/reference-lead-modal";
 import { Footer } from "@/components/sections/final-cta";
 import { SiteHeader } from "@/components/sections/site-header";
-import { ButtonLink } from "@/components/ui/button-link";
 import { getPortfolioCase, portfolioCases } from "@/data/portfolio-cases";
 import { getLocaleFromParams, getSiteData, locales, type Locale } from "@/data/site";
 
@@ -164,13 +164,13 @@ export default async function CasePage({
                   {copy.resultLabel}
                 </p>
                 <p className="mt-3 text-sm leading-6 text-zinc-300">{content.summary}</p>
-                <ButtonLink
-                  href={`/${locale}/?referenceCase=${item.slug}#request`}
-                  className="mt-5 w-full"
-                  icon={<ArrowRight size={18} />}
+                <ReferenceLeadButton
+                  caseTitle={content.title}
+                  className="group mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-black shadow-[0_0_40px_rgba(110,231,183,0.16)] transition duration-300 hover:bg-emerald-200 hover:shadow-[0_0_52px_rgba(110,231,183,0.24)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-300"
                 >
-                  {copy.cta}
-                </ButtonLink>
+                  <span>{copy.cta}</span>
+                  <ArrowRight size={18} className="transition duration-300 group-hover:translate-x-0.5" />
+                </ReferenceLeadButton>
               </aside>
             </div>
           </div>

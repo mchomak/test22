@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { CaseGallery } from "@/components/case-gallery";
+import { ReferenceLeadButton } from "@/components/interactive/reference-lead-modal";
 import { HashScroller } from "@/components/hash-scroller";
 import { Footer } from "@/components/sections/final-cta";
 import { SiteHeader } from "@/components/sections/site-header";
@@ -131,7 +132,7 @@ function CaseArticle({
   locale: Locale;
   site: SiteData;
 }) {
-  const { contacts, ui } = site;
+  const { ui } = site;
   const copy = ui.casesPage;
 
   return (
@@ -228,14 +229,13 @@ function CaseArticle({
               {copy.cta}
             </p>
             <div className="mt-4 grid gap-3">
-              <ButtonLink
-                href={contacts.telegramUrl}
-                target="_blank"
-                rel="noreferrer"
-                icon={<ArrowRight size={18} />}
+              <ReferenceLeadButton
+                caseTitle={item.title}
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-emerald-300/50 bg-emerald-300 px-5 text-sm font-semibold text-black shadow-[0_0_40px_rgba(110,231,183,0.16)] transition duration-300 hover:bg-emerald-200 hover:shadow-[0_0_52px_rgba(110,231,183,0.24)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-300"
               >
-                {copy.wantSimilar}
-              </ButtonLink>
+                <span>{copy.wantSimilar}</span>
+                <ArrowRight size={18} className="transition duration-300 group-hover:translate-x-0.5" />
+              </ReferenceLeadButton>
               <ButtonLink
                 href={buildLocalizedEstimatorHref(locale, item)}
                 variant="secondary"

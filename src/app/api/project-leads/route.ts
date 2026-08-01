@@ -27,6 +27,7 @@ type LeadPayload = {
     whatsapp?: unknown;
   };
   source?: unknown;
+  sourceCase?: unknown;
   comment?: unknown;
   fileUrl?: unknown;
 };
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
   const whatsapp = asText(payload.contact?.whatsapp);
   const email = asText(payload.contact?.email);
   const source = asText(payload.source);
+  const sourceCase = asText(payload.sourceCase);
   const comment = asText(payload.comment);
   const fileUrl = asText(payload.fileUrl);
 
@@ -99,6 +101,7 @@ export async function POST(request: Request) {
     contactValue,
     contactEmail: email,
     source,
+    sourceCase,
     comment,
     fileUrl,
     payload: payload as Record<string, unknown>,

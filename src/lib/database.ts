@@ -15,6 +15,7 @@ export type ProjectLeadRecord = {
   contactTelegram: string;
   contactEmail: string;
   source?: string;
+  sourceCase?: string;
   comment: string;
   fileUrl: string;
   payload: Record<string, unknown>;
@@ -161,6 +162,7 @@ async function ensureSchema(pool: Pool) {
       ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS telegram_retry_count INT NOT NULL DEFAULT 0;
       ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS contact_channel TEXT;
       ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS contact_value TEXT;
+      ALTER TABLE project_leads ADD COLUMN IF NOT EXISTS source_case TEXT;
     `).then(() => undefined);
   }
 
@@ -194,11 +196,12 @@ export async function insertProjectLead(lead: ProjectLeadRecord) {
           contact_channel,
           contact_value,
           contact_email,
+          source_case,
           comment,
           file_url,
           payload
         )
-        VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14::jsonb)
+        VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15::jsonb)
         RETURNING id
       `,
       [
@@ -213,6 +216,7 @@ export async function insertProjectLead(lead: ProjectLeadRecord) {
         lead.contactChannel || null,
         lead.contactValue,
         lead.contactEmail || null,
+        lead.sourceCase || null,
         lead.comment,
         lead.fileUrl || null,
         JSON.stringify(lead.payload),
@@ -259,6 +263,7 @@ export type UndeliveredLead = {
   contactValue: string;
   contactTelegram: string;
   contactEmail: string;
+  sourceCase: string;
   comment: string;
   fileUrl: string;
 };
@@ -278,13 +283,14 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
       contact_value: string | null;
       contact_telegram: string;
       contact_email: string | null;
+      source_case: string | null;
       comment: string;
       file_url: string | null;
     }>(
       `
         SELECT id, category, complexity, urgency, options, budget, timeline,
                contact_name, contact_channel, contact_value, contact_telegram,
-               contact_email, comment, file_url
+               contact_email, source_case, comment, file_url
         FROM project_leads
         WHERE telegram_delivered = false
           AND telegram_retry_count < 10
@@ -314,6 +320,7 @@ export async function getUndeliveredLeads(): Promise<UndeliveredLead[]> {
     contactValue: row.contact_value ?? row.contact_telegram,
     contactTelegram: row.contact_telegram,
     contactEmail: row.contact_email ?? "",
+    sourceCase: row.source_case ?? "",
     comment: row.comment,
     fileUrl: row.file_url ?? "",
   }));

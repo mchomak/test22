@@ -11,6 +11,7 @@ export type LeadMessageFields = {
   contactTelegram: string;
   contactEmail: string;
   source?: string;
+  sourceCase?: string;
   comment: string;
   fileUrl: string;
 };
@@ -39,7 +40,12 @@ export function formatLeadMessage(lead: LeadMessageFields): string {
       ? lead.contactTelegram
       : "";
 
+  const referenceCaseLine = lead.sourceCase
+    ? `Reference case: ${lead.sourceCase}`
+    : "";
+
   return [
+    referenceCaseLine,
     "Новая заявка с сайта",
     "",
     `Источник: ${resolveSourceLabel(lead.source)}`,
