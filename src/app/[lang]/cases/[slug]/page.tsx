@@ -77,7 +77,7 @@ export default async function CasePage({
   const galleryImages =
     media.kind === "gallery"
       ? media.files.map((file) => ({
-          src: `/cases/${locale}/${media.folder}/${file}`,
+          src: `/cases/${media.folder}/${file}`,
           alt: `${content.title} ${copy.mediaAlt}`,
           label: file.replace(/\.[^.]+$/, ""),
         }))
