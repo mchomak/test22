@@ -13,7 +13,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <div
-      className={`mx-auto mb-10 max-w-3xl ${
+      className={`mx-auto mb-10 max-w-5xl ${
         align === "center" ? "text-center" : "text-left"
       }`}
     >

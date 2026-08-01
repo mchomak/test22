@@ -58,7 +58,7 @@ export function FinalCTA({ site }: { site: SiteData }) {
           <Reveal>
             <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/25 bg-[#0d1713]/72 p-6 backdrop-blur-md sm:p-10 lg:p-12">
               <div className="cta-grid absolute inset-0 opacity-50" />
-              <div className="relative z-10 max-w-3xl">
+              <div className="relative z-10 max-w-4xl">
                 <p className="font-mono text-xs uppercase tracking-[0.24em] text-emerald-300/80">
                   {ui.finalCta.eyebrow}
                 </p>
@@ -102,7 +102,7 @@ export function FinalCTA({ site }: { site: SiteData }) {
         <div className="mx-auto max-w-7xl px-4 py-8 pb-24 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-[2rem] border border-white/10 bg-[#101311]/68 p-5 backdrop-blur-md sm:p-8">
-              <div className="mx-auto max-w-3xl">
+              <div className="mx-auto max-w-6xl">
                 <QuickLeadForm
                   contacts={contacts}
                   copy={ui.quickLead}

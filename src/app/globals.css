@@ -107,6 +107,10 @@ summary::-webkit-details-marker {
   background-size: 100% 100%, 58px 58px, 58px 58px, 100% 100%;
 }
 
+html[data-boot-sequence-seen="true"] .boot-sequence {
+  display: none;
+}
+
 .hero-grid {
   background-image:
     linear-gradient(rgba(110, 231, 183, 0.055) 1px, transparent 1px),

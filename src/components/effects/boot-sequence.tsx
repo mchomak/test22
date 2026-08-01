@@ -13,12 +13,22 @@ const nodes = [
   { left: "81%", top: "36%" },
 ];
 
+const bootStorageKey = "mchomak.boot-sequence.seen";
+
 export function BootSequence({ copy }: { copy: SiteData["ui"]["boot"] }) {
   const [done, setDone] = useState(false);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (window.sessionStorage.getItem(bootStorageKey) === "1") {
+      const timeout = window.setTimeout(() => setDone(true), 0);
+
+      return () => window.clearTimeout(timeout);
+    }
+
     const timeout = window.setTimeout(() => {
+      window.sessionStorage.setItem(bootStorageKey, "1");
+      document.documentElement.dataset.bootSequenceSeen = "true";
       setDone(true);
     }, reduceMotion ? 490 : 2380);
 
@@ -29,7 +39,7 @@ export function BootSequence({ copy }: { copy: SiteData["ui"]["boot"] }) {
     <AnimatePresence>
       {!done ? (
         <motion.div
-          className="fixed inset-0 z-[90] overflow-hidden bg-[#050607] text-white"
+          className="boot-sequence fixed inset-0 z-[90] overflow-hidden bg-[#050607] text-white"
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
