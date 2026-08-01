@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/data/site";
+import { portfolioCases } from "@/data/portfolio-cases";
 
 function getSiteUrl() {
   return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
@@ -19,7 +20,11 @@ function getLocalizedAlternates(path = "") {
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
   const lastModified = new Date();
-  const paths = ["", "/cases"];
+  const paths = [
+    "",
+    "/cases",
+    ...portfolioCases.map((item) => `/cases/${item.slug}`),
+  ];
   const entries = locales.flatMap((locale) =>
     paths.map((path) => ({
       url: `${siteUrl}/${locale}${path}`,
